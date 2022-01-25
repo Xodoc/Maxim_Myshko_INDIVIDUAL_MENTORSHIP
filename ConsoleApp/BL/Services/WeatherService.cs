@@ -29,7 +29,7 @@ namespace BL.Services
             return Mapping(weather);
         }
 
-        private string GetWeaatherDescription(Root weather) 
+        private string GetWeaatherDescription(Root weather)
         {
             if (weather.main.temp < 0)
                 return "Dress warmly.";
@@ -43,11 +43,13 @@ namespace BL.Services
             return weather.weather[0].description;
         }
 
-        private WeatherNowDTO Mapping(Root weather) 
+        private WeatherNowDTO Mapping(Root weather)
         {
             var weatherNowDTO = new WeatherNowDTO
             {
-                 Name = weather.name, Description = weather.weather[0].description, Temp = weather.main.temp
+                Name = weather.name,
+                Description = weather.weather[0].description,
+                Temp = weather.main.temp
             };
 
             return weatherNowDTO;

@@ -1,7 +1,10 @@
 ﻿using DAL.Entities;
 using DAL.Interfaces;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
+using System.IO;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -9,7 +12,6 @@ namespace DAL.Repositories
 {
     public class WeatherRepository : IWeatherRepository
     {
-        private const string APIKEY = "040b95fb163277b9ba8832454277fa9d";
         private const string UNITS = "metric";
         private const string LANG = "eng";
 
@@ -19,17 +21,29 @@ namespace DAL.Repositories
         {
             try
             {
-                var weather = await _client.GetStringAsync($"https://api.openweathermap.org/data/2.5/weather?q={cityName}&lang={LANG}&units={UNITS}&appid={APIKEY}");
+                var key = GetAPIKeyAsync();
+
+                var weather = await _client.GetStringAsync($"https://api.openweathermap.org/data/2.5/weather?q={cityName}&lang={LANG}&units={UNITS}&appid={key}");
 
                 var result = JsonConvert.DeserializeObject<Root>(weather);
 
                 return result;
             }
-            catch (Exception e) 
+            catch (Exception e)
             {
                 Console.WriteLine(e.Message);
                 return null;
             }
+        }
+
+        private string GetAPIKeyAsync() 
+        {
+            var text = File.ReadAllText(@"C:\Users\mmyshko\Source\Repos\Maxim_Myshko_INDIVIDUAL_MENTORSHIP\ConsoleApp\DAL\Secrets.json");
+            var json = JObject.Parse(text);
+
+            var apiKey = json["credentials"].Select(x => x["APIKey"]).ToList();
+
+            return apiKey[0].ToString();
         }
     }
 }
