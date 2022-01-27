@@ -12,7 +12,7 @@ namespace DAL.Repositories
 {
     public class WeatherRepository : IWeatherRepository
     {
-        private IConfiguration _configuration;
+        private readonly IConfiguration _configuration;
         private readonly HttpClient _client;
 
         public WeatherRepository(IConfiguration configuration)
