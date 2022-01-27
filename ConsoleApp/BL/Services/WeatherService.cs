@@ -1,6 +1,5 @@
 ﻿using BL.DTOs;
 using BL.Interfaces;
-using BL.Validators;
 using DAL.Entities;
 using DAL.Interfaces;
 using System.Threading.Tasks;
@@ -10,18 +9,18 @@ namespace BL.Services
     public class WeatherService : IWeatherService
     {
         private readonly IUnitOfWork _unitOfWork;
-        private WeatherValidator _validator;
+        private readonly IValidator<Root> _validator;
 
-        public WeatherService(IUnitOfWork unitOfWork)
+        public WeatherService(IUnitOfWork unitOfWork, IValidator<Root> validator)
         {
             _unitOfWork = unitOfWork;
+            _validator = validator;
         }
 
-        public async Task<WeatherNowDTO> GetWeatherAndParseAsync(string cityName)
+        public async Task<WeatherNowDTO> GetWeatherAsync(string cityName)
         {
-            var weather = await _unitOfWork.WeatherRepository.GetWeatherAndParseAsync(cityName);
+            var weather = await _unitOfWork.WeatherRepository.GetWeatherAsync(cityName);
 
-            _validator = new WeatherValidator();
             _validator.ValidateIfEntityExist(weather);
 
             weather.weather[0].description = GetWeaatherDescription(weather);

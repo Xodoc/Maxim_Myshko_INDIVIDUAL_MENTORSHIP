@@ -1,4 +1,7 @@
-﻿using DAL.Interfaces;
+﻿using BL.Interfaces;
+using BL.Validators;
+using DAL.Entities;
+using DAL.Interfaces;
 using DAL.Repositories;
 using Ninject.Modules;
 
@@ -10,6 +13,7 @@ namespace BL.Infrastructure
         {
             Bind<IUnitOfWork>().To<UnitOfWork>();
             Bind<IWeatherRepository>().To<WeatherRepository>();
+            Bind<IValidator<Root>>().To<WeatherValidator>();
         }
     }
 }

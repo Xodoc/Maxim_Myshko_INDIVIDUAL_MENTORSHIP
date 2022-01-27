@@ -3,7 +3,9 @@ using BL.Interfaces;
 using Ninject;
 using Ninject.Modules;
 using Ninject.Web.Mvc;
+using Shared.Interfaces;
 using System;
+using System.Configuration;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Web.Mvc;
@@ -13,18 +15,18 @@ namespace ConsoleApp
     public class Program
     {
         private static IWeatherService _weatherService;
+        private static IConfiguration _configuration;
 
         private static async Task ShowWeather()
         {
             try
             {
-
                 Console.Write("Input city name: ");
                 var cityName = Console.ReadLine();
 
-                var weather = await _weatherService.GetWeatherAndParseAsync(cityName);
+                var weather = await _weatherService.GetWeatherAsync(cityName);
 
-                Console.WriteLine($"In {weather.Name} {weather.Temp} now. {weather.Description}\n");
+                Console.WriteLine($"In {weather.Name} {weather.Temp}°C now. {weather.Description}\n");
             }
             catch (Exception e)
             {
@@ -55,13 +57,16 @@ namespace ConsoleApp
         static async Task Main(string[] args)
         {
             NinjectModule serviceModule = new ServiceModule();
-           
+
             var kernel = new StandardKernel(serviceModule);
             kernel.Load(Assembly.GetExecutingAssembly());
             DependencyResolver.SetResolver(new NinjectDependencyResolver(kernel));
-            _weatherService = kernel.Get<IWeatherService>();
 
-            bool flag = true;
+            _weatherService = kernel.Get<IWeatherService>();
+            _configuration = kernel.Get<IConfiguration>();
+            _configuration.APIKey = ConfigurationManager.AppSettings["apiKey"];
+
+            var flag = true;
 
             while (flag)
             {

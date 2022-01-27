@@ -5,6 +5,6 @@ namespace DAL.Interfaces
 {
     public interface IWeatherRepository
     {
-        Task<Root> GetWeatherAndParseAsync(string cityName);
+        Task<Root> GetWeatherAsync(string cityName);
     }
 }
