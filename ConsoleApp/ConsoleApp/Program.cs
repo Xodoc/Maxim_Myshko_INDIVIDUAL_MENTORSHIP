@@ -3,9 +3,7 @@ using BL.Interfaces;
 using Ninject;
 using Ninject.Modules;
 using Ninject.Web.Mvc;
-using Shared.Interfaces;
 using System;
-using System.Configuration;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Web.Mvc;
@@ -15,7 +13,6 @@ namespace ConsoleApp
     public class Program
     {
         private static IWeatherService _weatherService;
-        private static IConfiguration _configuration;
 
         private static async Task ShowWeather()
         {
@@ -63,8 +60,6 @@ namespace ConsoleApp
             DependencyResolver.SetResolver(new NinjectDependencyResolver(kernel));
 
             _weatherService = kernel.Get<IWeatherService>();
-            _configuration = kernel.Get<IConfiguration>();
-            _configuration.APIKey = ConfigurationManager.AppSettings["apiKey"];
 
             var flag = true;
 

@@ -11,9 +11,8 @@ namespace BL.Infrastructure
     {
         public override void Load()
         {
-            Bind<IUnitOfWork>().To<UnitOfWork>();
-            Bind<IWeatherRepository>().To<WeatherRepository>();
-            Bind<IValidator<Root>>().To<WeatherValidator>();
+            Bind<IWeatherRepository>().To<WeatherRepository>().InThreadScope();
+            Bind<IValidator<Root>>().To<Validator<Root>>().InThreadScope();
         }
     }
 }

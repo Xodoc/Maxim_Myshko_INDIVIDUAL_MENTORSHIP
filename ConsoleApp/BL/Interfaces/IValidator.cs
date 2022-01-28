@@ -2,6 +2,8 @@
 {
     public interface IValidator<T> where T : class
     {
-        void ValidateIfEntityExist(T values);
+        void Validate(T values);
+
+        void ValidateCityName(string values);
     }
 }

@@ -10,7 +10,7 @@ namespace ConsoleApp.Util
     {
         public override void Load()
         {
-            Bind<IWeatherService>().To<WeatherService>();
+            Bind<IWeatherService>().To<WeatherService>().InThreadScope();
             Bind<IConfiguration>().To<Configuration>().InSingletonScope();
         }
     }

@@ -2,6 +2,12 @@
 {
     public interface IConfiguration
     {
-        string APIKey { get; set; }
+        string APIKey { get; }
+
+        string URL { get; }
+
+        string Units { get; }
+
+        string Lang { get; }
     }
 }

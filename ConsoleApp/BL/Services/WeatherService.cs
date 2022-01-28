@@ -2,49 +2,57 @@
 using BL.Interfaces;
 using DAL.Entities;
 using DAL.Interfaces;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace BL.Services
 {
     public class WeatherService : IWeatherService
     {
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly IWeatherRepository _weatherRepository;
         private readonly IValidator<Root> _validator;
 
-        public WeatherService(IUnitOfWork unitOfWork, IValidator<Root> validator)
+        public WeatherService(IWeatherRepository weatherRepository, IValidator<Root> validator)
         {
-            _unitOfWork = unitOfWork;
             _validator = validator;
+            _weatherRepository = weatherRepository;
         }
 
-        public async Task<WeatherNowDTO> GetWeatherAsync(string cityName)
+        public async Task<WeatherDTO> GetWeatherAsync(string cityName)
         {
-            var weather = await _unitOfWork.WeatherRepository.GetWeatherAsync(cityName);
+            _validator.ValidateCityName(cityName);
 
-            _validator.ValidateIfEntityExist(weather);
+            var weather = await _weatherRepository.GetWeatherAsync(cityName);
 
-            weather.weather[0].description = GetWeaatherDescription(weather);
+            SetWeatherDescription(weather);
 
-            return Mapping(weather);
+            return MapToWeatherDTO(weather);
         }
 
-        private string GetWeaatherDescription(Root weather)
+        private void SetWeatherDescription(Root root)
         {
-            if (weather.main.temp < 0)
-                return "Dress warmly.";
-            if (weather.main.temp >= 0 && weather.main.temp <= 20)
-                return "It's fresh.";
-            if (weather.main.temp >= 30 && weather.main.temp <= 30)
-                return "Good weather.";
-            if (weather.main.temp >= 30)
-                return "it's time to go to the beach.";
+            _validator.Validate(root);
 
-            return weather.weather[0].description;
+            var weather = root.weather.FirstOrDefault();
+
+            if (root.main.temp < 0)
+                weather.description = "Dress warmly.";
+
+            if (root.main.temp >= 0 && root.main.temp <= 20)
+                weather.description = "It's fresh.";
+
+            if (root.main.temp >= 30 && root.main.temp <= 30)
+                weather.description = "Good weather.";
+
+            if (root.main.temp >= 30)
+                weather.description = "it's time to go to the beach.";
         }
 
-        private WeatherNowDTO Mapping(Root weather)
+        private WeatherDTO MapToWeatherDTO(Root weather)
         {
-            var weatherNowDTO = new WeatherNowDTO
+            _validator.Validate(weather);
+
+            var weatherNowDTO = new WeatherDTO
             {
                 Name = weather.name,
                 Description = weather.weather[0].description,
