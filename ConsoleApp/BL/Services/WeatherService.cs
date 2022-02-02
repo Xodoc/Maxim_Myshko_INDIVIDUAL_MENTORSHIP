@@ -18,7 +18,7 @@ namespace BL.Services
             _weatherRepository = weatherRepository;
         }
 
-        public async Task<WeatherDTO> GetWeatherAsync(string cityName)
+        public async Task<string> GetWeatherAsync(string cityName)
         {
             _validator.ValidateCityName(cityName);
 
@@ -26,7 +26,7 @@ namespace BL.Services
 
             SetWeatherDescription(weather);
 
-            return MapToWeatherDTO(weather);
+            return $"In {weather.name}{weather.main.temp}°C now. {weather.weather.First().description}\n";
         }
 
         private void SetWeatherDescription(Root root)
@@ -41,25 +41,11 @@ namespace BL.Services
             if (root.main.temp >= 0 && root.main.temp <= 20)
                 weather.description = "It's fresh.";
 
-            if (root.main.temp >= 30 && root.main.temp <= 30)
+            if (root.main.temp >= 20 && root.main.temp <= 30)
                 weather.description = "Good weather.";
 
             if (root.main.temp >= 30)
-                weather.description = "it's time to go to the beach.";
-        }
-
-        private WeatherDTO MapToWeatherDTO(Root weather)
-        {
-            _validator.Validate(weather);
-
-            var weatherNowDTO = new WeatherDTO
-            {
-                Name = weather.name,
-                Description = weather.weather[0].description,
-                Temp = weather.main.temp
-            };
-
-            return weatherNowDTO;
+                weather.description = "It's time to go to the beach.";
         }
     }
 }

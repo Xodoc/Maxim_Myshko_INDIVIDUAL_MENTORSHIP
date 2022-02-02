@@ -23,7 +23,7 @@ namespace ConsoleApp
 
                 var weather = await _weatherService.GetWeatherAsync(cityName);
 
-                Console.WriteLine($"In {weather.Name} {weather.Temp}°C now. {weather.Description}\n");
+                Console.WriteLine(weather);
             }
             catch (Exception e)
             {

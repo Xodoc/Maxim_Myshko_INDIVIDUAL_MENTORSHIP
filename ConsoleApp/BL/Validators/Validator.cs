@@ -9,7 +9,7 @@ namespace BL.Validators
         {
             if (value == null)
             {
-                throw new ValidatorException("Incorrectly entered data");
+                throw new ValidatorException("\nIncorrectly entered data");
             }
         }
 
@@ -17,7 +17,7 @@ namespace BL.Validators
         {
             if (string.IsNullOrWhiteSpace(cityName)) 
             {
-                throw new ValidatorException("Incorrectly entered data");
+                throw new ValidatorException("\nIncorrectly entered data");
             }
         }
     }

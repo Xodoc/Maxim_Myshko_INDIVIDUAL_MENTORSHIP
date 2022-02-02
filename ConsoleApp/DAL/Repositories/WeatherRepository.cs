@@ -30,6 +30,9 @@ namespace DAL.Repositories
 
                 var result = JsonConvert.DeserializeObject<Root>(weather);
 
+                if(result.cod == 404)
+                    return null;
+
                 return result;
             }
             catch (Exception)
