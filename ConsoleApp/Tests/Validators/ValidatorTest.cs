@@ -32,17 +32,45 @@ namespace Tests.Validators
             Assert.Throws<ValidatorException>((actualResult));
         }
 
-        [Fact]
-        public void ValidateCityName_IfCityNameIsNullOrWhiteSpace_ValidationIsFailed()
+        [Theory]
+        [InlineData(" ")]
+        [InlineData(null)]
+        public void ValidateCityName_IfCityNameIsNullOrWhiteSpace_ValidationIsFailed(string name)
         {
             //Arrange
-            string cityName = string.Empty;
+            string cityName = name;
 
             //Act
             void actualResult() => _validator.ValidateCityName(cityName);
 
             //Assert
             Assert.Throws<ValidatorException>((actualResult));
+        }
+
+        [Fact]
+        public void Validate_IfEntityNotNull_ValidationIsSuccessfully()
+        {
+            //Arrange
+            var input = _fixture.Create<Root>();
+
+            //Act
+            var actualResult = Record.Exception(() => _validator.Validate(input));
+
+            //Assert
+            Assert.Null(actualResult);
+        }
+
+        [Fact]
+        public void ValidateCityName_IfInputDataIsCorrect_ValidationIsSuccessfully()
+        {
+            //Arrange
+            var cityName = "Minsk";
+
+            //Act
+            var actualResult = Record.Exception(() => _validator.ValidateCityName(cityName));
+
+            //Assert
+            Assert.Null(actualResult);
         }
     }
 }

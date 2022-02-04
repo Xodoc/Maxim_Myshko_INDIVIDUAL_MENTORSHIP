@@ -23,12 +23,12 @@ namespace BL.Services
 
             var weather = await _weatherRepository.GetWeatherAsync(cityName);
 
-            SetWeatherDescription(weather);
+            weather = SetWeatherDescription(weather);
 
-            return $"In {weather.name}{weather.main.temp}°C now. {weather.weather.First().description}\n";
+            return $"In {weather.name} {weather.main.temp}°C now. {weather.weather.First().description}\n";
         }
 
-        private void SetWeatherDescription(Root root)
+        private Root SetWeatherDescription(Root root)
         {
             _validator.Validate(root);
 
@@ -45,6 +45,8 @@ namespace BL.Services
 
             if (root.main.temp >= 30)
                 weather.description = "It's time to go to the beach.";
+
+            return root;
         }
     }
 }
