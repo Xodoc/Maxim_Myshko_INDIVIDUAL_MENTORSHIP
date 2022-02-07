@@ -19,20 +19,8 @@ namespace Tests.Validators
             _validator = _fixture.Create<Validator<Root>>();
         }
 
-        [Fact]
-        public void Validate_IfEntityIsNull_ValidationIsFailed()
-        {
-            //Arrange
-            Root input = null;
-
-            //Act
-            void actualResult() => _validator.Validate(input);
-
-            //Assert
-            Assert.Throws<ValidatorException>((actualResult));
-        }
-
         [Theory]
+        [InlineData("")]
         [InlineData(" ")]
         [InlineData(null)]
         public void ValidateCityName_IfCityNameIsNullOrWhiteSpace_ValidationIsFailed(string name)
@@ -45,19 +33,6 @@ namespace Tests.Validators
 
             //Assert
             Assert.Throws<ValidatorException>((actualResult));
-        }
-
-        [Fact]
-        public void Validate_IfEntityNotNull_ValidationIsSuccessfully()
-        {
-            //Arrange
-            var input = _fixture.Create<Root>();
-
-            //Act
-            var actualResult = Record.Exception(() => _validator.Validate(input));
-
-            //Assert
-            Assert.Null(actualResult);
         }
 
         [Fact]

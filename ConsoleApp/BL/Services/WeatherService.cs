@@ -1,4 +1,5 @@
 ﻿using BL.Interfaces;
+using BL.Validators.CustomExceptions;
 using DAL.Entities;
 using DAL.Interfaces;
 using System.Linq;
@@ -30,7 +31,10 @@ namespace BL.Services
 
         private Root SetWeatherDescription(Root root)
         {
-            _validator.Validate(root);
+            if (root == null)
+            {
+                throw new ValidatorException("\nIncorrectly entered data");
+            }
 
             var weather = root.weather.FirstOrDefault();
 
