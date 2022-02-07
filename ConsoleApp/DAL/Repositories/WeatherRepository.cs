@@ -26,6 +26,9 @@ namespace DAL.Repositories
             {
                 var responseMessage = await _client.GetAsync($"{_config.URL}{cityName}&lang={_config.Lang}&units={_config.Units}&appid={_config.APIKey}");
 
+                if(!responseMessage.IsSuccessStatusCode)
+                    return null;
+
                 var weather = await responseMessage.Content.ReadAsStringAsync();
 
                 var result = JsonConvert.DeserializeObject<Root>(weather);

@@ -1,5 +1,5 @@
-﻿using BL.DTOs;
-using BL.Interfaces;
+﻿using BL.Interfaces;
+using BL.Validators.CustomExceptions;
 using DAL.Entities;
 using DAL.Interfaces;
 using System.Linq;
@@ -18,20 +18,23 @@ namespace BL.Services
             _weatherRepository = weatherRepository;
         }
 
-        public async Task<WeatherDTO> GetWeatherAsync(string cityName)
+        public async Task<string> GetWeatherAsync(string cityName)
         {
             _validator.ValidateCityName(cityName);
 
             var weather = await _weatherRepository.GetWeatherAsync(cityName);
 
-            SetWeatherDescription(weather);
+            weather = SetWeatherDescription(weather);
 
-            return MapToWeatherDTO(weather);
+            return $"In {weather.name} {weather.main.temp}°C now. {weather.weather.First().description}\n";
         }
 
-        private void SetWeatherDescription(Root root)
+        private Root SetWeatherDescription(Root root)
         {
-            _validator.Validate(root);
+            if (root == null)
+            {
+                throw new ValidatorException("\nIncorrectly entered data");
+            }
 
             var weather = root.weather.FirstOrDefault();
 
@@ -41,25 +44,13 @@ namespace BL.Services
             if (root.main.temp >= 0 && root.main.temp <= 20)
                 weather.description = "It's fresh.";
 
-            if (root.main.temp >= 30 && root.main.temp <= 30)
+            if (root.main.temp >= 20 && root.main.temp <= 30)
                 weather.description = "Good weather.";
 
             if (root.main.temp >= 30)
-                weather.description = "it's time to go to the beach.";
-        }
+                weather.description = "It's time to go to the beach.";
 
-        private WeatherDTO MapToWeatherDTO(Root weather)
-        {
-            _validator.Validate(weather);
-
-            var weatherNowDTO = new WeatherDTO
-            {
-                Name = weather.name,
-                Description = weather.weather[0].description,
-                Temp = weather.main.temp
-            };
-
-            return weatherNowDTO;
+            return root;
         }
     }
 }

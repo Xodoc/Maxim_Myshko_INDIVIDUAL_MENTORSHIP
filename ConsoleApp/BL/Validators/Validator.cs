@@ -5,19 +5,11 @@ namespace BL.Validators
 {
     public class Validator<T> : IValidator<T> where T : class
     {
-        public void Validate(T value)
+        public void ValidateCityName(string cityName)
         {
-            if (value == null)
+            if (string.IsNullOrWhiteSpace(cityName))
             {
-                throw new ValidatorException("Incorrectly entered data");
-            }
-        }
-
-        public void ValidateCityName(string cityName) 
-        {
-            if (string.IsNullOrWhiteSpace(cityName)) 
-            {
-                throw new ValidatorException("Incorrectly entered data");
+                throw new ValidatorException("\nIncorrectly entered data");
             }
         }
     }
