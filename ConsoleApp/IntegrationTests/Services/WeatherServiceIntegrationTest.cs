@@ -7,7 +7,6 @@ using DAL.Interfaces;
 using DAL.Repositories;
 using IntegrationTests.Config;
 using Shared.Interfaces;
-using System.Text.RegularExpressions;
 using Xunit;
 
 namespace IntegrationTests.Services
@@ -30,18 +29,20 @@ namespace IntegrationTests.Services
         [Theory]
         [InlineData("Yakutsk")]
         [InlineData("Morocco")]
-        public async void GetWeatherAsync_WhenSendingCorrectCityName_GettingWeatherMessage(string cityName) 
+        public async void GetWeatherAsync_WhenSendingCorrectCityName_GettingWeatherMessage(string cityName)
         {
             //Arrange
-            var weather = await _weatherRepository.GetWeatherAsync(cityName);
-            var expectedMessage = $"{weather.main.temp}°C now.";
+            string[] des = new string[]
+            {
+                "Dress warmly\\.", "It's fresh\\.",
+                "Good weather\\.", "It's time to go to the beach\\."
+            };
 
             //Act
             var result = await _weatherService.GetWeatherAsync(cityName);
-            var actualResult = Regex.Match(result, @"([0-9])(.*?)\.|(\B\W)(.*?)\.", RegexOptions.IgnorePatternWhitespace).Value;
 
             //Assert
-            Assert.Equal(expectedMessage, actualResult);
+            Assert.Matches($"^In {cityName} ([0-9])(.*?)\\.|(\\B\\W)(.*?)\\. ({des[0]}|{des[1]}|{des[2]}|{des[3]})$", result);
         }
 
         [Theory]

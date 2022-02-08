@@ -1,15 +1,26 @@
-﻿using Shared.Interfaces;
+﻿using Microsoft.Extensions.Configuration;
 
 namespace IntegrationTests.Config
 {
-    public class ConfigurationTest : IConfiguration
+    public class ConfigurationTest : Shared.Interfaces.IConfiguration
     {
-        public string APIKey { get { return "040b95fb163277b9ba8832454277fa9d"; } }
+        public string APIKey { get; set; }
 
-        public string URL { get { return "https://api.openweathermap.org/data/2.5/weather?q="; } }
+        public string URL { get; set; }
 
-        public string Units { get { return "metric"; } }
+        public string Units { get; set; }
 
-        public string Lang { get { return "eng"; } }
+        public string Lang { get; set; }
+
+        public ConfigurationTest()
+        {
+            var builder = new ConfigurationBuilder().AddJsonFile("appconfig.json");
+            IConfiguration config = builder.Build();
+            
+            APIKey = config["APIString:0:APIKey"];
+            URL = config["APIString:0:URL"];
+            Units = config["APIString:0:Units"];
+            Lang = config["APIString:0:Lang"];
+        }
     }
 }
