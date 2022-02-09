@@ -1,5 +1,4 @@
-﻿using BL.DTOs;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace BL.Interfaces
 {
