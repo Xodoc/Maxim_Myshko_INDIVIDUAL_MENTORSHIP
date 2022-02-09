@@ -4,23 +4,36 @@ namespace IntegrationTests.Config
 {
     public class ConfigurationTest : Shared.Interfaces.IConfiguration
     {
-        public string APIKey { get; set; }
-
-        public string URL { get; set; }
-
-        public string Units { get; set; }
-
-        public string Lang { get; set; }
-
-        public ConfigurationTest()
+        public string APIKey
         {
-            var builder = new ConfigurationBuilder().AddJsonFile("appconfig.json");
-            IConfiguration config = builder.Build();
-            
-            APIKey = config["APIString:0:APIKey"];
-            URL = config["APIString:0:URL"];
-            Units = config["APIString:0:Units"];
-            Lang = config["APIString:0:Lang"];
+            get
+            {
+                return new ConfigurationBuilder().AddJsonFile("appconfig.json").Build()["APIKey"];
+            }
+        }
+
+        public string URL 
+        {
+            get
+            {
+                return new ConfigurationBuilder().AddJsonFile("appconfig.json").Build()["URL"];
+            }
+        }
+
+        public string Units 
+        {
+            get
+            {
+                return new ConfigurationBuilder().AddJsonFile("appconfig.json").Build()["Units"];
+            }
+        }
+
+        public string Lang 
+        {
+            get 
+            {
+                return new ConfigurationBuilder().AddJsonFile("appconfig.json").Build()["Lang"];
+            }
         }
     }
 }

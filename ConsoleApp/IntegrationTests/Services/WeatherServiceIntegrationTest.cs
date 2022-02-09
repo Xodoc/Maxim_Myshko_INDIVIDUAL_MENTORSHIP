@@ -32,10 +32,12 @@ namespace IntegrationTests.Services
         public async void GetWeatherAsync_WhenSendingCorrectCityName_GettingWeatherMessage(string cityName)
         {
             //Arrange
-            string[] des = new string[]
+            var des = new string[]
             {
-                "Dress warmly\\.", "It's fresh\\.",
-                "Good weather\\.", "It's time to go to the beach\\."
+                "Dress warmly\\.",
+                "It's fresh\\.",
+                "Good weather\\.",
+                "It's time to go to the beach\\."
             };
 
             //Act
