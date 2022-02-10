@@ -48,28 +48,29 @@ namespace Tests.Validators
         }
 
         [Fact]
-        public void ValidateNumberOfDays_IfInputDataIsCorrect_ValidationIsSuccessfully() 
+        public void ValidateNumberOfDays_IfInputDataIsCorrect_ValidationIsSuccessfully()
         {
             //Arrange
+            var cityName = "Minsk";
             var days = 2;
 
             //Act
-            var actualResult = Record.Exception(()=>_validator.ValidateNumberOfDays(days));
+            var actualResult = Record.Exception(() => _validator.ValidateModel(cityName, days));
 
             //Assert
             Assert.Null(actualResult);
         }
 
         [Theory]
-        [InlineData(0)]
-        [InlineData(23)]
-        [InlineData(-1)]
-        public void ValidateNumberOfDays_IfInputDataIsIncorrect_ValidationIsFailed(int days)
+        [InlineData("Minsk", 0)]
+        [InlineData("", 23)]
+        [InlineData(" ", -1)]
+        public void ValidateNumberOfDays_IfInputDataIsIncorrect_ValidationIsFailed(string cityName, int days)
         {
             //Arrange 
 
             //Act
-            void actualResult() => _validator.ValidateNumberOfDays(days);
+            void actualResult() => _validator.ValidateModel(cityName, days);
 
             //Assert
             Assert.Throws<ValidatorException>(actualResult);

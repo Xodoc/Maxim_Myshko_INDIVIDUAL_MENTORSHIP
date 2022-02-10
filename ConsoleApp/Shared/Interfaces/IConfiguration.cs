@@ -15,5 +15,9 @@
         string URLOneCall { get; }
 
         string Exclude { get; }
+
+        int MaxDays { get; }
+
+        int MinDays { get; }
     }
 }

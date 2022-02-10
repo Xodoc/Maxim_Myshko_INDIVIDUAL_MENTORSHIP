@@ -29,19 +29,27 @@ namespace BL.Services
 
             weather = SetWeatherDescription(weather);
 
-            return $"\nIn {weather.name} {weather.main.temp}°C now. {weather.weather.First().description}\n";
+            return $"\nIn {weather.Name} {weather.Main.Temp}°C now. {weather.Weather.First().Description}\n";
         }
 
-        public async Task<List<WeatherForecastDTO>> GetWeatherForecastAsync(string cityName, int days)
+        public async Task<string> GetWeatherForecastAsync(string cityName, int days)
         {
-            _validator.ValidateCityName(cityName);
-            _validator.ValidateNumberOfDays(days);
+            _validator.ValidateModel(cityName, days);
 
             var weatherForecast = await _weatherRepository.GetWeatherForecastAsync(cityName, days);
 
             var weatherForecastDtos = MapToWeatherForecastDTOs(weatherForecast);
 
-            return SetWeatherForecastDescription(weatherForecastDtos);
+            weatherForecastDtos = SetWeatherForecastDescription(weatherForecastDtos);
+
+            var responseMessage = "";
+
+            foreach (var item in weatherForecastDtos) 
+            {
+                responseMessage += $"{item.CityName} weather forecast: {item.Temp}°C. {item.Description}\n";
+            }
+
+            return responseMessage;
         }
 
         private Root SetWeatherDescription(Root root)
@@ -50,19 +58,19 @@ namespace BL.Services
                 throw new ValidatorException("\nInvalid data entered");
 
 
-            var weather = root.weather.FirstOrDefault();
+            var weather = root.Weather.FirstOrDefault();
 
-            if (root.main.temp < 0)
-                weather.description = "Dress warmly.";
+            if (root.Main.Temp < 0)
+                weather.Description = "Dress warmly.";
 
-            if (root.main.temp >= 0 && root.main.temp <= 20)
-                weather.description = "It's fresh.";
+            if (root.Main.Temp >= 0 && root.Main.Temp <= 20)
+                weather.Description = "It's fresh.";
 
-            if (root.main.temp >= 20 && root.main.temp <= 30)
-                weather.description = "Good weather.";
+            if (root.Main.Temp >= 20 && root.Main.Temp <= 30)
+                weather.Description = "Good weather.";
 
-            if (root.main.temp >= 30)
-                weather.description = "It's time to go to the beach.";
+            if (root.Main.Temp >= 30)
+                weather.Description = "It's time to go to the beach.";
 
             return root;
         }
@@ -84,7 +92,7 @@ namespace BL.Services
                     weatherForecastDto[i].Description = "Good weather.";
 
                 if (weatherForecastDto[i].Temp >= 30)
-                    weatherForecastDto[i].Description = "It's time to go to the beach.";
+                    weatherForecastDto[i].Description = "It's time to go to the beach."; 
             }
 
             return weatherForecastDto;

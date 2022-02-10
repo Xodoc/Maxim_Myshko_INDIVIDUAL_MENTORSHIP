@@ -1,33 +1,17 @@
 ﻿using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace DAL.Entities
 {
     public class Root
     {
-        public Coord coord { get; set; }
+        [JsonProperty("name")]
+        public string Name { get; set; }
 
-        public List<Weather> weather { get; set; }
-       
-        public string @base { get; set; }
+        [JsonProperty("weather")]
+        public List<Weather> Weather { get; set; }
 
-        public Main main { get; set; }
-
-        public int visibility { get; set; }
-
-        public Wind wind { get; set; }
-
-        public Clouds clouds { get; set; }
-
-        public int dt { get; set; }
-
-        public Sys sys { get; set; }
-
-        public int timezone { get; set; }
-
-        public int id { get; set; }
-
-        public string name { get; set; }
-
-        public int cod { get; set; }
+        [JsonProperty("main")]
+        public Main Main { get; set; }
     }
 }

@@ -43,36 +43,29 @@ namespace DAL.Repositories
 
         public async Task<WeatherForecast> GetWeatherForecastAsync(string cityName, int days)
         {
-            var coord = await GetWeatherCoord(cityName);
+            var coord = await GetWeatherCoordAsync(cityName);
 
             if (coord == null)
                 return null;
 
-            try
-            {
-                var url = $"{_config.URLOneCall}&lat={coord.lat}&lon={coord.lon}&exclude={_config.Exclude}&units={_config.Units}&appid={_config.APIKey}";
+            var url = $"{_config.URLOneCall}&lat={coord.lat}&lon={coord.lon}&exclude={_config.Exclude}&units={_config.Units}&appid={_config.APIKey}";
 
-                var responseMessage = await _client.GetAsync(url);
+            var responseMessage = await _client.GetAsync(url);
 
-                var weather = await responseMessage.Content.ReadAsStringAsync();
+            var weather = await responseMessage.Content.ReadAsStringAsync();
 
-                var result = JsonConvert.DeserializeObject<WeatherForecast>(weather);
-                
-                result.CityName = cityName;
+            var result = JsonConvert.DeserializeObject<WeatherForecast>(weather);
 
-                var count = result.Daily.Count - days;
+            result.CityName = cityName;
 
-                result.Daily.RemoveRange(days, count);
+            var count = result.Daily.Count - days;
 
-                return result;
-            }
-            catch (Exception)
-            {
-                return null;
-            }
+            result.Daily.RemoveRange(days, count);
+
+            return result;
         }
 
-        private async Task<Geolocation> GetWeatherCoord(string cityName)
+        private async Task<Geolocation> GetWeatherCoordAsync(string cityName)
         {
             try
             {

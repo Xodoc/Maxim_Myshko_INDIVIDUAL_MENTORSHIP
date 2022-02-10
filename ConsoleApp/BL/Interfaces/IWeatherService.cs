@@ -8,6 +8,6 @@ namespace BL.Interfaces
     {
         Task<string> GetWeatherAsync(string cityName);
 
-        Task<List<WeatherForecastDTO>> GetWeatherForecastAsync(string cityName, int days);
+        Task<string> GetWeatherForecastAsync(string cityName, int days);
     }
 }

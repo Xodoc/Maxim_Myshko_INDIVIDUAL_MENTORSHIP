@@ -4,6 +4,6 @@
     {
         void ValidateCityName(string value);
 
-        void ValidateNumberOfDays(int value);
+        void ValidateModel(string cityName, int days);
     }
 }

@@ -20,7 +20,7 @@ namespace Tests.Services
         {
             _fixture = (Fixture)new Fixture().Customize(new AutoMoqCustomization());
             _weatherRepositoryMock = _fixture.Freeze<Mock<IWeatherRepository>>();
-            _weatherService = _fixture.Create<WeatherService>();   
+            _weatherService = _fixture.Create<WeatherService>();
         }
 
 
@@ -33,17 +33,17 @@ namespace Tests.Services
         {
             //Arrange                         
             var expected = _fixture.Create<Root>();
-            
-            expected.main.temp = temp;
-            expected.weather[0].description = description;
 
-            var expectedMessage = $"\nIn {expected.name} {expected.main.temp}°C now. {expected.weather[0].description}\n";
+            expected.Main.Temp = temp;
+            expected.Weather[0].Description = description;
+
+            var expectedMessage = $"\nIn {expected.Name} {expected.Main.Temp}°C now. {expected.Weather[0].Description}\n";
 
             _weatherRepositoryMock.Setup(x => x.GetWeatherAsync(It.IsAny<string>()))
                 .ReturnsAsync(expected);
 
             //Act
-            var actualResult = await _weatherService.GetWeatherAsync(expected.name);
+            var actualResult = await _weatherService.GetWeatherAsync(expected.Name);
 
             //Assert
             Assert.Equal(expectedMessage, actualResult);
