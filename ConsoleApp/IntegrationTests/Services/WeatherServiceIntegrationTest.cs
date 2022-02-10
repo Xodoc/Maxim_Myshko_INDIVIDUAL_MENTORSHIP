@@ -21,7 +21,7 @@ namespace IntegrationTests.Services
         {
             _configuration = new ConfigurationTest();
             _weatherRepository = new WeatherRepository(_configuration);
-            _validator = new Validator();
+            _validator = new Validator(_configuration);
             _weatherService = new WeatherService(_weatherRepository, _validator);
         }
 

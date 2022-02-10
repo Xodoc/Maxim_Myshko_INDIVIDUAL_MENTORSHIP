@@ -26,8 +26,8 @@ namespace BL.Validators
             if (string.IsNullOrWhiteSpace(cityName))
             {
                 throw new ValidatorException("\nInvalid data entered");
-            }            
-            else if (days > _config.MaxDays|| days <= _config.MinDays)
+            }
+            else if (days > _config.MaxDays || days <= _config.MinDays)
             {
                 throw new ValidatorException("\nInvalid data entered");
             }

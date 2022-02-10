@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 
-namespace IntegrationTests.Config
+namespace Tests.Config
 {
     public class ConfigurationTest : Shared.Interfaces.IConfiguration
     {
@@ -12,7 +12,7 @@ namespace IntegrationTests.Config
             }
         }
 
-        public string URL 
+        public string URL
         {
             get
             {
@@ -20,7 +20,7 @@ namespace IntegrationTests.Config
             }
         }
 
-        public string Units 
+        public string Units
         {
             get
             {
@@ -28,17 +28,17 @@ namespace IntegrationTests.Config
             }
         }
 
-        public string Lang 
+        public string Lang
         {
-            get 
+            get
             {
                 return new ConfigurationBuilder().AddJsonFile("appconfig.json").Build()["Lang"];
             }
         }
 
-        public string URLGeo 
+        public string URLGeo
         {
-            get 
+            get
             {
                 return new ConfigurationBuilder().AddJsonFile("appconfig.json").Build()["URLGeo"];
             }
@@ -68,9 +68,9 @@ namespace IntegrationTests.Config
             }
         }
 
-        public int MaxDays 
+        public int MaxDays
         {
-            get 
+            get
             {
                 return int.Parse(new ConfigurationBuilder().AddJsonFile("appconfig.json").Build()["MaxDays"]);
             }

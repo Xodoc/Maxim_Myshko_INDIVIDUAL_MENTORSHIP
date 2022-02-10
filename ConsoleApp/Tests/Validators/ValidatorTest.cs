@@ -1,21 +1,21 @@
-﻿using AutoFixture;
-using AutoFixture.AutoMoq;
-using BL.Interfaces;
+﻿using BL.Interfaces;
 using BL.Validators;
 using BL.Validators.CustomExceptions;
+using Shared.Interfaces;
+using Tests.Config;
 using Xunit;
 
 namespace Tests.Validators
 {
     public class ValidatorTest
     {
-        private readonly Fixture _fixture;
+        private readonly IConfiguration _config;
         private readonly IValidator _validator;
 
         public ValidatorTest()
         {
-            _fixture = (Fixture)new Fixture().Customize(new AutoMoqCustomization());
-            _validator = _fixture.Create<Validator>();
+            _config = new ConfigurationTest();
+            _validator = new Validator(_config);
         }
 
         [Theory]
@@ -47,12 +47,11 @@ namespace Tests.Validators
             Assert.Null(actualResult);
         }
 
-        [Fact]
-        public void ValidateNumberOfDays_IfInputDataIsCorrect_ValidationIsSuccessfully()
+        [Theory]
+        [InlineData("Minsk", 3)]
+        public void ValidateModel_IfInputDataIsCorrect_ValidationIsSuccessfully(string cityName, int days)
         {
             //Arrange
-            var cityName = "Minsk";
-            var days = 2;
 
             //Act
             var actualResult = Record.Exception(() => _validator.ValidateModel(cityName, days));
@@ -65,7 +64,7 @@ namespace Tests.Validators
         [InlineData("Minsk", 0)]
         [InlineData("", 23)]
         [InlineData(" ", -1)]
-        public void ValidateNumberOfDays_IfInputDataIsIncorrect_ValidationIsFailed(string cityName, int days)
+        public void ValidateModel_IfInputDataIsIncorrect_ValidationIsFailed(string cityName, int days)
         {
             //Arrange 
 
