@@ -44,7 +44,7 @@ namespace BL.Services
 
             var responseMessage = "";
 
-            foreach (var item in weatherForecastDtos) 
+            foreach (var item in weatherForecastDtos)
             {
                 responseMessage += $"{item.CityName} weather forecast: {item.Temp}°C. {item.Description}\n";
             }
@@ -92,7 +92,7 @@ namespace BL.Services
                     weatherForecastDto[i].Description = "Good weather.";
 
                 if (weatherForecastDto[i].Temp >= 30)
-                    weatherForecastDto[i].Description = "It's time to go to the beach."; 
+                    weatherForecastDto[i].Description = "It's time to go to the beach.";
             }
 
             return weatherForecastDto;

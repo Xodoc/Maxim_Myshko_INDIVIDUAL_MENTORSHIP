@@ -4,6 +4,7 @@ using BL.Interfaces;
 using BL.Services;
 using BL.Validators.CustomExceptions;
 using DAL.Entities;
+using DAL.Entities.WeatherForecastEntities;
 using DAL.Interfaces;
 using Moq;
 using Xunit;
@@ -54,8 +55,6 @@ namespace Tests.Services
         public async void GetWeatherAsync_WhenSendingIncorrectCityName_GettingWeatherMessageFailed(string cityName)
         {
             //Arrange                         
-            var expected = _fixture.Create<Root>();
-
             _weatherRepositoryMock.Setup(x => x.GetWeatherAsync(It.IsAny<string>()))
                 .ReturnsAsync(() => throw new ValidatorException("Incorrectly entered data"));
 
@@ -64,6 +63,52 @@ namespace Tests.Services
 
             //Assert
             Assert.Equal("Incorrectly entered data", actualResult.Message);
+        }
+
+        [Theory]
+        [InlineData(-12, "Dress warmly.")]
+        [InlineData(0, "It's fresh.")]
+        [InlineData(25, "Good weather.")]
+        public async void GetWetherForecastAsync_WhenSendingCorrectData_GettingWeatherForecastMessage(double temp, string description)
+        {
+            //Arrange
+            var weatherForecast = _fixture.Create<WeatherForecast>();
+            var expectedMessage = "";
+
+            foreach (var day in weatherForecast.Daily)
+            {
+                var i = 0;
+                day.Temp.day = temp;
+                day.Weather[0].description = description;
+                expectedMessage += $"{weatherForecast.CityName} weather forecast: {day.Temp.day}°C. {day.Weather[0].description}\n";
+                i++;
+            }
+
+            _weatherRepositoryMock.Setup(x => x.GetWeatherForecastAsync(It.IsAny<string>(), It.IsAny<int>()))
+                .ReturnsAsync(weatherForecast);
+
+            //Act
+            var actualResult = await _weatherService.GetWeatherForecastAsync(weatherForecast.CityName, weatherForecast.Daily.Count);
+
+            //Assert
+            Assert.Equal(expectedMessage, actualResult);
+        }
+
+        [Theory]
+        [InlineData("some data", 23)]
+        public async void GetWeatherForecastAsync_WhenSendingIncorrectData_GettingMessageFailed(string cityName, int days)
+        {
+            //Arrange
+            var expectedMessage = "Invalid data entered";
+
+            _weatherRepositoryMock.Setup(x => x.GetWeatherForecastAsync(It.IsAny<string>(), It.IsAny<int>()))
+                .ThrowsAsync(new ValidatorException("Invalid data entered"));
+
+            //Act
+            var actualResult = await Assert.ThrowsAsync<ValidatorException>(() => _weatherService.GetWeatherForecastAsync(cityName, days));
+
+            //Asseret
+            Assert.Equal(expectedMessage, actualResult.Message);
         }
     }
 }
