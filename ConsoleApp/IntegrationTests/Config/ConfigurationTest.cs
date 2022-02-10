@@ -35,5 +35,37 @@ namespace IntegrationTests.Config
                 return new ConfigurationBuilder().AddJsonFile("appconfig.json").Build()["Lang"];
             }
         }
+
+        public string URLGeo 
+        {
+            get 
+            {
+                return new ConfigurationBuilder().AddJsonFile("appconfig.json").Build()["URLGeo"];
+            }
+        }
+
+        public string Limit
+        {
+            get
+            {
+                return new ConfigurationBuilder().AddJsonFile("appconfig.json").Build()["Limit"];
+            }
+        }
+
+        public string URLOneCall
+        {
+            get
+            {
+                return new ConfigurationBuilder().AddJsonFile("appconfig.json").Build()["URLOneCall"];
+            }
+        }
+
+        public string Exclude
+        {
+            get
+            {
+                return new ConfigurationBuilder().AddJsonFile("appconfig.json").Build()["Exclude"];
+            }
+        }
     }
 }

@@ -3,7 +3,6 @@ using AutoFixture.AutoMoq;
 using BL.Interfaces;
 using BL.Validators;
 using BL.Validators.CustomExceptions;
-using DAL.Entities;
 using Xunit;
 
 namespace Tests.Validators
@@ -11,12 +10,12 @@ namespace Tests.Validators
     public class ValidatorTest
     {
         private readonly Fixture _fixture;
-        private readonly IValidator<Root> _validator;
+        private readonly IValidator _validator;
 
         public ValidatorTest()
         {
             _fixture = (Fixture)new Fixture().Customize(new AutoMoqCustomization());
-            _validator = _fixture.Create<Validator<Root>>();
+            _validator = _fixture.Create<Validator>();
         }
 
         [Theory]

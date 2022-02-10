@@ -11,6 +11,12 @@ namespace Shared.Config
 
         public string Units { get { return ConfigurationManager.AppSettings["Units"]; } }
 
-        public string Lang { get { return ConfigurationManager.AppSettings["Lang"]; } } 
+        public string Lang { get { return ConfigurationManager.AppSettings["Lang"]; } }
+        
+        public string URLGeo { get { return ConfigurationManager.AppSettings["URLGeo"]; } }
+
+        public string URLOneCall { get { return ConfigurationManager.AppSettings["URLOneCall"]; } }
+
+        public string Exclude { get { return ConfigurationManager.AppSettings["Exclude"]; } }
     }
 }

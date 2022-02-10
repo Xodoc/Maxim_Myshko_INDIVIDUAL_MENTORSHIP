@@ -9,5 +9,11 @@
         string Units { get; }
 
         string Lang { get; }
+
+        string URLGeo { get; }
+
+        string URLOneCall { get; }
+
+        string Exclude { get; }
     }
 }

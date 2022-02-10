@@ -14,7 +14,7 @@ namespace ConsoleApp
     {
         private static IWeatherService _weatherService;
 
-        private static async Task ShowWeather()
+        private static async Task ShowWeatherAsync()
         {
             try
             {
@@ -31,13 +31,40 @@ namespace ConsoleApp
             }
         }
 
+        private static async Task ShowWeatherForecastAsync()
+        {
+            try
+            {
+                Console.Write("Input city name: ");
+                var cityName = Console.ReadLine();
+
+                Console.Write("\nInput number of days: ");
+                var days = int.Parse(Console.ReadLine());
+                Console.Clear();
+
+                var weatherForecast = await _weatherService.GetWeatherForecastAsync(cityName, days);
+
+                foreach (var weather in weatherForecast)
+                {
+                    Console.WriteLine($"{weather.CityName} weather forecast: {weather.Temp}. {weather.Description}");
+                }
+                Console.WriteLine("\nPress any key to continue...");
+                Console.ReadKey();
+                Console.Clear();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message + "\n");
+            }
+        }
+
         private static int Menu()
         {
             int dataInput;
 
             try
             {
-                Console.WriteLine("Menu\n0) Exit\n1) Show weather\n");
+                Console.WriteLine("Menu\n0) Exit\n1) Show weather\n2) Show weather forecast");
                 dataInput = int.Parse(Console.ReadLine());
                 Console.Clear();
 
@@ -68,7 +95,8 @@ namespace ConsoleApp
                 switch (Menu())
                 {
                     case 0: flag = false; break;
-                    case 1: await ShowWeather(); break;
+                    case 1: await ShowWeatherAsync(); break;
+                    case 2: await ShowWeatherForecastAsync(); break;
                     default: break;
                 }
             }
