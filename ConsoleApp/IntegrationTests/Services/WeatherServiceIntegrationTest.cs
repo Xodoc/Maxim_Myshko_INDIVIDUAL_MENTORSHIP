@@ -2,7 +2,6 @@
 using BL.Services;
 using BL.Validators;
 using BL.Validators.CustomExceptions;
-using DAL.Entities;
 using DAL.Interfaces;
 using DAL.Repositories;
 using IntegrationTests.Config;
@@ -15,14 +14,14 @@ namespace IntegrationTests.Services
     {
         private readonly IConfiguration _configuration;
         private readonly IWeatherRepository _weatherRepository;
-        private readonly IValidator<Root> _validator;
+        private readonly IValidator _validator;
         private readonly IWeatherService _weatherService;
 
         public WeatherServiceIntegrationTest()
         {
             _configuration = new ConfigurationTest();
             _weatherRepository = new WeatherRepository(_configuration);
-            _validator = new Validator<Root>();
+            _validator = new Validator();
             _weatherService = new WeatherService(_weatherRepository, _validator);
         }
 
@@ -54,7 +53,7 @@ namespace IntegrationTests.Services
         public async void GetWeatherAsync_WhenSendingIncorrectCityName_GettingWeatherMessageFailed(string cityName)
         {
             //Arrange
-            var expectedMessage = "\nIncorrectly entered data";
+            var expectedMessage = "\nInvalid data entered";
 
             //Act
             var actualResult = await Assert.ThrowsAsync<ValidatorException>(() => _weatherService.GetWeatherAsync(cityName));

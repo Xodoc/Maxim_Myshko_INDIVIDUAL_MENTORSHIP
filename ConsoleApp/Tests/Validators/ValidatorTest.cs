@@ -46,5 +46,33 @@ namespace Tests.Validators
             //Assert
             Assert.Null(actualResult);
         }
+
+        [Fact]
+        public void ValidateNumberOfDays_IfInputDataIsCorrect_ValidationIsSuccessfully() 
+        {
+            //Arrange
+            var days = 2;
+
+            //Act
+            var actualResult = Record.Exception(()=>_validator.ValidateNumberOfDays(days));
+
+            //Assert
+            Assert.Null(actualResult);
+        }
+
+        [Theory]
+        [InlineData(0)]
+        [InlineData(23)]
+        [InlineData(-1)]
+        public void ValidateNumberOfDays_IfInputDataIsIncorrect_ValidationIsFailed(int days)
+        {
+            //Arrange 
+
+            //Act
+            void actualResult() => _validator.ValidateNumberOfDays(days);
+
+            //Assert
+            Assert.Throws<ValidatorException>(actualResult);
+        }
     }
 }

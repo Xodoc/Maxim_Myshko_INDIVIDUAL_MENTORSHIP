@@ -47,9 +47,8 @@ namespace BL.Services
         private Root SetWeatherDescription(Root root)
         {
             if (root == null)
-            {
-                throw new ValidatorException("\nIncorrectly entered data");
-            }
+                throw new ValidatorException("\nInvalid data entered");
+
 
             var weather = root.weather.FirstOrDefault();
 

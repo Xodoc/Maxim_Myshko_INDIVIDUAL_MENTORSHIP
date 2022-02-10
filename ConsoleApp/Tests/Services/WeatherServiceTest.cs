@@ -37,7 +37,7 @@ namespace Tests.Services
             expected.main.temp = temp;
             expected.weather[0].description = description;
 
-            var expectedMessage = $"In {expected.name} {expected.main.temp}°C now. {expected.weather[0].description}\n";
+            var expectedMessage = $"\nIn {expected.name} {expected.main.temp}°C now. {expected.weather[0].description}\n";
 
             _weatherRepositoryMock.Setup(x => x.GetWeatherAsync(It.IsAny<string>()))
                 .ReturnsAsync(expected);
