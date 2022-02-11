@@ -77,11 +77,9 @@ namespace Tests.Services
 
             foreach (var day in weatherForecast.Daily)
             {
-                var i = 0;
                 day.Temp.day = temp;
                 day.Weather[0].description = description;
                 expectedMessage += $"{weatherForecast.CityName} weather forecast: {day.Temp.day}°C. {day.Weather[0].description}\n";
-                i++;
             }
 
             _weatherRepositoryMock.Setup(x => x.GetWeatherForecastAsync(It.IsAny<string>(), It.IsAny<int>()))
