@@ -1,8 +1,11 @@
 {
   "APIKey": "040b95fb163277b9ba8832454277fa9d",
   "URL": "https://api.openweathermap.org/data/2.5/weather?q=",
+  "URLGeo": "https://api.openweathermap.org/geo/1.0/direct?q=",
   "Units": "metric",
   "Lang": "eng",
   "MaxDays": "7",
-  "MinDays": "0"
+  "MinDays": "0",
+  "URLOneCall": "https://api.openweathermap.org/data/2.5/onecall?",
+  "Exclude": "minutely,hourly,alerts,current"
 }

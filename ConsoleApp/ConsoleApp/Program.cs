@@ -1,11 +1,12 @@
 ﻿using BL.Infrastructure;
 using BL.Interfaces;
 using ConsoleApp.Commands;
-using ConsoleApp.Invokers;
 using Ninject;
 using Ninject.Modules;
 using Ninject.Web.Mvc;
+using Shared.Interfaces;
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Web.Mvc;
@@ -16,27 +17,53 @@ namespace ConsoleApp
     {
         private static IWeatherService _weatherService;
 
-        private static int Menu()
+        private static async Task Menu()
         {
-            int dataInput;
+            ICommand getWeather = new GetWeatherCommand(_weatherService);
+            ICommand getWeatherForecast = new GetWeatherForecastCommand(_weatherService);
 
-            try
+            var commands = new List<ICommand>
             {
-                Console.WriteLine("Menu\n0) Exit\n1) Show weather\n2) Show weather forecast");
-                dataInput = int.Parse(Console.ReadLine());
-                Console.Clear();
+                getWeather, getWeatherForecast
+            };
 
-                return dataInput;
-            }
-            catch (Exception)
+            var flag = true;
+
+            while (flag)
             {
-                Console.Clear();
-                Console.WriteLine("Incorrectly entered data! Please, try again.\n");
-                return Menu();
+                try
+                {
+                    Console.Clear();
+                    Console.WriteLine("\t\t\t\t\t\tWeather Forecast");
+                    foreach (var command in commands)
+                    {
+                        Console.WriteLine(command.Title);
+                    }
+                    Console.WriteLine("\n2) Exit\n");
+
+                    var input = int.Parse(Console.ReadLine());
+                    Console.Clear();
+
+                    if (input == 2)
+                    {
+                        flag = false; return;
+                    }
+                    else if (input >= 0 && input <= 1)
+                    {
+                        await commands[input].Execute();
+                    }
+                }
+                catch (Exception)
+                {
+                    Console.Clear();
+                    Console.WriteLine("\t\t\t\t\tIncorrectly entered data!\n\nPlease, press any key to continue...");
+                    Console.ReadKey();
+                }
+
             }
         }
 
-        static async Task Main(string[] args)
+        private static void InjectNinject()
         {
             NinjectModule serviceModule = new ServiceModule();
 
@@ -45,26 +72,13 @@ namespace ConsoleApp
             DependencyResolver.SetResolver(new NinjectDependencyResolver(kernel));
 
             _weatherService = kernel.Get<IWeatherService>();
+        }
 
-            var weatherInvoker = new WeatherInvoker();
+        static async Task Main(string[] args)
+        {
+            InjectNinject();
 
-            var flag = true;
-
-            while (flag)
-            {
-                switch (Menu())
-                {
-                    case 0: flag = false; break;
-
-                    case 1: weatherInvoker.SetCommand(new GetWeatherCommand(_weatherService));
-                            await weatherInvoker.GetWeather(); break;
-
-                    case 2: weatherInvoker.SetCommand(new GetWeatherForecastCommand(_weatherService));
-                            await weatherInvoker.GetWeather(); break;
-
-                    default: break;
-                }
-            }
+            await Menu();
         }
     }
 }

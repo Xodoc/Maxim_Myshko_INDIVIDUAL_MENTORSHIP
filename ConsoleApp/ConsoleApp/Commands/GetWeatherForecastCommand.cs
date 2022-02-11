@@ -8,11 +8,13 @@ namespace ConsoleApp.Commands
     public class GetWeatherForecastCommand : ICommand
     {
         private readonly IWeatherService _weatherService;
+        public string Title => "\n1) Show weather forecast";
 
         public GetWeatherForecastCommand(IWeatherService weatherService)
         {
             _weatherService = weatherService;
         }
+
 
         public async Task Execute()
         {
@@ -36,6 +38,8 @@ namespace ConsoleApp.Commands
             catch (Exception e)
             {
                 Console.WriteLine(e.Message + "\n");
+                Console.WriteLine("\nPress any key to continue...");
+                Console.ReadKey();
             }
         }
     }

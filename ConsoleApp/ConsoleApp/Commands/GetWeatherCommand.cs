@@ -9,6 +9,8 @@ namespace ConsoleApp.Commands
     {
         private readonly IWeatherService _weatherService;
 
+        public string Title => "\n0) Show weather";
+
         public GetWeatherCommand(IWeatherService weatherService)
         {
             _weatherService = weatherService;
@@ -24,10 +26,13 @@ namespace ConsoleApp.Commands
                 var weather = await _weatherService.GetWeatherAsync(cityName);
 
                 Console.WriteLine(weather);
+                Console.WriteLine("\nPress any key to continue...");
+                Console.ReadKey();
             }
             catch (Exception e)
             {
                 Console.WriteLine(e.Message + "\n");
+                Console.ReadKey();
             }
         }
     }

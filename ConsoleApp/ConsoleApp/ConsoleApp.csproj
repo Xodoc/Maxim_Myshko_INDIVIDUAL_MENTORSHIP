@@ -84,7 +84,6 @@
     <Compile Include="App_Start\NinjectWebCommon.cs" />
     <Compile Include="Commands\GetWeatherCommand.cs" />
     <Compile Include="Commands\GetWeatherForecastCommand.cs" />
-    <Compile Include="Invokers\WeatherInvoker.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Util\UtilModule.cs" />

@@ -61,5 +61,25 @@ namespace IntegrationTests.Services
             //Assert
             Assert.Equal(expectedMessage, actualResult.Message);
         }
+
+        [Theory]
+        [InlineData("Minsk", 3)]
+        public async void GetWeatherForecastAsync_WhenSendingCorrectData_GettingWeatherForecastMessage(string cityName, int days) 
+        {
+            //Arrange
+            var des = new string[]
+            {
+                "Dress warmly\\.",
+                "It's fresh\\.",
+                "Good weather\\.",
+                "It's time to go to the beach\\."
+            };
+
+            //Act
+            var actualResult = await _weatherService.GetWeatherForecastAsync(cityName, days);
+
+            //Assert
+            Assert.Matches($"^In {cityName} ([0-9])(.*?)\\.|(\\B\\W)(.*?)\\. ({des[0]}|{des[1]}|{des[2]}|{des[3]})$", actualResult);
+        }
     }
 }
