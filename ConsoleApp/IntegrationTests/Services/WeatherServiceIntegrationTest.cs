@@ -31,19 +31,21 @@ namespace IntegrationTests.Services
         public async void GetWeatherAsync_WhenSendingCorrectCityName_GettingWeatherMessage(string cityName)
         {
             //Arrange
-            var des = new string[]
+            var pattern = "([0-9])(.*?)\\.|(\\B\\W)(.*?)\\.";
+            var descriptions = new string[]
             {
                 "Dress warmly\\.",
                 "It's fresh\\.",
                 "Good weather\\.",
                 "It's time to go to the beach\\."
             };
+            var expectedRegexPattern = $"^In {cityName} {pattern} ({descriptions[0]}|{descriptions[1]}|{descriptions[2]}|{descriptions[3]})$";
 
             //Act
-            var result = await _weatherService.GetWeatherAsync(cityName);
+            var actualResult = await _weatherService.GetWeatherAsync(cityName);
 
             //Assert
-            Assert.Matches($"^In {cityName} ([0-9])(.*?)\\.|(\\B\\W)(.*?)\\. ({des[0]}|{des[1]}|{des[2]}|{des[3]})$", result);
+            Assert.Matches(expectedRegexPattern, actualResult);
         }
 
         [Theory]
@@ -64,10 +66,13 @@ namespace IntegrationTests.Services
 
         [Theory]
         [InlineData("Minsk", 3)]
+        [InlineData("Morocco", 7)]
         public async void GetWeatherForecastAsync_WhenSendingCorrectData_GettingWeatherForecastMessage(string cityName, int days) 
         {
             //Arrange
-            var des = new string[]
+            var expectedMessage = "";
+            var pattern = "([0-9])(.*?)\\.|(\\B\\W)(.*?)\\.";
+            var descriptions = new string[]
             {
                 "Dress warmly\\.",
                 "It's fresh\\.",
@@ -75,11 +80,31 @@ namespace IntegrationTests.Services
                 "It's time to go to the beach\\."
             };
 
+            for (int i = 0; i<days; i++) 
+            {
+                expectedMessage += $"{cityName} weather forecast: {pattern} ({descriptions[0]}|{descriptions[1]}|{descriptions[2]}|{descriptions[3]})\n";
+            }
+
             //Act
             var actualResult = await _weatherService.GetWeatherForecastAsync(cityName, days);
 
             //Assert
-            Assert.Matches($"^In {cityName} ([0-9])(.*?)\\.|(\\B\\W)(.*?)\\. ({des[0]}|{des[1]}|{des[2]}|{des[3]})$", actualResult);
+            Assert.Matches(expectedMessage, actualResult);
+        }
+
+        [Theory]
+        [InlineData("Minsk", 8)]
+        [InlineData("Some data", 2)]
+        public async void GetWeatherForecastAsync_WhenSendingIncorrectData_GettingFailedMessage(string cityName, int days)
+        {
+            //Arrange
+            var expectedMessage = "\nInvalid data entered";
+
+            //Act
+            var actualResult = await Assert.ThrowsAsync<ValidatorException>(() => _weatherService.GetWeatherForecastAsync(cityName, days));
+
+            //Assert
+            Assert.Equal(expectedMessage, actualResult.Message);
         }
     }
 }

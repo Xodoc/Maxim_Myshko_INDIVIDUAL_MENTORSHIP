@@ -6,6 +6,5 @@
   "Lang": "eng",
   "MaxDays": "7",
   "MinDays": "0",
-  "URLOneCall": "https://api.openweathermap.org/data/2.5/onecall?",
-  "Exclude": "minutely,hourly,alerts,current"
+  "Forecast": "https://api.openweathermap.org/data/2.5/forecast?"
 }

@@ -23,11 +23,9 @@ namespace BL.Validators
 
         public void ValidateModel(string cityName, int days)
         {
-            if (string.IsNullOrWhiteSpace(cityName))
-            {
-                throw new ValidatorException("\nInvalid data entered");
-            }
-            else if (days > _config.MaxDays || days <= _config.MinDays)
+            ValidateCityName(cityName);
+            
+            if (days > _config.MaxDays || days <= _config.MinDays)
             {
                 throw new ValidatorException("\nInvalid data entered");
             }

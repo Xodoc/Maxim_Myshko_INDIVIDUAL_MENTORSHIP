@@ -12,9 +12,7 @@
 
         string URLGeo { get; }
 
-        string URLOneCall { get; }
-
-        string Exclude { get; }
+        string Forecast { get; }
 
         int MaxDays { get; }
 

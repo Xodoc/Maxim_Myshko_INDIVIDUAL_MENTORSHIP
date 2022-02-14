@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace DAL.Entities.WeatherForecastEntities
 {   
@@ -6,6 +7,7 @@ namespace DAL.Entities.WeatherForecastEntities
     {
         public string CityName { get; set; }
 
+        [JsonProperty("list")]
         public List<Daily> Daily { get; set; }
     }
 }

@@ -19,12 +19,13 @@ namespace ConsoleApp
 
         private static async Task Menu()
         {
-            ICommand getWeather = new GetWeatherCommand(_weatherService);
-            ICommand getWeatherForecast = new GetWeatherForecastCommand(_weatherService);
+            var getWeather = new GetWeatherCommand(_weatherService);
+            var getWeatherForecast = new GetWeatherForecastCommand(_weatherService);
+            var exitCommand = new ExitCommand();
 
             var commands = new List<ICommand>
             {
-                getWeather, getWeatherForecast
+                getWeather, getWeatherForecast, exitCommand
             };
 
             var flag = true;
@@ -37,9 +38,8 @@ namespace ConsoleApp
                     Console.WriteLine("\t\t\t\t\t\tWeather Forecast");
                     foreach (var command in commands)
                     {
-                        Console.WriteLine(command.Title);
+                        Console.WriteLine($"{commands.IndexOf(command)}) " + command.Title);
                     }
-                    Console.WriteLine("\n2) Exit\n");
 
                     var input = int.Parse(Console.ReadLine());
                     Console.Clear();
@@ -51,6 +51,8 @@ namespace ConsoleApp
                     else if (input >= 0 && input <= 1)
                     {
                         await commands[input].Execute();
+                        Console.WriteLine("\nPress any key to continue...");
+                        Console.ReadKey();
                     }
                 }
                 catch (Exception)

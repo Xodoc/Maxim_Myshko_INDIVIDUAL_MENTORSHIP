@@ -8,7 +8,7 @@ namespace ConsoleApp.Commands
     public class GetWeatherForecastCommand : ICommand
     {
         private readonly IWeatherService _weatherService;
-        public string Title => "\n1) Show weather forecast";
+        public string Title => "Show weather forecast";
 
         public GetWeatherForecastCommand(IWeatherService weatherService)
         {
@@ -18,29 +18,16 @@ namespace ConsoleApp.Commands
 
         public async Task Execute()
         {
-            try
-            {
-                Console.Write("Input city name: ");
-                var cityName = Console.ReadLine();
+            Console.Write("Input city name: ");
+            var cityName = Console.ReadLine();
 
-                Console.Write("\nInput number of days: ");
-                var days = int.Parse(Console.ReadLine());
-                Console.Clear();
+            Console.Write("\nInput number of days: ");
+            var days = int.Parse(Console.ReadLine());
+            Console.Clear();
 
-                var weatherForecast = await _weatherService.GetWeatherForecastAsync(cityName, days);
+            var weatherForecast = await _weatherService.GetWeatherForecastAsync(cityName, days);
 
-                Console.WriteLine(weatherForecast);
-
-                Console.WriteLine("\nPress any key to continue...");
-                Console.ReadKey();
-                Console.Clear();
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message + "\n");
-                Console.WriteLine("\nPress any key to continue...");
-                Console.ReadKey();
-            }
+            Console.WriteLine(weatherForecast);
         }
     }
 }

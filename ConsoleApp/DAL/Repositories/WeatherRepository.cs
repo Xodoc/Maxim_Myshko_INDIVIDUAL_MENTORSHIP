@@ -48,7 +48,7 @@ namespace DAL.Repositories
             if (coord == null)
                 return null;
 
-            var url = $"{_config.URLOneCall}&lat={coord.lat}&lon={coord.lon}&exclude={_config.Exclude}&units={_config.Units}&appid={_config.APIKey}";
+            var url = $"{_config.Forecast}&lat={coord.lat}&lon={coord.lon}&cnt={days}&units={_config.Units}&appid={_config.APIKey}";
 
             var responseMessage = await _client.GetAsync(url);
 
@@ -57,10 +57,6 @@ namespace DAL.Repositories
             var result = JsonConvert.DeserializeObject<WeatherForecast>(weather);
 
             result.CityName = cityName;
-
-            var count = result.Daily.Count - days;
-
-            result.Daily.RemoveRange(days, count);
 
             return result;
         }

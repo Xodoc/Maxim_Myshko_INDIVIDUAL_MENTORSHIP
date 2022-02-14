@@ -40,16 +40,31 @@ namespace BL.Services
 
             var weatherForecastDtos = MapToWeatherForecastDTOs(weatherForecast);
 
-            weatherForecastDtos = SetWeatherForecastDescription(weatherForecastDtos);
-
             var responseMessage = "";
 
-            foreach (var item in weatherForecastDtos)
-            {
-                responseMessage += $"{item.CityName} weather forecast: {item.Temp}°C. {item.Description}\n";
-            }
+            weatherForecastDtos.ForEach(x => responseMessage += string.Join(",",
+                $"{x.CityName} weather forecast:\n{x.Date.DayOfWeek}: {x.Temp}°C. {x.Description}\n"));
 
             return responseMessage;
+        }
+
+        private string SetDescription(double temp)
+        {
+            var description = "";
+
+            if (temp < 0)
+                description = "Dress warmly.";
+
+            if (temp >= 0 && temp <= 20)
+                description = "It's fresh.";
+
+            if (temp >= 20 && temp <= 30)
+                description = "Good weather.";
+
+            if (temp >= 30)
+                description = "It's time to go to the beach.";
+
+            return description;
         }
 
         private Root SetWeatherDescription(Root root)
@@ -57,20 +72,9 @@ namespace BL.Services
             if (root == null)
                 throw new ValidatorException("\nInvalid data entered");
 
-
             var weather = root.Weather.FirstOrDefault();
 
-            if (root.Main.Temp < 0)
-                weather.Description = "Dress warmly.";
-
-            if (root.Main.Temp >= 0 && root.Main.Temp <= 20)
-                weather.Description = "It's fresh.";
-
-            if (root.Main.Temp >= 20 && root.Main.Temp <= 30)
-                weather.Description = "Good weather.";
-
-            if (root.Main.Temp >= 30)
-                weather.Description = "It's time to go to the beach.";
+            weather.Description = SetDescription(root.Main.Temp);
 
             return root;
         }
@@ -78,21 +82,11 @@ namespace BL.Services
         private List<WeatherForecastDTO> SetWeatherForecastDescription(List<WeatherForecastDTO> weatherForecastDto)
         {
             if (weatherForecastDto == null)
-                throw new ValidatorException("Invalid data entered");
+                throw new ValidatorException("\nInvalid data entered");
 
             for (int i = 0; i < weatherForecastDto.Count; i++)
             {
-                if (weatherForecastDto[i].Temp < 0)
-                    weatherForecastDto[i].Description = "Dress warmly.";
-
-                if (weatherForecastDto[i].Temp >= 0 && weatherForecastDto[i].Temp <= 20)
-                    weatherForecastDto[i].Description = "It's fresh.";
-
-                if (weatherForecastDto[i].Temp >= 20 && weatherForecastDto[i].Temp <= 30)
-                    weatherForecastDto[i].Description = "Good weather.";
-
-                if (weatherForecastDto[i].Temp >= 30)
-                    weatherForecastDto[i].Description = "It's time to go to the beach.";
+                weatherForecastDto[i].Description = SetDescription(weatherForecastDto[i].Temp);
             }
 
             return weatherForecastDto;
@@ -101,7 +95,7 @@ namespace BL.Services
         private List<WeatherForecastDTO> MapToWeatherForecastDTOs(WeatherForecast weatherForecast)
         {
             if (weatherForecast == null)
-                throw new ValidatorException("Invalid data entered");
+                throw new ValidatorException("\nInvalid data entered");
 
             var weatherForecastDtos = new List<WeatherForecastDTO>();
 
@@ -110,14 +104,15 @@ namespace BL.Services
                 var weatherForecastDto = new WeatherForecastDTO
                 {
                     CityName = weatherForecast.CityName,
-                    Temp = weatherForecast.Daily[i].Temp.day,
-                    Description = weatherForecast.Daily[i].Weather[0].description
+                    Temp = weatherForecast.Daily[i].Main.Temp,
+                    Description = weatherForecast.Daily[i].Weather[0].Description,
+                    Date = weatherForecast.Daily[i].Date
                 };
 
                 weatherForecastDtos.Add(weatherForecastDto);
             }
 
-            return weatherForecastDtos;
+            return SetWeatherForecastDescription(weatherForecastDtos);
         }
     }
 }

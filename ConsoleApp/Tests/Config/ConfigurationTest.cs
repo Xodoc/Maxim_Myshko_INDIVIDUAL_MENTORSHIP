@@ -52,11 +52,11 @@ namespace Tests.Config
             }
         }
 
-        public string URLOneCall
+        public string Forecast
         {
             get
             {
-                return new ConfigurationBuilder().AddJsonFile("appconfig.json").Build()["URLOneCall"];
+                return new ConfigurationBuilder().AddJsonFile("appconfig.json").Build()["Forecast"];
             }
         }
 

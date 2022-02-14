@@ -1,13 +1,10 @@
-﻿namespace DAL.Entities.WeatherForecastEntities
+﻿using Newtonsoft.Json;
+
+namespace DAL.Entities.WeatherForecastEntities
 {
     public class Weather
     {
-        public int id { get; set; }
-
-        public string main { get; set; }
-
-        public string description { get; set; }
-
-        public string icon { get; set; }
+        [JsonProperty("description")]
+        public string Description { get; set; }
     }
 }

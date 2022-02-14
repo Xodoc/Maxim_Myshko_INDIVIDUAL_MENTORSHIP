@@ -15,9 +15,7 @@ namespace Shared.Config
         
         public string URLGeo { get { return ConfigurationManager.AppSettings["URLGeo"]; } }
 
-        public string URLOneCall { get { return ConfigurationManager.AppSettings["URLOneCall"]; } }
-
-        public string Exclude { get { return ConfigurationManager.AppSettings["Exclude"]; } }
+        public string Forecast { get { return ConfigurationManager.AppSettings["Forecast"]; } }
 
         public int MaxDays { get { return int.Parse(ConfigurationManager.AppSettings["MaxDays"]); } }
 
