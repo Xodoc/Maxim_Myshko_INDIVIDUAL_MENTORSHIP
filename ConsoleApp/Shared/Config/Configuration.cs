@@ -8,23 +8,23 @@ namespace Shared.Config
     {
         private readonly NameValueCollection _configuration;
 
-        public string APIKey { get; }
+        public string APIKey { get; set; }
 
-        public string URL { get; }
+        public string URL { get; set; }
 
-        public string Units { get; }
+        public string Units { get; set; }
 
-        public string Lang { get; }
+        public string Lang { get; set; }
 
-        public string URLGeo { get; }
+        public string URLGeo { get; set; }
 
-        public string Forecast { get; }
+        public string Forecast { get; set; }
 
-        public int MaxDays { get; }
+        public int MaxDays { get; set; }
 
-        public int MinDays { get; }
+        public int MinDays { get; set; }
 
-        public int Hours { get; }
+        public int Hours { get; set; }
 
         public Configuration()
         {

@@ -59,7 +59,7 @@ namespace DAL.Repositories
 
             result.CityName = cityName;
 
-            result.Daily = result.Daily.Where(x => x.Date.Hour == _config.Hours).Select(x => x).ToList();
+            result.Daily = result.Daily.Where(x => x.Date.Hour == _config.Hours).Select(x => x).Take(days).ToList();
 
             return result;
         }
