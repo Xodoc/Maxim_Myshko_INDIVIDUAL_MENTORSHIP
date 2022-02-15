@@ -44,16 +44,11 @@ namespace ConsoleApp
                     var input = int.Parse(Console.ReadLine());
                     Console.Clear();
 
-                    if (input == 2)
-                    {
-                        flag = false; return;
-                    }
-                    else if (input >= 0 && input <= 1)
-                    {
-                        await commands[input].Execute();
-                        Console.WriteLine("\nPress any key to continue...");
-                        Console.ReadKey();
-                    }
+                    await commands[input].Execute();
+
+                    Console.WriteLine("\nPress any key to continue...");
+                    Console.ReadKey();
+
                 }
                 catch (Exception)
                 {

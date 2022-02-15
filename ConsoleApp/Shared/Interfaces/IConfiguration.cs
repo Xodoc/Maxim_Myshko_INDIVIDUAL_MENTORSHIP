@@ -17,5 +17,7 @@
         int MaxDays { get; }
 
         int MinDays { get; }
+
+        int Hours { get; }
     }
 }

@@ -67,7 +67,7 @@ namespace IntegrationTests.Services
         [Theory]
         [InlineData("Minsk", 3)]
         [InlineData("Morocco", 7)]
-        public async void GetWeatherForecastAsync_WhenSendingCorrectData_GettingWeatherForecastMessage(string cityName, int days) 
+        public async void GetWeatherForecastAsync_WhenSendingCorrectData_GettingWeatherForecastMessage(string cityName, int days)
         {
             //Arrange
             var expectedMessage = "";
@@ -80,7 +80,7 @@ namespace IntegrationTests.Services
                 "It's time to go to the beach\\."
             };
 
-            for (int i = 0; i<days; i++) 
+            for (int i = 0; i < days; i++)
             {
                 expectedMessage += $"{cityName} weather forecast: {pattern} ({descriptions[0]}|{descriptions[1]}|{descriptions[2]}|{descriptions[3]})\n";
             }

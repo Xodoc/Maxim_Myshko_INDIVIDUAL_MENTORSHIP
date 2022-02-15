@@ -1,79 +1,43 @@
 ﻿using Microsoft.Extensions.Configuration;
+using Shared.Extensions;
 
 namespace IntegrationTests.Config
 {
     public class ConfigurationTest : Shared.Interfaces.IConfiguration
     {
-        public string APIKey
-        {
-            get
-            {
-                return new ConfigurationBuilder().AddJsonFile("appconfig.json").Build()["APIKey"];
-            }
-        }
+        private readonly IConfigurationRoot _configuration;
 
-        public string URL 
-        {
-            get
-            {
-                return new ConfigurationBuilder().AddJsonFile("appconfig.json").Build()["URL"];
-            }
-        }
+        public string APIKey { get; }
 
-        public string Units 
-        {
-            get
-            {
-                return new ConfigurationBuilder().AddJsonFile("appconfig.json").Build()["Units"];
-            }
-        }
+        public string URL { get; }
 
-        public string Lang 
-        {
-            get 
-            {
-                return new ConfigurationBuilder().AddJsonFile("appconfig.json").Build()["Lang"];
-            }
-        }
+        public string Units { get; }
 
-        public string URLGeo 
-        {
-            get 
-            {
-                return new ConfigurationBuilder().AddJsonFile("appconfig.json").Build()["URLGeo"];
-            }
-        }
+        public string Lang { get; }
 
-        public string Limit
-        {
-            get
-            {
-                return new ConfigurationBuilder().AddJsonFile("appconfig.json").Build()["Limit"];
-            }
-        }
+        public string URLGeo { get; }
 
-        public string Forecast
-        {
-            get
-            {
-                return new ConfigurationBuilder().AddJsonFile("appconfig.json").Build()["Forecast"];
-            }
-        }
+        public string Forecast { get; }
 
-        public int MaxDays 
-        {
-            get 
-            {
-                return int.Parse(new ConfigurationBuilder().AddJsonFile("appconfig.json").Build()["MaxDays"]);
-            }
-        }
+        public int MaxDays { get; }
 
-        public int MinDays
+        public int MinDays { get; }
+
+        public int Hours { get; }
+
+        public ConfigurationTest()
         {
-            get
-            {
-                return int.Parse(new ConfigurationBuilder().AddJsonFile("appconfig.json").Build()["MinDays"]);
-            }
+            var configuration = _configuration.GetConfigTest();
+
+            APIKey = configuration["APIKey"];
+            URL = configuration["URL"];
+            Units = configuration["Units"];
+            Lang = configuration["Lang"];
+            URLGeo = configuration["URLGeo"];
+            Forecast = configuration["Forecast"];
+            MaxDays = int.Parse(configuration["MaxDays"]);
+            MinDays = int.Parse(configuration["MinDays"]);
+            Hours = int.Parse(configuration["Hours"]);
         }
     }
 }

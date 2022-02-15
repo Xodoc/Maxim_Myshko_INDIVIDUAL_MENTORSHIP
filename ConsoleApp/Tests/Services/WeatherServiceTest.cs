@@ -73,12 +73,12 @@ namespace Tests.Services
             //Arrange
             var weatherForecast = _fixture.Create<WeatherForecast>();
             var expectedMessage = "";
-
+            var numberOfDays = 1;
             foreach (var day in weatherForecast.Daily)
             {
                 day.Main.Temp = temp;
                 day.Weather[0].Description = description;
-                expectedMessage += $"{weatherForecast.CityName} weather forecast:\n{day.Date.DayOfWeek}: {day.Main.Temp}°C. {day.Weather[0].Description}\n";
+                expectedMessage += $"{weatherForecast.CityName} weather forecast:\nDay {numberOfDays++}: {day.Main.Temp}°C. {day.Weather[0].Description}\n";
             }
 
             _weatherRepositoryMock.Setup(x => x.GetWeatherForecastAsync(It.IsAny<string>(), It.IsAny<int>()))

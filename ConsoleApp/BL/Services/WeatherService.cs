@@ -41,9 +41,10 @@ namespace BL.Services
             var weatherForecastDtos = MapToWeatherForecastDTOs(weatherForecast);
 
             var responseMessage = "";
+            var numberOfDay = 1;
 
             weatherForecastDtos.ForEach(x => responseMessage += string.Join(",",
-                $"{x.CityName} weather forecast:\n{x.Date.DayOfWeek}: {x.Temp}°C. {x.Description}\n"));
+                $"{x.CityName} weather forecast:\nDay {numberOfDay++}: {x.Temp}°C. {x.Description}\n"));
 
             return responseMessage;
         }

@@ -1,7 +1,6 @@
 ﻿using BL.Interfaces;
 using BL.Validators;
 using BL.Validators.CustomExceptions;
-using Shared.Interfaces;
 using Tests.Config;
 using Xunit;
 
@@ -9,7 +8,7 @@ namespace Tests.Validators
 {
     public class ValidatorTest
     {
-        private readonly IConfiguration _config;
+        private readonly Shared.Interfaces.IConfiguration _config;
         private readonly IValidator _validator;
 
         public ValidatorTest()

@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using Shared.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -48,7 +49,7 @@ namespace DAL.Repositories
             if (coord == null)
                 return null;
 
-            var url = $"{_config.Forecast}&lat={coord.lat}&lon={coord.lon}&cnt={days}&units={_config.Units}&appid={_config.APIKey}";
+            var url = $"{_config.Forecast}&lat={coord.lat}&lon={coord.lon}&units={_config.Units}&appid={_config.APIKey}";
 
             var responseMessage = await _client.GetAsync(url);
 
@@ -57,6 +58,8 @@ namespace DAL.Repositories
             var result = JsonConvert.DeserializeObject<WeatherForecast>(weather);
 
             result.CityName = cityName;
+
+            result.Daily = result.Daily.Where(x => x.Date.Hour == _config.Hours).Select(x => x).ToList();
 
             return result;
         }

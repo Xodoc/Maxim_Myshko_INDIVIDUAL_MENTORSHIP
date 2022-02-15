@@ -1,24 +1,44 @@
-﻿using Shared.Interfaces;
-using System.Configuration;
+﻿using Shared.Extensions;
+using Shared.Interfaces;
+using System.Collections.Specialized;
 
 namespace Shared.Config
 {
     public class Configuration : IConfiguration
     {
-        public string APIKey { get { return ConfigurationManager.AppSettings["APIKey"]; } }
+        private readonly NameValueCollection _configuration;
 
-        public string URL { get { return ConfigurationManager.AppSettings["URL"]; } }
+        public string APIKey { get; }
 
-        public string Units { get { return ConfigurationManager.AppSettings["Units"]; } }
+        public string URL { get; }
 
-        public string Lang { get { return ConfigurationManager.AppSettings["Lang"]; } }
-        
-        public string URLGeo { get { return ConfigurationManager.AppSettings["URLGeo"]; } }
+        public string Units { get; }
 
-        public string Forecast { get { return ConfigurationManager.AppSettings["Forecast"]; } }
+        public string Lang { get; }
 
-        public int MaxDays { get { return int.Parse(ConfigurationManager.AppSettings["MaxDays"]); } }
+        public string URLGeo { get; }
 
-        public int MinDays { get { return int.Parse(ConfigurationManager.AppSettings["MinDays"]); } }
+        public string Forecast { get; }
+
+        public int MaxDays { get; }
+
+        public int MinDays { get; }
+
+        public int Hours { get; }
+
+        public Configuration()
+        {
+            var configuration = _configuration.GetConfig();
+
+            APIKey = configuration["APIKey"];
+            URL = configuration["URL"];
+            Units = configuration["Units"];
+            Lang = configuration["Lang"];
+            URLGeo = configuration["URLGeo"];
+            Forecast = configuration["Forecast"];
+            MaxDays = int.Parse(configuration["MaxDays"]);
+            MinDays = int.Parse(configuration["MinDays"]);
+            Hours = int.Parse(configuration["Hours"]);
+        }
     }
 }
