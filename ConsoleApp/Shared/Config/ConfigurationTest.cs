@@ -1,9 +1,9 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Shared.Extensions;
 
-namespace IntegrationTests.Config
+namespace Shared.Config
 {
-    public class ConfigurationTest : Shared.Interfaces.IConfiguration
+    public class ConfigurationTest : Interfaces.IConfiguration
     {
         private readonly IConfigurationRoot _configuration;
 
@@ -27,7 +27,7 @@ namespace IntegrationTests.Config
 
         public ConfigurationTest()
         {
-            var configuration = _configuration.GetConfigTest();
+            var configuration = _configuration.PopulateConfigFromAppSettings();
 
             APIKey = configuration["APIKey"];
             URL = configuration["URL"];

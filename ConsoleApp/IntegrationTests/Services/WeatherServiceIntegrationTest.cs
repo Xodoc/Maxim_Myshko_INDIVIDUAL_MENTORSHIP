@@ -4,7 +4,7 @@ using BL.Validators;
 using BL.Validators.CustomExceptions;
 using DAL.Interfaces;
 using DAL.Repositories;
-using IntegrationTests.Config;
+using Shared.Config;
 using Shared.Interfaces;
 using Xunit;
 

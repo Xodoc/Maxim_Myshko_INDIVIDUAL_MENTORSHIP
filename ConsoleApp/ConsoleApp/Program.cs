@@ -25,7 +25,7 @@ namespace ConsoleApp
 
             var commands = new List<ICommand>
             {
-                getWeather, getWeatherForecast, exitCommand
+                exitCommand, getWeather, getWeatherForecast
             };
 
             var flag = true;
@@ -65,6 +65,7 @@ namespace ConsoleApp
             NinjectModule serviceModule = new ServiceModule();
 
             var kernel = new StandardKernel(serviceModule);
+
             kernel.Load(Assembly.GetExecutingAssembly());
             DependencyResolver.SetResolver(new NinjectDependencyResolver(kernel));
 
