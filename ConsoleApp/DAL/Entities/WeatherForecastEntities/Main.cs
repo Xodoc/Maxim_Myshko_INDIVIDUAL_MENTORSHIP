@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace DAL.Entities
+namespace DAL.Entities.WeatherForecastEntities
 {
     public class Main
     {

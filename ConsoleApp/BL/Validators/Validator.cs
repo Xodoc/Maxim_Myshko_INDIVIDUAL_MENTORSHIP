@@ -1,15 +1,33 @@
 ﻿using BL.Interfaces;
 using BL.Validators.CustomExceptions;
+using Shared.Interfaces;
 
 namespace BL.Validators
 {
-    public class Validator<T> : IValidator<T> where T : class
+    public class Validator : IValidator
     {
+        private readonly IConfiguration _config;
+
+        public Validator(IConfiguration config)
+        {
+            _config = config;
+        }
+
         public void ValidateCityName(string cityName)
         {
             if (string.IsNullOrWhiteSpace(cityName))
             {
-                throw new ValidatorException("\nIncorrectly entered data");
+                throw new ValidatorException("\nInvalid data entered");
+            }
+        }
+
+        public void ValidateModel(string cityName, int days)
+        {
+            ValidateCityName(cityName);
+            
+            if (days > _config.MaxDays || days <= _config.MinDays)
+            {
+                throw new ValidatorException("\nInvalid data entered");
             }
         }
     }

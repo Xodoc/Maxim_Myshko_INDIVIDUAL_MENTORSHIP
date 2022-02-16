@@ -2,10 +2,9 @@
 using BL.Services;
 using BL.Validators;
 using BL.Validators.CustomExceptions;
-using DAL.Entities;
 using DAL.Interfaces;
 using DAL.Repositories;
-using IntegrationTests.Config;
+using Shared.Config;
 using Shared.Interfaces;
 using Xunit;
 
@@ -15,14 +14,14 @@ namespace IntegrationTests.Services
     {
         private readonly IConfiguration _configuration;
         private readonly IWeatherRepository _weatherRepository;
-        private readonly IValidator<Root> _validator;
+        private readonly IValidator _validator;
         private readonly IWeatherService _weatherService;
 
         public WeatherServiceIntegrationTest()
         {
             _configuration = new ConfigurationTest();
             _weatherRepository = new WeatherRepository(_configuration);
-            _validator = new Validator<Root>();
+            _validator = new Validator(_configuration);
             _weatherService = new WeatherService(_weatherRepository, _validator);
         }
 
@@ -32,19 +31,21 @@ namespace IntegrationTests.Services
         public async void GetWeatherAsync_WhenSendingCorrectCityName_GettingWeatherMessage(string cityName)
         {
             //Arrange
-            var des = new string[]
+            var pattern = "([0-9])(.*?)\\.|(\\B\\W)(.*?)\\.";
+            var descriptions = new string[]
             {
                 "Dress warmly\\.",
                 "It's fresh\\.",
                 "Good weather\\.",
                 "It's time to go to the beach\\."
             };
+            var expectedRegexPattern = $"^In {cityName} {pattern} ({descriptions[0]}|{descriptions[1]}|{descriptions[2]}|{descriptions[3]})$";
 
             //Act
-            var result = await _weatherService.GetWeatherAsync(cityName);
+            var actualResult = await _weatherService.GetWeatherAsync(cityName);
 
             //Assert
-            Assert.Matches($"^In {cityName} ([0-9])(.*?)\\.|(\\B\\W)(.*?)\\. ({des[0]}|{des[1]}|{des[2]}|{des[3]})$", result);
+            Assert.Matches(expectedRegexPattern, actualResult);
         }
 
         [Theory]
@@ -54,10 +55,53 @@ namespace IntegrationTests.Services
         public async void GetWeatherAsync_WhenSendingIncorrectCityName_GettingWeatherMessageFailed(string cityName)
         {
             //Arrange
-            var expectedMessage = "\nIncorrectly entered data";
+            var expectedMessage = "\nInvalid data entered";
 
             //Act
             var actualResult = await Assert.ThrowsAsync<ValidatorException>(() => _weatherService.GetWeatherAsync(cityName));
+
+            //Assert
+            Assert.Equal(expectedMessage, actualResult.Message);
+        }
+
+        [Theory]
+        [InlineData("Minsk", 3)]
+        [InlineData("Morocco", 7)]
+        public async void GetWeatherForecastAsync_WhenSendingCorrectData_GettingWeatherForecastMessage(string cityName, int days)
+        {
+            //Arrange
+            var expectedMessage = "";
+            var pattern = "([0-9])(.*?)\\.|(\\B\\W)(.*?)\\.";
+            var descriptions = new string[]
+            {
+                "Dress warmly\\.",
+                "It's fresh\\.",
+                "Good weather\\.",
+                "It's time to go to the beach\\."
+            };
+
+            for (int i = 0; i < days; i++)
+            {
+                expectedMessage += $"{cityName} weather forecast: {pattern} ({descriptions[0]}|{descriptions[1]}|{descriptions[2]}|{descriptions[3]})\n";
+            }
+
+            //Act
+            var actualResult = await _weatherService.GetWeatherForecastAsync(cityName, days);
+
+            //Assert
+            Assert.Matches(expectedMessage, actualResult);
+        }
+
+        [Theory]
+        [InlineData("Minsk", 8)]
+        [InlineData("Some data", 2)]
+        public async void GetWeatherForecastAsync_WhenSendingIncorrectData_GettingFailedMessage(string cityName, int days)
+        {
+            //Arrange
+            var expectedMessage = "\nInvalid data entered";
+
+            //Act
+            var actualResult = await Assert.ThrowsAsync<ValidatorException>(() => _weatherService.GetWeatherForecastAsync(cityName, days));
 
             //Assert
             Assert.Equal(expectedMessage, actualResult.Message);

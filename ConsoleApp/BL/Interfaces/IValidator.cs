@@ -1,7 +1,9 @@
 ﻿namespace BL.Interfaces
 {
-    public interface IValidator<T> where T : class
+    public interface IValidator
     {
-        void ValidateCityName(string values);
+        void ValidateCityName(string value);
+
+        void ValidateModel(string cityName, int days);
     }
 }
