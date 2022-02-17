@@ -2,9 +2,12 @@
 
 namespace DAL.Entities
 {
-    public class Main
+    public class Temperature
     {
         [JsonProperty("temp")]
         public double Temp { get; set; }
+
+        [JsonProperty("temp_max")]
+        public double MaxTemp { get; set; }
     }
 }

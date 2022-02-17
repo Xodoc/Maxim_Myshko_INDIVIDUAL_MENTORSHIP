@@ -49,6 +49,36 @@ namespace BL.Services
             return responseMessage;
         }
 
+        public Task<string> GetMaxTemperatureAsync(List<string> cityNames, bool debugInfo)
+        {
+            _validator.ValidateCityNames(cityNames);
+
+            var maxTemps = _weatherRepository.GetTemperatures(cityNames);
+            var maxTemp = CalculateTotalsForMessage(maxTemps);
+
+            string responseMessage = $"City with the highest temperature {maxTemp.Temp}°C: {maxTemp.CityName}." +
+                  $" Successful request count: {maxTemp.CountSuccessfullRequests}, failed: {maxTemp.CountFailedRequests}.";
+
+            if (debugInfo == true)
+            {
+                responseMessage = $"[Debug]\nCity: {maxTemp.CityName}. Temperature: {maxTemp.Temp}°C. Timer: {maxTemp.RunTime} ms.";
+            }
+
+            return Task.FromResult(responseMessage);
+        }
+
+        private MaxTemperature CalculateTotalsForMessage(List<MaxTemperature> temps)
+        {
+            var successfullRequests = temps.Select(x => x.CountSuccessfullRequests).Sum();
+            var failedRequests = temps.Select(x => x.CountFailedRequests).Sum();
+            var maxTemp = temps.FirstOrDefault(x => x.Temp == temps.Max(e => e.Temp));
+
+            maxTemp.CountFailedRequests = failedRequests;
+            maxTemp.CountSuccessfullRequests = successfullRequests;
+
+            return maxTemp;
+        }
+
         private string SetDescription(double temp)
         {
             var description = "";
@@ -68,7 +98,7 @@ namespace BL.Services
             return description;
         }
 
-        private Root SetWeatherDescription(Root root)
+        private CurrentWeather SetWeatherDescription(CurrentWeather root)
         {
             if (root == null)
                 throw new ValidatorException("\nInvalid data entered");

@@ -4,9 +4,12 @@ using DAL.Interfaces;
 using Newtonsoft.Json;
 using Shared.Interfaces;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 
 
@@ -23,7 +26,7 @@ namespace DAL.Repositories
             _config = config;
         }
 
-        public async Task<Root> GetWeatherAsync(string cityName)
+        public async Task<CurrentWeather> GetWeatherAsync(string cityName)
         {
             try
             {
@@ -34,7 +37,7 @@ namespace DAL.Repositories
 
                 var weather = await responseMessage.Content.ReadAsStringAsync();
 
-                return JsonConvert.DeserializeObject<Root>(weather);
+                return JsonConvert.DeserializeObject<CurrentWeather>(weather);
             }
             catch (Exception)
             {
@@ -62,6 +65,50 @@ namespace DAL.Repositories
             result.Daily = result.Daily.Where(x => x.Date.Hour == _config.Hours).Select(x => x).Take(days).ToList();
 
             return result;
+        }
+
+        public List<MaxTemperature> GetTemperatures(List<string> cityNames)
+        {
+            var temperatures = new ConcurrentBag<MaxTemperature>();
+            var locker = new object();
+            var amountCities = cityNames.Count;
+            var x = 0;
+
+            Parallel.For(0, amountCities, i =>
+            {
+                var stopwatch = new Stopwatch();
+
+                lock (locker)
+                {
+                    stopwatch.Start();
+
+                    var weather = GetWeatherAsync(cityNames[x]).Result;
+
+                    stopwatch.Stop();
+
+                    var maxTemp = new MaxTemperature();
+
+                    if (weather == null)
+                    {
+                        maxTemp.CountFailedRequests++;
+                        maxTemp.RunTime = stopwatch.ElapsedMilliseconds;
+                    }
+                    else
+                    {
+                        maxTemp.CityName = weather.Name;
+                        maxTemp.Temp = weather.Main.Temp;
+                        maxTemp.CountSuccessfullRequests++;
+                        maxTemp.RunTime = stopwatch.ElapsedMilliseconds;
+                    }
+
+                    temperatures.Add(maxTemp);
+                    x++;
+
+                    Monitor.Pulse(locker);
+                }
+            });
+
+            return temperatures.ToList();
         }
 
         private async Task<Geolocation> GetWeatherCoordAsync(string cityName)

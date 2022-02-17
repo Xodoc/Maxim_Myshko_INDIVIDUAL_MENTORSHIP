@@ -32,7 +32,7 @@ namespace Tests.Services
         public async void GetWeatherAsync_WhenSendingCorrectCityName_GettingWeatherMessage(double temp, string description)
         {
             //Arrange                         
-            var expected = _fixture.Create<Root>();
+            var expected = _fixture.Create<CurrentWeather>();
 
             expected.Main.Temp = temp;
             expected.Weather[0].Description = description;

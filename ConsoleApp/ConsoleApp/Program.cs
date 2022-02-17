@@ -21,11 +21,12 @@ namespace ConsoleApp
         {
             var getWeather = new GetWeatherCommand(_weatherService);
             var getWeatherForecast = new GetWeatherForecastCommand(_weatherService);
+            var getMaxTemperature = new GetMaxTemperatureCommand(_weatherService);
             var exitCommand = new ExitCommand();
 
             var commands = new List<ICommand>
             {
-                exitCommand, getWeather, getWeatherForecast
+                exitCommand, getWeather, getWeatherForecast, getMaxTemperature
             };
 
             var flag = true;
