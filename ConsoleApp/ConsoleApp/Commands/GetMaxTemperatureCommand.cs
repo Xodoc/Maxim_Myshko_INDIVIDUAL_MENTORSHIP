@@ -19,23 +19,20 @@ namespace ConsoleApp.Commands
 
         public async Task Execute()
         {
-            Console.Write("Input number of cities: ");
-            var amountCities = int.Parse(Console.ReadLine());
-
+            Console.Write("Input city names: ");
+            var cities = Console.ReadLine();
+            var array = cities.Split(new string[] {" "}, StringSplitOptions.RemoveEmptyEntries);
+            
             var cityNames = new List<string>();
 
-            for (int i = 0; i < amountCities; i++)
+            foreach (var item in array) 
             {
-                Console.Write($"\nInput city name {i+1}: ");
-
-                cityNames.Add(Console.ReadLine());
+                cityNames.Add(item);
             }
-
-            Console.WriteLine("\nEnable DebugInfo display? (true/false)");
-            var debugInfo = bool.Parse(Console.ReadLine());
-
+           
             Console.Clear();
-            var result = await _weatherService.GetMaxTemperatureAsync(cityNames, debugInfo);
+            var result = await _weatherService.GetMaxTemperatureAsync(cityNames);
+
             Console.WriteLine(result);
         }
     }

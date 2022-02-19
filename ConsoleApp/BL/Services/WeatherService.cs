@@ -43,13 +43,13 @@ namespace BL.Services
             var responseMessage = "";
             var numberOfDay = 1;
 
-            weatherForecastDtos.ForEach(x => responseMessage += string.Join(",",
-                $"{x.CityName} weather forecast:\nDay {numberOfDay++}: {x.Temp}°C. {x.Description}\n"));
+            weatherForecastDtos.ForEach(x => responseMessage +=
+                $"{x.CityName} weather forecast:\nDay {numberOfDay++}: {x.Temp}°C. {x.Description}\n");
 
             return responseMessage;
         }
 
-        public Task<string> GetMaxTemperatureAsync(List<string> cityNames, bool debugInfo)
+        public Task<string> GetMaxTemperatureAsync(List<string> cityNames)
         {
             _validator.ValidateCityNames(cityNames);
 
@@ -59,15 +59,15 @@ namespace BL.Services
             string responseMessage = $"City with the highest temperature {maxTemp.Temp}°C: {maxTemp.CityName}." +
                   $" Successful request count: {maxTemp.CountSuccessfullRequests}, failed: {maxTemp.CountFailedRequests}.";
 
-            if (debugInfo == true)
-            {
-                responseMessage = $"[Debug]\nCity: {maxTemp.CityName}. Temperature: {maxTemp.Temp}°C. Timer: {maxTemp.RunTime} ms.";
-            }
+            //if (debugInfo == true)
+            //{
+            //    responseMessage = $"[Debug]\nCity: {maxTemp.CityName}. Temperature: {maxTemp.Temp}°C. Timer: {maxTemp.RunTime} ms.";
+            //}
 
             return Task.FromResult(responseMessage);
         }
 
-        private MaxTemperature CalculateTotalsForMessage(List<MaxTemperature> temps)
+        private TemperatureInfo CalculateTotalsForMessage(List<TemperatureInfo> temps)
         {
             var successfullRequests = temps.Select(x => x.CountSuccessfullRequests).Sum();
             var failedRequests = temps.Select(x => x.CountFailedRequests).Sum();

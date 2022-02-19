@@ -9,7 +9,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
-using System.Threading;
 using System.Threading.Tasks;
 
 
@@ -67,45 +66,33 @@ namespace DAL.Repositories
             return result;
         }
 
-        public List<MaxTemperature> GetTemperatures(List<string> cityNames)
+        public List<TemperatureInfo> GetTemperatures(List<string> cityNames)
         {
-            var temperatures = new ConcurrentBag<MaxTemperature>();
-            var locker = new object();
+            var temperatures = new ConcurrentBag<TemperatureInfo>();            
             var amountCities = cityNames.Count;
-            var x = 0;
 
-            Parallel.For(0, amountCities, i =>
+            Parallel.ForEach(cityNames, async name =>
             {
                 var stopwatch = new Stopwatch();
+                var weather = new CurrentWeather();
 
-                lock (locker)
+                if (_config.IsDebug)
                 {
-                    stopwatch.Start();
-
-                    var weather = GetWeatherAsync(cityNames[x]).Result;
-
-                    stopwatch.Stop();
-
-                    var maxTemp = new MaxTemperature();
-
-                    if (weather == null)
-                    {
-                        maxTemp.CountFailedRequests++;
-                        maxTemp.RunTime = stopwatch.ElapsedMilliseconds;
-                    }
-                    else
-                    {
-                        maxTemp.CityName = weather.Name;
-                        maxTemp.Temp = weather.Main.Temp;
-                        maxTemp.CountSuccessfullRequests++;
-                        maxTemp.RunTime = stopwatch.ElapsedMilliseconds;
-                    }
-
-                    temperatures.Add(maxTemp);
-                    x++;
-
-                    Monitor.Pulse(locker);
+                    var result = await GetDebugInfo(stopwatch, weather, cityNames);
+                    weather = result.Item1;
+                    stopwatch = result.Item2;
                 }
+                else
+                {
+                    weather = GetWeatherAsync(name).Result;
+                }
+
+                var info = new TemperatureInfo();
+
+                info = SetTempInfo(info, weather, stopwatch);
+
+                temperatures.Add(info);
+
             });
 
             return temperatures.ToList();
@@ -128,6 +115,36 @@ namespace DAL.Repositories
             {
                 return null;
             }
+        }
+
+        private async Task<Tuple<CurrentWeather, Stopwatch>> GetDebugInfo(Stopwatch stopwatch, CurrentWeather weather, List<string> cityNames)
+        {
+            stopwatch.Start();
+
+            foreach (var cityName in cityNames)
+                weather = await GetWeatherAsync(cityName);
+
+            stopwatch.Stop();
+
+            return Tuple.Create(weather, stopwatch);
+        }
+
+        private TemperatureInfo SetTempInfo(TemperatureInfo info, CurrentWeather weather, Stopwatch stopwatch)
+        {
+            if (weather == null)
+            {
+                info.CountFailedRequests++;
+                info.RunTime = stopwatch.ElapsedMilliseconds;
+            }
+            else
+            {
+                info.CityName = weather.Name;
+                info.Temp = weather.Main.Temp;
+                info.CountSuccessfullRequests++;
+                info.RunTime = stopwatch.ElapsedMilliseconds;
+            }
+
+            return info;
         }
     }
 }

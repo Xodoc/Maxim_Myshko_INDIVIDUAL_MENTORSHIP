@@ -1,6 +1,6 @@
 ﻿namespace DAL.Entities
 {
-    public class MaxTemperature
+    public class TemperatureInfo
     {
         public string CityName { get; set; }
 

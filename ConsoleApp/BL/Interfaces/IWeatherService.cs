@@ -1,5 +1,4 @@
-﻿using BL.DTOs;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace BL.Interfaces
@@ -10,6 +9,6 @@ namespace BL.Interfaces
 
         Task<string> GetWeatherForecastAsync(string cityName, int days);
 
-        Task<string> GetMaxTemperatureAsync(List<string> cityNames, bool debugInfo);
+        Task<string> GetMaxTemperatureAsync(List<string> cityNames);
     }
 }

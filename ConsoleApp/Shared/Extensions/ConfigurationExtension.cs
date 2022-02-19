@@ -23,6 +23,7 @@ namespace Shared.Extensions
             configuration.MaxDays = int.Parse(config["MaxDays"]);
             configuration.MinDays = int.Parse(config["MinDays"]);
             configuration.Hours = int.Parse(config["Hours"]);
+            configuration.IsDebug = bool.Parse(config["IsDebug"]);
 
             return configuration;
         }
