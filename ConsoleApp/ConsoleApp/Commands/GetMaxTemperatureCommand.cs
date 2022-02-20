@@ -10,7 +10,7 @@ namespace ConsoleApp.Commands
     {
         private readonly IWeatherService _weatherService;
 
-        public string Title => "Show max temperature among cities";
+        public string Title => "Find max temperature";
 
         public GetMaxTemperatureCommand(IWeatherService weatherService)
         {

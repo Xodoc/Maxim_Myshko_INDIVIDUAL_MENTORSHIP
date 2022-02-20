@@ -68,17 +68,17 @@ namespace DAL.Repositories
 
         public List<TemperatureInfo> GetTemperatures(List<string> cityNames)
         {
-            var temperatures = new ConcurrentBag<TemperatureInfo>();            
+            var temperatures = new ConcurrentBag<TemperatureInfo>();
             var amountCities = cityNames.Count;
 
-            Parallel.ForEach(cityNames, async name =>
+            Parallel.ForEach(cityNames, name =>
             {
                 var stopwatch = new Stopwatch();
                 var weather = new CurrentWeather();
 
                 if (_config.IsDebug)
                 {
-                    var result = await GetDebugInfo(stopwatch, weather, cityNames);
+                    var result = GetDebugInfo(stopwatch, weather, name).Result;
                     weather = result.Item1;
                     stopwatch = result.Item2;
                 }
@@ -89,10 +89,9 @@ namespace DAL.Repositories
 
                 var info = new TemperatureInfo();
 
-                info = SetTempInfo(info, weather, stopwatch);
+                info = SetTempInfo(info, weather, stopwatch, name);
 
                 temperatures.Add(info);
-
             });
 
             return temperatures.ToList();
@@ -117,24 +116,24 @@ namespace DAL.Repositories
             }
         }
 
-        private async Task<Tuple<CurrentWeather, Stopwatch>> GetDebugInfo(Stopwatch stopwatch, CurrentWeather weather, List<string> cityNames)
+        private async Task<Tuple<CurrentWeather, Stopwatch>> GetDebugInfo(Stopwatch stopwatch, CurrentWeather weather, string cityName)
         {
             stopwatch.Start();
 
-            foreach (var cityName in cityNames)
-                weather = await GetWeatherAsync(cityName);
+            weather = await GetWeatherAsync(cityName);
 
             stopwatch.Stop();
 
             return Tuple.Create(weather, stopwatch);
         }
 
-        private TemperatureInfo SetTempInfo(TemperatureInfo info, CurrentWeather weather, Stopwatch stopwatch)
+        private TemperatureInfo SetTempInfo(TemperatureInfo info, CurrentWeather weather, Stopwatch stopwatch, string cityName)
         {
             if (weather == null)
             {
                 info.CountFailedRequests++;
                 info.RunTime = stopwatch.ElapsedMilliseconds;
+                info.CityName = cityName;
             }
             else
             {

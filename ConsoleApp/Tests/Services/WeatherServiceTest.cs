@@ -7,6 +7,8 @@ using DAL.Entities;
 using DAL.Entities.WeatherForecastEntities;
 using DAL.Interfaces;
 using Moq;
+using System.Collections.Generic;
+using System.Linq;
 using Xunit;
 
 namespace Tests.Services
@@ -103,6 +105,44 @@ namespace Tests.Services
 
             //Act
             var actualResult = await Assert.ThrowsAsync<ValidatorException>(() => _weatherService.GetWeatherForecastAsync(cityName, days));
+
+            //Asseret
+            Assert.Equal(expectedMessage, actualResult.Message);
+        }
+
+        [Fact]
+        public async void GetMaxTemperatureAsync_WhenSendingCorrectData_GettingSuccessMessage()
+        {
+            //Arrange
+            var expectedData = _fixture.Create<List<TemperatureInfo>>();
+            var cityNames = expectedData.Select(x => x.CityName).ToList();
+            var maxtemp = expectedData.Max(t => t.Temp);
+            var info = expectedData.FirstOrDefault(x => x.Temp == maxtemp);
+
+            var expectedMessage = $"City with the highest temperature {info.Temp}°C: {info.CityName}." +
+                  $" Successful request count: {info.CountSuccessfullRequests}, failed: {info.CountFailedRequests}.";
+
+            _weatherRepositoryMock.Setup(x => x.GetTemperatures(It.IsAny<List<string>>())).Returns(expectedData);
+
+            //Act
+            var actualResult = await _weatherService.GetMaxTemperatureAsync(cityNames);
+
+            //Assert
+            Assert.Equal(expectedMessage.Take(38), actualResult.Take(38));
+        }
+
+        [Fact]
+        public async void GetMaxTemperatureAsync_WhenSendingIncorrectData_GettingFailedMessage()
+        {
+            //Arrange
+            var input = new List<string>();
+            var expectedMessage = "Invalid data entered";
+
+            _weatherRepositoryMock.Setup(x => x.GetTemperatures(It.IsAny<List<string>>()))
+                .Throws(new ValidatorException("Invalid data entered"));
+
+            //Act
+            var actualResult = await Assert.ThrowsAsync<ValidatorException>(() => _weatherService.GetMaxTemperatureAsync(input));
 
             //Asseret
             Assert.Equal(expectedMessage, actualResult.Message);

@@ -4,6 +4,7 @@ using BL.Validators.CustomExceptions;
 using DAL.Entities;
 using DAL.Entities.WeatherForecastEntities;
 using DAL.Interfaces;
+using Shared.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -14,11 +15,13 @@ namespace BL.Services
     {
         private readonly IWeatherRepository _weatherRepository;
         private readonly IValidator _validator;
+        private readonly IConfiguration _config;
 
-        public WeatherService(IWeatherRepository weatherRepository, IValidator validator)
+        public WeatherService(IWeatherRepository weatherRepository, IValidator validator, IConfiguration config)
         {
             _validator = validator;
             _weatherRepository = weatherRepository;
+            _config = config;
         }
 
         public async Task<string> GetWeatherAsync(string cityName)
@@ -54,15 +57,26 @@ namespace BL.Services
             _validator.ValidateCityNames(cityNames);
 
             var maxTemps = _weatherRepository.GetTemperatures(cityNames);
+
+            var responseMessage = "";
+
+            if (_config.IsDebug == true)
+            {
+                responseMessage += $"[Debug]\n";
+
+                foreach (var temp in maxTemps)
+                {
+                    if (temp.CountFailedRequests > 0)
+                        responseMessage += $"City: {temp.CityName}. Error: Invalid input data. Timer: {temp.RunTime} ms.\n";
+                    else
+                        responseMessage += $"City: {temp.CityName}. Temperature: {temp.Temp}°C. Timer: {temp.RunTime} ms.\n";
+                }
+            }
+
             var maxTemp = CalculateTotalsForMessage(maxTemps);
 
-            string responseMessage = $"City with the highest temperature {maxTemp.Temp}°C: {maxTemp.CityName}." +
+            responseMessage += $"City with the highest temperature {maxTemp.Temp}°C: {maxTemp.CityName}." +
                   $" Successful request count: {maxTemp.CountSuccessfullRequests}, failed: {maxTemp.CountFailedRequests}.";
-
-            //if (debugInfo == true)
-            //{
-            //    responseMessage = $"[Debug]\nCity: {maxTemp.CityName}. Temperature: {maxTemp.Temp}°C. Timer: {maxTemp.RunTime} ms.";
-            //}
 
             return Task.FromResult(responseMessage);
         }
