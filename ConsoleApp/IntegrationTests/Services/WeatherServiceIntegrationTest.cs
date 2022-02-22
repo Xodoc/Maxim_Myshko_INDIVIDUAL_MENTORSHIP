@@ -7,6 +7,7 @@ using DAL.Repositories;
 using Shared.Config;
 using Shared.Interfaces;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using Xunit;
 
 namespace IntegrationTests.Services
@@ -113,11 +114,12 @@ namespace IntegrationTests.Services
         {
             //Arrange
             var cityNames = new List<string> {"Minsk", "Brest", "Grodno" };           
-            var pattern = "([0-9])(.*?)\\.$|(\\B\\W)(.*?)\\.$";         
+            var pattern = "([0-9])(.*?)\\.\r\n(.*?)$|(\\B\\W)(.*?)\\.$";         
             var expectedRegexPattern = $"^City with the highest temperature {pattern}";            
 
             //Act
             var actualResult = await _weatherService.GetMaxTemperatureAsync(cityNames);
+            var a = Regex.Match(actualResult, expectedRegexPattern).Value;
 
             //Assert
             Assert.Matches(expectedRegexPattern, actualResult);
