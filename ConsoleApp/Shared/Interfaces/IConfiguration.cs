@@ -19,5 +19,7 @@
         int MinDays { get; }
 
         int Hours { get; }
+
+        bool IsDebug { get; }
     }
 }

@@ -1,14 +1,16 @@
 ﻿using DAL.Entities;
 using DAL.Entities.WeatherForecastEntities;
 using DAL.Interfaces;
+using Dasync.Collections;
 using Newtonsoft.Json;
 using Shared.Interfaces;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-
 
 namespace DAL.Repositories
 {
@@ -23,7 +25,7 @@ namespace DAL.Repositories
             _config = config;
         }
 
-        public async Task<Root> GetWeatherAsync(string cityName)
+        public async Task<CurrentWeather> GetWeatherAsync(string cityName)
         {
             try
             {
@@ -34,7 +36,7 @@ namespace DAL.Repositories
 
                 var weather = await responseMessage.Content.ReadAsStringAsync();
 
-                return JsonConvert.DeserializeObject<Root>(weather);
+                return JsonConvert.DeserializeObject<CurrentWeather>(weather);
             }
             catch (Exception)
             {
@@ -64,6 +66,39 @@ namespace DAL.Repositories
             return result;
         }
 
+        public async Task<List<TemperatureInfo>> GetTemperaturesAsync(IEnumerable<string> cityNames)
+        {
+            var temperatures = new ConcurrentBag<TemperatureInfo>();
+            var amountCities = cityNames.Count();
+
+            await cityNames.ParallelForEachAsync(async name =>
+            {
+                var stopwatch = new Stopwatch();
+                var weather = new CurrentWeather();
+
+                if (_config.IsDebug)
+                {
+                    stopwatch.Start();
+
+                    weather = await GetWeatherAsync(name);
+
+                    stopwatch.Stop();
+                }
+                else
+                {
+                    weather = await GetWeatherAsync(name);
+                }
+
+                var info = new TemperatureInfo();
+
+                info = SetTempInfo(info, weather, stopwatch, name);
+
+                temperatures.Add(info);
+            });
+
+            return temperatures.ToList();
+        }
+
         private async Task<Geolocation> GetWeatherCoordAsync(string cityName)
         {
             try
@@ -81,6 +116,25 @@ namespace DAL.Repositories
             {
                 return null;
             }
+        }
+
+        private TemperatureInfo SetTempInfo(TemperatureInfo info, CurrentWeather weather, Stopwatch stopwatch, string cityName)
+        {
+            if (weather == null)
+            {
+                info.FailedRequest++;
+                info.RunTime = stopwatch.ElapsedMilliseconds;
+                info.CityName = cityName;
+            }
+            else
+            {
+                info.CityName = weather.Name;
+                info.Temp = weather.Main.Temp;
+                info.SuccessfullRequest++;
+                info.RunTime = stopwatch.ElapsedMilliseconds;
+            }
+
+            return info;
         }
     }
 }

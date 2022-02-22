@@ -6,6 +6,7 @@ using DAL.Interfaces;
 using DAL.Repositories;
 using Shared.Config;
 using Shared.Interfaces;
+using System.Collections.Generic;
 using Xunit;
 
 namespace IntegrationTests.Services
@@ -22,7 +23,7 @@ namespace IntegrationTests.Services
             _configuration = new ConfigurationTest();
             _weatherRepository = new WeatherRepository(_configuration);
             _validator = new Validator(_configuration);
-            _weatherService = new WeatherService(_weatherRepository, _validator);
+            _weatherService = new WeatherService(_weatherRepository, _validator, _configuration);
         }
 
         [Theory]
@@ -102,6 +103,35 @@ namespace IntegrationTests.Services
 
             //Act
             var actualResult = await Assert.ThrowsAsync<ValidatorException>(() => _weatherService.GetWeatherForecastAsync(cityName, days));
+
+            //Assert
+            Assert.Equal(expectedMessage, actualResult.Message);
+        }
+
+        [Fact]
+        public async void GetMaxTemperatureAsync_WhenSendingCorrectData_GettingSuccessMessage() 
+        {
+            //Arrange
+            var cityNames = new List<string> {"Minsk", "Brest", "Grodno" };           
+            var pattern = "([0-9])(.*?)\\.$|(\\B\\W)(.*?)\\.$";         
+            var expectedRegexPattern = $"^City with the highest temperature {pattern}";            
+
+            //Act
+            var actualResult = await _weatherService.GetMaxTemperatureAsync(cityNames);
+
+            //Assert
+            Assert.Matches(expectedRegexPattern, actualResult);
+        }
+
+        [Fact]
+        public async void GetMaxTemperatureAsync_WhenSendingIncorrectData_GettingFailedMessage()
+        {
+            //Arrange
+            var cityNames = new List<string>();
+            var expectedMessage = "\nInvalid data entered";
+
+            //Act
+            var actualResult = await Assert.ThrowsAsync<ValidatorException>(() => _weatherService.GetMaxTemperatureAsync(cityNames));
 
             //Assert
             Assert.Equal(expectedMessage, actualResult.Message);

@@ -21,5 +21,7 @@ namespace Shared.Config
         public int MinDays { get; set; }
 
         public int Hours { get; set; }
+
+        public bool IsDebug { get; set; }
     }
 }

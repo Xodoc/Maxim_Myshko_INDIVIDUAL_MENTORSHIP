@@ -1,6 +1,8 @@
 ﻿using BL.Interfaces;
 using BL.Validators.CustomExceptions;
 using Shared.Interfaces;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace BL.Validators
 {
@@ -26,6 +28,14 @@ namespace BL.Validators
             ValidateCityName(cityName);
             
             if (days > _config.MaxDays || days <= _config.MinDays)
+            {
+                throw new ValidatorException("\nInvalid data entered");
+            }
+        }
+
+        public void ValidateCityNames(IEnumerable<string> cityNames) 
+        {
+            if (cityNames.Count() == 0 || cityNames == null)
             {
                 throw new ValidatorException("\nInvalid data entered");
             }

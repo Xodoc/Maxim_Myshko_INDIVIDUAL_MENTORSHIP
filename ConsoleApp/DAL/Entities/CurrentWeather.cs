@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 
 namespace DAL.Entities
 {
-    public class Root
+    public class CurrentWeather
     {
         [JsonProperty("name")]
         public string Name { get; set; }
@@ -12,6 +12,6 @@ namespace DAL.Entities
         public List<Weather> Weather { get; set; }
 
         [JsonProperty("main")]
-        public Main Main { get; set; }
+        public Temperature Main { get; set; }
     }
 }

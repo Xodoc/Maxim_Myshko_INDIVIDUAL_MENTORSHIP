@@ -1,8 +1,11 @@
-﻿using BL.Interfaces;
+﻿using AutoFixture;
+using AutoFixture.AutoMoq;
+using BL.Interfaces;
 using BL.Validators;
 using BL.Validators.CustomExceptions;
 using Shared.Config;
 using Shared.Interfaces;
+using System.Collections.Generic;
 using Xunit;
 
 namespace Tests.Validators
@@ -11,11 +14,13 @@ namespace Tests.Validators
     {
         private readonly IConfiguration _config;
         private readonly IValidator _validator;
+        private readonly Fixture _fixture;
 
         public ValidatorTest()
         {
             _config = new ConfigurationTest();
             _validator = new Validator(_config);
+            _fixture = (Fixture)new Fixture().Customize(new AutoMoqCustomization());
         }
 
         [Theory]
@@ -70,6 +75,32 @@ namespace Tests.Validators
 
             //Act
             void actualResult() => _validator.ValidateModel(cityName, days);
+
+            //Assert
+            Assert.Throws<ValidatorException>(actualResult);
+        }
+
+        [Fact]
+        public void ValidateCityNames_IfInputDataIsCorrect_ValidationIsFailed()
+        {
+            //Arrange
+            var cityNames = _fixture.Create<List<string>>();
+
+            //Act
+            var actualResult = Record.Exception(() => _validator.ValidateCityNames(cityNames));
+
+            //Assert
+            Assert.Null(actualResult);
+        }
+
+        [Fact]
+        public void ValidateCityNames_IfInputDataIsIncorrect_ValidationIsFailed()
+        {
+            //Arrange            
+            var cityNames = new List<string>();
+
+            //Act
+            void actualResult() => _validator.ValidateCityNames(cityNames);
 
             //Assert
             Assert.Throws<ValidatorException>(actualResult);

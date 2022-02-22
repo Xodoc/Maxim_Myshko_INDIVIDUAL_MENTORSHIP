@@ -7,6 +7,8 @@ using DAL.Entities;
 using DAL.Entities.WeatherForecastEntities;
 using DAL.Interfaces;
 using Moq;
+using System.Collections.Generic;
+using System.Linq;
 using Xunit;
 
 namespace Tests.Services
@@ -32,7 +34,7 @@ namespace Tests.Services
         public async void GetWeatherAsync_WhenSendingCorrectCityName_GettingWeatherMessage(double temp, string description)
         {
             //Arrange                         
-            var expected = _fixture.Create<Root>();
+            var expected = _fixture.Create<CurrentWeather>();
 
             expected.Main.Temp = temp;
             expected.Weather[0].Description = description;
@@ -103,6 +105,58 @@ namespace Tests.Services
 
             //Act
             var actualResult = await Assert.ThrowsAsync<ValidatorException>(() => _weatherService.GetWeatherForecastAsync(cityName, days));
+
+            //Asseret
+            Assert.Equal(expectedMessage, actualResult.Message);
+        }
+
+        [Fact]
+        public async void GetMaxTemperatureAsync_WhenSendingCorrectData_GettingSuccessMessage()
+        {
+            //Arrange
+            var expectedData = new List<TemperatureInfo>
+            {
+                new TemperatureInfo { CityName = "Minsk", Temp = 12, RunTime = 13, FailedRequest = 0, SuccessfullRequest = 1 },
+                new TemperatureInfo { CityName = "Brest", Temp = 23, RunTime = 1, FailedRequest = 0, SuccessfullRequest = 1 },
+                new TemperatureInfo { CityName = "dwadwd", Temp = 0, RunTime = 14, FailedRequest = 1, SuccessfullRequest = 0 }
+            };
+            var expectedCopy = new List<TemperatureInfo>
+            {
+                new TemperatureInfo { CityName = "Minsk", Temp = 12, RunTime = 13, FailedRequest = 0, SuccessfullRequest = 1 },
+                new TemperatureInfo { CityName = "Brest", Temp = 23, RunTime = 1, FailedRequest = 0, SuccessfullRequest = 1 },
+                new TemperatureInfo { CityName = "dwadwd", Temp = 0, RunTime = 14, FailedRequest = 1, SuccessfullRequest = 0 }
+            };
+
+            var cityNames = expectedData.Select(x => x.CityName).ToList();
+            var maxtemp = expectedData.Max(t => t.Temp);
+            var info = expectedData.FirstOrDefault(x => x.Temp == maxtemp);
+            info.SuccessfullRequest = expectedData.Select(x => x.SuccessfullRequest).Sum();
+            info.FailedRequest = expectedData.Select(x => x.FailedRequest).Sum();
+
+            var expectedMessage = $"City with the highest temperature {info.Temp}°C: {info.CityName}." +
+                  $" Successful request count: {info.SuccessfullRequest}, failed: {info.FailedRequest}.\r\n";
+
+            _weatherRepositoryMock.Setup(x => x.GetTemperaturesAsync(It.IsAny<IEnumerable<string>>())).ReturnsAsync(expectedCopy);
+
+            //Act
+            var actualResult = await _weatherService.GetMaxTemperatureAsync(cityNames);
+
+            //Assert
+            Assert.Equal(expectedMessage, actualResult);
+        }
+
+        [Fact]
+        public async void GetMaxTemperatureAsync_WhenSendingIncorrectData_GettingFailedMessage()
+        {
+            //Arrange
+            var input = new List<string>();
+            var expectedMessage = "Invalid data entered";
+
+            _weatherRepositoryMock.Setup(x => x.GetTemperaturesAsync(It.IsAny<List<string>>()))
+                .Throws(new ValidatorException("Invalid data entered"));
+
+            //Act
+            var actualResult = await Assert.ThrowsAsync<ValidatorException>(() => _weatherService.GetMaxTemperatureAsync(input));
 
             //Asseret
             Assert.Equal(expectedMessage, actualResult.Message);

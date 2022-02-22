@@ -25,6 +25,8 @@ namespace Shared.Config
 
         public int Hours { get; }
 
+        public bool IsDebug { get; }
+
         public ConfigurationTest()
         {
             var configuration = _configuration.PopulateConfigFromAppSettings();
@@ -38,6 +40,7 @@ namespace Shared.Config
             MaxDays = int.Parse(configuration["MaxDays"]);
             MinDays = int.Parse(configuration["MinDays"]);
             Hours = int.Parse(configuration["Hours"]);
+            IsDebug = bool.Parse(configuration["IsDebug"]);
         }
     }
 }

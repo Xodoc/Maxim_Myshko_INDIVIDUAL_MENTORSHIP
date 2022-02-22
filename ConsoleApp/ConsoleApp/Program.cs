@@ -1,15 +1,11 @@
-﻿using BL.Infrastructure;
-using BL.Interfaces;
+﻿using BL.Interfaces;
 using ConsoleApp.Commands;
-using Ninject;
-using Ninject.Modules;
-using Ninject.Web.Mvc;
+using ConsoleApp.Extensions;
+using Microsoft.Extensions.DependencyInjection;
 using Shared.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 using System.Threading.Tasks;
-using System.Web.Mvc;
 
 namespace ConsoleApp
 {
@@ -17,16 +13,22 @@ namespace ConsoleApp
     {
         private static IWeatherService _weatherService;
 
-        private static async Task Menu()
+        private static List<ICommand> GetCommands()
         {
             var getWeather = new GetWeatherCommand(_weatherService);
             var getWeatherForecast = new GetWeatherForecastCommand(_weatherService);
+            var getMaxTemperature = new GetMaxTemperatureCommand(_weatherService);
             var exitCommand = new ExitCommand();
 
-            var commands = new List<ICommand>
+            return new List<ICommand>
             {
-                exitCommand, getWeather, getWeatherForecast
+                exitCommand, getWeather, getWeatherForecast, getMaxTemperature
             };
+        }
+
+        private static async Task Menu()
+        {
+            var commands = GetCommands();
 
             var flag = true;
 
@@ -60,21 +62,12 @@ namespace ConsoleApp
             }
         }
 
-        private static void InjectNinject()
-        {
-            NinjectModule serviceModule = new ServiceModule();
-
-            var kernel = new StandardKernel(serviceModule);
-
-            kernel.Load(Assembly.GetExecutingAssembly());
-            DependencyResolver.SetResolver(new NinjectDependencyResolver(kernel));
-
-            _weatherService = kernel.Get<IWeatherService>();
-        }
-
         static async Task Main(string[] args)
         {
-            InjectNinject();
+            var serviceProvider = new ServiceCollection()
+            .AddRepositories().AddServices().BuildServiceProvider();
+
+            _weatherService = serviceProvider.GetService<IWeatherService>();
 
             await Menu();
         }

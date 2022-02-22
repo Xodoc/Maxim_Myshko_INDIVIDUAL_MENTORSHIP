@@ -7,5 +7,6 @@
   "MaxDays": "7",
   "MinDays": "0",
   "Forecast": "https://api.openweathermap.org/data/2.5/forecast?",
-  "Hours": "12"
+  "Hours": "12",
+  "IsDebug": "false"
 }
