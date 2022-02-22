@@ -2,6 +2,7 @@
 using BL.Validators.CustomExceptions;
 using Shared.Interfaces;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace BL.Validators
 {
@@ -32,9 +33,9 @@ namespace BL.Validators
             }
         }
 
-        public void ValidateCityNames(List<string> cityNames) 
+        public void ValidateCityNames(IEnumerable<string> cityNames) 
         {
-            if (cityNames.Count == 0 || cityNames == null)
+            if (cityNames.Count() == 0 || cityNames == null)
             {
                 throw new ValidatorException("\nInvalid data entered");
             }

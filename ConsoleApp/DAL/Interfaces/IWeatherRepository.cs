@@ -11,6 +11,6 @@ namespace DAL.Interfaces
 
         Task<WeatherForecast> GetWeatherForecastAsync(string cityName, int days);
 
-        List<TemperatureInfo> GetTemperatures(List<string> cityNames);
+        Task<List<TemperatureInfo>> GetTemperaturesAsync(IEnumerable<string> cityNames);
     }
 }

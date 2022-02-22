@@ -12,18 +12,18 @@ namespace Shared.Extensions
 
         public static Configuration GetConfig(this Configuration configuration)
         {
-            var config = System.Configuration.ConfigurationManager.AppSettings;
+            var configurationRoot = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
 
-            configuration.APIKey = config["APIKey"];
-            configuration.URL = config["URL"];
-            configuration.Units = config["Units"];
-            configuration.Lang = config["Lang"];
-            configuration.URLGeo = config["URLGeo"];
-            configuration.Forecast = config["Forecast"];
-            configuration.MaxDays = int.Parse(config["MaxDays"]);
-            configuration.MinDays = int.Parse(config["MinDays"]);
-            configuration.Hours = int.Parse(config["Hours"]);
-            configuration.IsDebug = bool.Parse(config["IsDebug"]);
+            configuration.APIKey = configurationRoot["APIKey"];
+            configuration.URL = configurationRoot["URL"];
+            configuration.Units = configurationRoot["Units"];
+            configuration.Lang = configurationRoot["Lang"];
+            configuration.URLGeo = configurationRoot["URLGeo"];
+            configuration.Forecast = configurationRoot["Forecast"];
+            configuration.MaxDays = int.Parse(configurationRoot["MaxDays"]);
+            configuration.MinDays = int.Parse(configurationRoot["MinDays"]);
+            configuration.Hours = int.Parse(configurationRoot["Hours"]);
+            configuration.IsDebug = bool.Parse(configurationRoot["IsDebug"]);
 
             return configuration;
         }

@@ -7,6 +7,7 @@ using DAL.Interfaces;
 using Shared.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace BL.Services
@@ -52,43 +53,43 @@ namespace BL.Services
             return responseMessage;
         }
 
-        public Task<string> GetMaxTemperatureAsync(List<string> cityNames)
+        public async Task<string> GetMaxTemperatureAsync(IEnumerable<string> cityNames)
         {
             _validator.ValidateCityNames(cityNames);
 
-            var maxTemps = _weatherRepository.GetTemperatures(cityNames);
+            var maxTemps = await _weatherRepository.GetTemperaturesAsync(cityNames);
 
-            var responseMessage = "";
+            var responseMessage = new StringBuilder();
 
             if (_config.IsDebug == true)
             {
-                responseMessage += $"[Debug]\n";
+                responseMessage.Append("[Debug]\n");
 
                 foreach (var temp in maxTemps)
                 {
-                    if (temp.CountFailedRequests > 0)
-                        responseMessage += $"City: {temp.CityName}. Error: Invalid input data. Timer: {temp.RunTime} ms.\n";
+                    if (temp.FailedRequest > 0)
+                        responseMessage.Append($"City: {temp.CityName}. Error: Invalid city name. Timer: {temp.RunTime} ms.\n");
                     else
-                        responseMessage += $"City: {temp.CityName}. Temperature: {temp.Temp}°C. Timer: {temp.RunTime} ms.\n";
+                        responseMessage.Append($"City: {temp.CityName}. Temperature: {temp.Temp}°C. Timer: {temp.RunTime} ms.\n");
                 }
             }
 
             var maxTemp = CalculateTotalsForMessage(maxTemps);
 
-            responseMessage += $"City with the highest temperature {maxTemp.Temp}°C: {maxTemp.CityName}." +
-                  $" Successful request count: {maxTemp.CountSuccessfullRequests}, failed: {maxTemp.CountFailedRequests}.";
+            responseMessage.AppendLine($"City with the highest temperature {maxTemp.Temp}°C: {maxTemp.CityName}." +
+                  $" Successful request count: {maxTemp.SuccessfullRequest}, failed: {maxTemp.FailedRequest}.");
 
-            return Task.FromResult(responseMessage);
+            return responseMessage.ToString();
         }
 
-        private TemperatureInfo CalculateTotalsForMessage(List<TemperatureInfo> temps)
+        private TemperatureInfo CalculateTotalsForMessage(IEnumerable<TemperatureInfo> temps)
         {
-            var successfullRequests = temps.Select(x => x.CountSuccessfullRequests).Sum();
-            var failedRequests = temps.Select(x => x.CountFailedRequests).Sum();
+            var successfullRequests = temps.Select(x => x.SuccessfullRequest).Sum();
+            var failedRequests = temps.Select(x => x.FailedRequest).Sum();
             var maxTemp = temps.FirstOrDefault(x => x.Temp == temps.Max(e => e.Temp));
 
-            maxTemp.CountFailedRequests = failedRequests;
-            maxTemp.CountSuccessfullRequests = successfullRequests;
+            maxTemp.FailedRequest = failedRequests;
+            maxTemp.SuccessfullRequest = successfullRequests;
 
             return maxTemp;
         }
@@ -124,7 +125,7 @@ namespace BL.Services
             return root;
         }
 
-        private List<WeatherForecastDTO> SetWeatherForecastDescription(List<WeatherForecastDTO> weatherForecastDto)
+        private List<WeatherForecastDTO> SetWeatherForecastDescription(IList<WeatherForecastDTO> weatherForecastDto)
         {
             if (weatherForecastDto == null)
                 throw new ValidatorException("\nInvalid data entered");
@@ -134,7 +135,7 @@ namespace BL.Services
                 weatherForecastDto[i].Description = SetDescription(weatherForecastDto[i].Temp);
             }
 
-            return weatherForecastDto;
+            return weatherForecastDto.ToList();
         }
 
         private List<WeatherForecastDTO> MapToWeatherForecastDTOs(WeatherForecast weatherForecast)

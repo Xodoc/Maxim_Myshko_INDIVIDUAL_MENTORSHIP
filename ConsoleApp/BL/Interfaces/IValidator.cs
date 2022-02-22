@@ -8,6 +8,6 @@ namespace BL.Interfaces
 
         void ValidateModel(string cityName, int days);
 
-        void ValidateCityNames(List<string> cityNames);
+        void ValidateCityNames(IEnumerable<string> cityNames);
     }
 }

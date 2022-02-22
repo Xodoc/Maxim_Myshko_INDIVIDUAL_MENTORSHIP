@@ -1,6 +1,7 @@
 ﻿using DAL.Entities;
 using DAL.Entities.WeatherForecastEntities;
 using DAL.Interfaces;
+using Dasync.Collections;
 using Newtonsoft.Json;
 using Shared.Interfaces;
 using System;
@@ -10,7 +11,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-
 
 namespace DAL.Repositories
 {
@@ -66,25 +66,27 @@ namespace DAL.Repositories
             return result;
         }
 
-        public List<TemperatureInfo> GetTemperatures(List<string> cityNames)
+        public async Task<List<TemperatureInfo>> GetTemperaturesAsync(IEnumerable<string> cityNames)
         {
             var temperatures = new ConcurrentBag<TemperatureInfo>();
-            var amountCities = cityNames.Count;
+            var amountCities = cityNames.Count();
 
-            Parallel.ForEach(cityNames, name =>
+            await cityNames.ParallelForEachAsync(async name =>
             {
                 var stopwatch = new Stopwatch();
                 var weather = new CurrentWeather();
 
                 if (_config.IsDebug)
                 {
-                    var result = GetDebugInfo(stopwatch, weather, name).Result;
-                    weather = result.Item1;
-                    stopwatch = result.Item2;
+                    stopwatch.Start();
+
+                    weather = await GetWeatherAsync(name);
+
+                    stopwatch.Stop();
                 }
                 else
                 {
-                    weather = GetWeatherAsync(name).Result;
+                    weather = await GetWeatherAsync(name);
                 }
 
                 var info = new TemperatureInfo();
@@ -116,22 +118,11 @@ namespace DAL.Repositories
             }
         }
 
-        private async Task<Tuple<CurrentWeather, Stopwatch>> GetDebugInfo(Stopwatch stopwatch, CurrentWeather weather, string cityName)
-        {
-            stopwatch.Start();
-
-            weather = await GetWeatherAsync(cityName);
-
-            stopwatch.Stop();
-
-            return Tuple.Create(weather, stopwatch);
-        }
-
         private TemperatureInfo SetTempInfo(TemperatureInfo info, CurrentWeather weather, Stopwatch stopwatch, string cityName)
         {
             if (weather == null)
             {
-                info.CountFailedRequests++;
+                info.FailedRequest++;
                 info.RunTime = stopwatch.ElapsedMilliseconds;
                 info.CityName = cityName;
             }
@@ -139,7 +130,7 @@ namespace DAL.Repositories
             {
                 info.CityName = weather.Name;
                 info.Temp = weather.Main.Temp;
-                info.CountSuccessfullRequests++;
+                info.SuccessfullRequest++;
                 info.RunTime = stopwatch.ElapsedMilliseconds;
             }
 

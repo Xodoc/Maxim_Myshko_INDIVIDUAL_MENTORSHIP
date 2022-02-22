@@ -6,9 +6,9 @@
 
         public double Temp { get; set;}
 
-        public int CountSuccessfullRequests { get; set; }
+        public int SuccessfullRequest { get; set; }
 
-        public int CountFailedRequests { get;set; }
+        public int FailedRequest { get;set; }
 
         public long RunTime { get; set; }
     }

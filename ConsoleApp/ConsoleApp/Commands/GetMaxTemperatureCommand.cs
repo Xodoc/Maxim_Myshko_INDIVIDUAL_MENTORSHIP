@@ -1,7 +1,7 @@
 ﻿using BL.Interfaces;
+using ConsoleApp.Commands.HelperClasses;
 using Shared.Interfaces;
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace ConsoleApp.Commands
@@ -21,16 +21,11 @@ namespace ConsoleApp.Commands
         {
             Console.Write("Input city names: ");
             var cities = Console.ReadLine();
-            var array = cities.Split(new string[] {" "}, StringSplitOptions.RemoveEmptyEntries);
-            
-            var cityNames = new List<string>();
 
-            foreach (var item in array) 
-            {
-                cityNames.Add(item);
-            }
+            var cityNames = new StringSplit(cities).SplitNames();            
            
             Console.Clear();
+
             var result = await _weatherService.GetMaxTemperatureAsync(cityNames);
 
             Console.WriteLine(result);
