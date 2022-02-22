@@ -22,7 +22,7 @@ namespace ConsoleApp.Commands
             Console.Write("Input city names: ");
             var cities = Console.ReadLine();
 
-            var cityNames = new StringSplit(cities).SplitNames();            
+            var cityNames = new StringSplitter().SplitNames(cities);            
            
             Console.Clear();
 

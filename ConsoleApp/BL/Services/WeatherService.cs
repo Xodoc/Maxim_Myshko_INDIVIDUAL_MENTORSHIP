@@ -76,8 +76,9 @@ namespace BL.Services
 
             var maxTemp = CalculateTotalsForMessage(maxTemps);
 
-            responseMessage.AppendLine($"City with the highest temperature {maxTemp.Temp}°C: {maxTemp.CityName}." +
-                  $" Successful request count: {maxTemp.SuccessfullRequest}, failed: {maxTemp.FailedRequest}.");
+            responseMessage.AppendLine(
+@$"City with the highest temperature {maxTemp.Temp}°C: {maxTemp.CityName}.
+Successful request count: {maxTemp.SuccessfullRequest}, failed: {maxTemp.FailedRequest}.");
 
             return responseMessage.ToString();
         }

@@ -14,7 +14,7 @@ namespace Tests.HelperClasses
         {
             //Arrange
             var expected = new string[] { "Minsk", "Brest", "Grodno" };
-            var stringSplit = new StringSplit(cityNames);
+            var stringSplit = new StringSplitter(cityNames);
 
             //Act
             var actualResult = stringSplit.SplitNames();
