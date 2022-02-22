@@ -14,10 +14,10 @@ namespace Tests.HelperClasses
         {
             //Arrange
             var expected = new string[] { "Minsk", "Brest", "Grodno" };
-            var stringSplit = new StringSplitter(cityNames);
+            var stringSplit = new StringSplitter().SplitNames(cityNames);
 
             //Act
-            var actualResult = stringSplit.SplitNames();
+            var actualResult = stringSplit;
 
             //Assert
             Assert.Equal(expected, actualResult);

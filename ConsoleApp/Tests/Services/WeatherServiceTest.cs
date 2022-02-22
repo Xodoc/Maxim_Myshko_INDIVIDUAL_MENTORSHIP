@@ -134,7 +134,7 @@ namespace Tests.Services
             info.FailedRequest = expectedData.Select(x => x.FailedRequest).Sum();
 
             var expectedMessage = $"City with the highest temperature {info.Temp}°C: {info.CityName}." +
-                  $" Successful request count: {info.SuccessfullRequest}, failed: {info.FailedRequest}.\r\n";
+                  $"\r\nSuccessful request count: {info.SuccessfullRequest}, failed: {info.FailedRequest}.\r\n";
 
             _weatherRepositoryMock.Setup(x => x.GetTemperaturesAsync(It.IsAny<IEnumerable<string>>())).ReturnsAsync(expectedCopy);
 
