@@ -8,6 +8,7 @@ using Shared.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace BL.Services
@@ -28,8 +29,8 @@ namespace BL.Services
         public async Task<string> GetWeatherAsync(string cityName)
         {
             _validator.ValidateCityName(cityName);
-
-            var weather = await _weatherRepository.GetWeatherAsync(cityName);
+            var cts = new CancellationTokenSource();
+            var weather = await _weatherRepository.GetWeatherAsync(cityName, cts);
 
             weather = SetWeatherDescription(weather);
 

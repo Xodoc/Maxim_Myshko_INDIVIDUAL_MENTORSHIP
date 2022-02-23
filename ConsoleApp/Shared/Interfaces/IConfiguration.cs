@@ -22,6 +22,6 @@
 
         bool IsDebug { get; }
 
-        int SpecifiedTime { get; }
+        int MaxWaitingTime { get; }
     }
 }

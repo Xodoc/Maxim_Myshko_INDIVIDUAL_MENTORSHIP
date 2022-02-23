@@ -9,6 +9,7 @@ using DAL.Interfaces;
 using Moq;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using Xunit;
 
 namespace Tests.Services
@@ -35,13 +36,13 @@ namespace Tests.Services
         {
             //Arrange                         
             var expected = _fixture.Create<CurrentWeather>();
-
+            var cts = new CancellationTokenSource();
             expected.Main.Temp = temp;
             expected.Weather[0].Description = description;
 
             var expectedMessage = $"\nIn {expected.Name} {expected.Main.Temp}°C now. {expected.Weather[0].Description}\n";
 
-            _weatherRepositoryMock.Setup(x => x.GetWeatherAsync(It.IsAny<string>()))
+            _weatherRepositoryMock.Setup(x => x.GetWeatherAsync(It.IsAny<string>(), It.IsAny<CancellationTokenSource>()))
                 .ReturnsAsync(expected);
 
             //Act
@@ -56,7 +57,7 @@ namespace Tests.Services
         public async void GetWeatherAsync_WhenSendingIncorrectCityName_GettingWeatherMessageFailed(string cityName)
         {
             //Arrange                         
-            _weatherRepositoryMock.Setup(x => x.GetWeatherAsync(It.IsAny<string>()))
+            _weatherRepositoryMock.Setup(x => x.GetWeatherAsync(It.IsAny<string>(), It.IsAny<CancellationTokenSource>()))
                 .ReturnsAsync(() => throw new ValidatorException("Incorrectly entered data"));
 
             //Act
@@ -134,7 +135,7 @@ namespace Tests.Services
             info.FailedRequest = expectedData.Select(x => x.FailedRequest).Sum();
 
             var expectedMessage = $"City with the highest temperature {info.Temp}°C: {info.CityName}." +
-                  $"\r\nSuccessful request count: {info.SuccessfullRequest}, failed: {info.FailedRequest}.\r\n";
+                  $"\r\nSuccessful request count: {info.SuccessfullRequest}, failed: {info.FailedRequest}, canceled: {info.Canceled}.\r\n";
 
             _weatherRepositoryMock.Setup(x => x.GetTemperaturesAsync(It.IsAny<IEnumerable<string>>())).ReturnsAsync(expectedCopy);
 

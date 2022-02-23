@@ -26,16 +26,23 @@ namespace DAL.Repositories
             _config = config;
         }
 
-        public async Task<CurrentWeather> GetWeatherAsync(string cityName)
+        public async Task<CurrentWeather> GetWeatherAsync(string cityName, CancellationTokenSource cts)
         {
             try
             {
+                var stopwatch = new Stopwatch();
+                stopwatch.Start();
                 var responseMessage = await _client.GetAsync($"{_config.URL}{cityName}&lang={_config.Lang}&units={_config.Units}&appid={_config.APIKey}");
 
                 if (responseMessage.IsSuccessStatusCode == false)
                     return null;
 
                 var weather = await responseMessage.Content.ReadAsStringAsync();
+                stopwatch.Stop();
+                if (stopwatch.ElapsedMilliseconds > _config.MaxWaitingTime)
+                {
+                    cts.CancelAfter(20);
+                }
 
                 return JsonConvert.DeserializeObject<CurrentWeather>(weather);
             }
@@ -80,12 +87,11 @@ namespace DAL.Repositories
                     var weather = new CurrentWeather();
 
                     stopwatch.Start();
-                    weather = await GetWeatherAsync(name);
+                    weather = await GetWeatherAsync(name, cts);
                     stopwatch.Stop();
 
-                    if (stopwatch.ElapsedMilliseconds > _config.SpecifiedTime)
+                    if (cts.IsCancellationRequested == true)
                     {
-                        cts.Cancel();
                         temperatures.Add(new TemperatureInfo { Canceled = 1 });
                         return;
                     }
@@ -98,7 +104,10 @@ namespace DAL.Repositories
 
                 }, cts.Token);
             }
-            catch (OperationCanceledException) { }
+            catch (OperationCanceledException ex)
+            {
+                Console.WriteLine(ex.Message + " Pleas, try again.");
+            }
             finally
             {
                 cts.Dispose();
@@ -137,7 +146,7 @@ namespace DAL.Repositories
             {
                 info.Canceled++;
             }
-            if(weather != null)
+            if (weather != null)
             {
                 info.CityName = weather.Name;
                 info.Temp = weather.Main.Temp;

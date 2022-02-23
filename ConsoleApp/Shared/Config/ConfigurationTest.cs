@@ -27,7 +27,7 @@ namespace Shared.Config
 
         public bool IsDebug { get; }
 
-        public int SpecifiedTime { get; }
+        public int MaxWaitingTime { get; }
 
         public ConfigurationTest()
         {
@@ -43,7 +43,7 @@ namespace Shared.Config
             MinDays = int.Parse(configuration["MinDays"]);
             Hours = int.Parse(configuration["Hours"]);
             IsDebug = bool.Parse(configuration["IsDebug"]);
-            SpecifiedTime = int.Parse(configuration["SpecifiedTime"]);
+            MaxWaitingTime = int.Parse(configuration["MaxWaitingTime"]);
         }
     }
 }
