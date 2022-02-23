@@ -11,5 +11,7 @@
         public int FailedRequest { get;set; }
 
         public long RunTime { get; set; }
+
+        public int Canceled { get; set; }
     }
 }

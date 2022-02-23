@@ -67,9 +67,9 @@ namespace BL.Services
 
                 foreach (var temp in maxTemps)
                 {
-                    if (temp.FailedRequest > 0)
-                        responseMessage.Append($"City: {temp.CityName}. Error: Invalid city name. Timer: {temp.RunTime} ms.\n");
-                    else
+                    if (temp.FailedRequest > 0 && temp.Canceled == 0)
+                        responseMessage.Append($"City: {temp.CityName}. Error: Invalid city name. Timer: {temp.RunTime} ms.\n");                        
+                    else if(temp.Canceled == 0)
                         responseMessage.Append($"City: {temp.CityName}. Temperature: {temp.Temp}°C. Timer: {temp.RunTime} ms.\n");
                 }
             }
@@ -78,7 +78,7 @@ namespace BL.Services
 
             responseMessage.AppendLine(
 @$"City with the highest temperature {maxTemp.Temp}°C: {maxTemp.CityName}.
-Successful request count: {maxTemp.SuccessfullRequest}, failed: {maxTemp.FailedRequest}.");
+Successful request count: {maxTemp.SuccessfullRequest}, failed: {maxTemp.FailedRequest}, canceled: {maxTemp.Canceled}.");
 
             return responseMessage.ToString();
         }
@@ -87,10 +87,12 @@ Successful request count: {maxTemp.SuccessfullRequest}, failed: {maxTemp.FailedR
         {
             var successfullRequests = temps.Select(x => x.SuccessfullRequest).Sum();
             var failedRequests = temps.Select(x => x.FailedRequest).Sum();
+            var canceled = temps.Select(x => x.Canceled).Sum();
             var maxTemp = temps.FirstOrDefault(x => x.Temp == temps.Max(e => e.Temp));
 
             maxTemp.FailedRequest = failedRequests;
             maxTemp.SuccessfullRequest = successfullRequests;
+            maxTemp.Canceled = canceled;
 
             return maxTemp;
         }

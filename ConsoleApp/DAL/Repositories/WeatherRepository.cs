@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace DAL.Repositories
@@ -70,32 +71,38 @@ namespace DAL.Repositories
         {
             var temperatures = new ConcurrentBag<TemperatureInfo>();
             var amountCities = cityNames.Count();
-
-            await cityNames.ParallelForEachAsync(async name =>
+            var cts = new CancellationTokenSource();
+            try
             {
-                var stopwatch = new Stopwatch();
-                var weather = new CurrentWeather();
-
-                if (_config.IsDebug)
+                await cityNames.ParallelForEachAsync(async name =>
                 {
+                    var stopwatch = new Stopwatch();
+                    var weather = new CurrentWeather();
+
                     stopwatch.Start();
-
                     weather = await GetWeatherAsync(name);
-
                     stopwatch.Stop();
-                }
-                else
-                {
-                    weather = await GetWeatherAsync(name);
-                }
 
-                var info = new TemperatureInfo();
+                    if (stopwatch.ElapsedMilliseconds > _config.SpecifiedTime)
+                    {
+                        cts.Cancel();
+                        temperatures.Add(new TemperatureInfo { Canceled = 1 });
+                        return;
+                    }
 
-                info = SetTempInfo(info, weather, stopwatch, name);
+                    var info = new TemperatureInfo();
 
-                temperatures.Add(info);
-            });
+                    info = SetTempInfo(info, weather, stopwatch, name, cts);
 
+                    temperatures.Add(info);
+
+                }, cts.Token);
+            }
+            catch (OperationCanceledException) { }
+            finally
+            {
+                cts.Dispose();
+            }
             return temperatures.ToList();
         }
 
@@ -118,7 +125,7 @@ namespace DAL.Repositories
             }
         }
 
-        private TemperatureInfo SetTempInfo(TemperatureInfo info, CurrentWeather weather, Stopwatch stopwatch, string cityName)
+        private TemperatureInfo SetTempInfo(TemperatureInfo info, CurrentWeather weather, Stopwatch stopwatch, string cityName, CancellationTokenSource cts)
         {
             if (weather == null)
             {
@@ -126,7 +133,11 @@ namespace DAL.Repositories
                 info.RunTime = stopwatch.ElapsedMilliseconds;
                 info.CityName = cityName;
             }
-            else
+            if (cts.IsCancellationRequested == true)
+            {
+                info.Canceled++;
+            }
+            if(weather != null)
             {
                 info.CityName = weather.Name;
                 info.Temp = weather.Main.Temp;

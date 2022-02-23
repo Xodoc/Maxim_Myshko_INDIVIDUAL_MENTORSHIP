@@ -21,5 +21,7 @@
         int Hours { get; }
 
         bool IsDebug { get; }
+
+        int SpecifiedTime { get; }
     }
 }
