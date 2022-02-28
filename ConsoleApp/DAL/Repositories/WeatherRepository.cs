@@ -30,18 +30,16 @@ namespace DAL.Repositories
         {
             try
             {
-                var stopwatch = new Stopwatch();
-                stopwatch.Start();
                 var responseMessage = await _client.GetAsync($"{_config.URL}{cityName}&lang={_config.Lang}&units={_config.Units}&appid={_config.APIKey}");
 
                 if (responseMessage.IsSuccessStatusCode == false)
                     return null;
 
                 var weather = await responseMessage.Content.ReadAsStringAsync();
-                stopwatch.Stop();
-                if (stopwatch.ElapsedMilliseconds > _config.MaxWaitingTime)
+
+                if (cts.IsCancellationRequested == true)
                 {
-                    cts.CancelAfter(20);
+                    cts.Token.ThrowIfCancellationRequested();
                 }
 
                 return JsonConvert.DeserializeObject<CurrentWeather>(weather);
@@ -74,11 +72,10 @@ namespace DAL.Repositories
             return result;
         }
 
-        public async Task<List<TemperatureInfo>> GetTemperaturesAsync(IEnumerable<string> cityNames)
+        public async Task<List<TemperatureInfo>> GetTemperaturesAsync(IEnumerable<string> cityNames, CancellationTokenSource cts)
         {
             var temperatures = new ConcurrentBag<TemperatureInfo>();
             var amountCities = cityNames.Count();
-            var cts = new CancellationTokenSource();
             try
             {
                 await cityNames.ParallelForEachAsync(async name =>
@@ -92,21 +89,24 @@ namespace DAL.Repositories
 
                     if (cts.IsCancellationRequested == true)
                     {
-                        temperatures.Add(new TemperatureInfo { Canceled = 1 });
+                        temperatures.Add(new TemperatureInfo
+                        {
+                            Canceled = 1,
+                            RunTime = stopwatch.ElapsedMilliseconds,
+                            FailedRequest = 1
+                        });
                         return;
                     }
 
-                    var info = new TemperatureInfo();
-
-                    info = SetTempInfo(info, weather, stopwatch, name, cts);
+                    var info = SetTempInfo(weather, stopwatch);
 
                     temperatures.Add(info);
 
                 }, cts.Token);
             }
-            catch (OperationCanceledException ex)
+            catch (OperationCanceledException)
             {
-                Console.WriteLine(ex.Message + " Pleas, try again.");
+                Console.WriteLine("1");
             }
             finally
             {
@@ -134,25 +134,14 @@ namespace DAL.Repositories
             }
         }
 
-        private TemperatureInfo SetTempInfo(TemperatureInfo info, CurrentWeather weather, Stopwatch stopwatch, string cityName, CancellationTokenSource cts)
+        private TemperatureInfo SetTempInfo(CurrentWeather weather, Stopwatch stopwatch)
         {
-            if (weather == null)
-            {
-                info.FailedRequest++;
-                info.RunTime = stopwatch.ElapsedMilliseconds;
-                info.CityName = cityName;
-            }
-            if (cts.IsCancellationRequested == true)
-            {
-                info.Canceled++;
-            }
-            if (weather != null)
-            {
-                info.CityName = weather.Name;
-                info.Temp = weather.Main.Temp;
-                info.SuccessfullRequest++;
-                info.RunTime = stopwatch.ElapsedMilliseconds;
-            }
+            var info = new TemperatureInfo();
+            
+            info.CityName = weather.Name;
+            info.Temp = weather.Main.Temp;
+            info.SuccessfullRequest++;
+            info.RunTime = stopwatch.ElapsedMilliseconds;
 
             return info;
         }

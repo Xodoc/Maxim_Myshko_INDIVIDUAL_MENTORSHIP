@@ -18,6 +18,7 @@ namespace BL.Services
         private readonly IWeatherRepository _weatherRepository;
         private readonly IValidator _validator;
         private readonly IConfiguration _config;
+        private CancellationTokenSource _cts;
 
         public WeatherService(IWeatherRepository weatherRepository, IValidator validator, IConfiguration config)
         {
@@ -29,8 +30,10 @@ namespace BL.Services
         public async Task<string> GetWeatherAsync(string cityName)
         {
             _validator.ValidateCityName(cityName);
-            var cts = new CancellationTokenSource();
-            var weather = await _weatherRepository.GetWeatherAsync(cityName, cts);
+            
+            _cts = new CancellationTokenSource();
+
+            var weather = await _weatherRepository.GetWeatherAsync(cityName, _cts);
 
             weather = SetWeatherDescription(weather);
 
@@ -57,8 +60,10 @@ namespace BL.Services
         public async Task<string> GetMaxTemperatureAsync(IEnumerable<string> cityNames)
         {
             _validator.ValidateCityNames(cityNames);
+            _cts = new CancellationTokenSource();
+            _cts.CancelAfter(_config.MaxWaitingTime);
 
-            var maxTemps = await _weatherRepository.GetTemperaturesAsync(cityNames);
+            var maxTemps = await _weatherRepository.GetTemperaturesAsync(cityNames, _cts);
 
             var responseMessage = new StringBuilder();
 
@@ -72,14 +77,19 @@ namespace BL.Services
                         responseMessage.Append($"City: {temp.CityName}. Error: Invalid city name. Timer: {temp.RunTime} ms.\n");                        
                     else if(temp.Canceled == 0)
                         responseMessage.Append($"City: {temp.CityName}. Temperature: {temp.Temp}°C. Timer: {temp.RunTime} ms.\n");
+                    else if(temp.Canceled > 0)
+                        responseMessage.Append($"Weather request for {temp.CityName} was canceled due to a timeout.\n");
                 }
             }
 
             var maxTemp = CalculateTotalsForMessage(maxTemps);
 
-            responseMessage.AppendLine(
+            if (maxTemp.SuccessfullRequest > 0)
+                responseMessage.AppendLine(
 @$"City with the highest temperature {maxTemp.Temp}°C: {maxTemp.CityName}.
 Successful request count: {maxTemp.SuccessfullRequest}, failed: {maxTemp.FailedRequest}, canceled: {maxTemp.Canceled}.");
+            else
+                responseMessage.AppendLine($"No successful requests. Failed requests count: {maxTemp.FailedRequest}, canceled: {maxTemp.Canceled}.");
 
             return responseMessage.ToString();
         }
