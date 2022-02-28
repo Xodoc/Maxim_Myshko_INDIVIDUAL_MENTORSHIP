@@ -106,7 +106,6 @@ namespace DAL.Repositories
             }
             catch (OperationCanceledException)
             {
-                Console.WriteLine("1");
             }
             finally
             {
