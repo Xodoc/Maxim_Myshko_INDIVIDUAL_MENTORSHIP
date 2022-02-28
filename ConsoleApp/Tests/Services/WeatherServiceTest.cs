@@ -42,7 +42,7 @@ namespace Tests.Services
 
             var expectedMessage = $"\nIn {expected.Name} {expected.Main.Temp}°C now. {expected.Weather[0].Description}\n";
 
-            _weatherRepositoryMock.Setup(x => x.GetWeatherAsync(It.IsAny<string>(), It.IsAny<CancellationTokenSource>()))
+            _weatherRepositoryMock.Setup(x => x.GetWeatherAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(expected);
 
             //Act
@@ -57,7 +57,7 @@ namespace Tests.Services
         public async void GetWeatherAsync_WhenSendingIncorrectCityName_GettingWeatherMessageFailed(string cityName)
         {
             //Arrange                         
-            _weatherRepositoryMock.Setup(x => x.GetWeatherAsync(It.IsAny<string>(), It.IsAny<CancellationTokenSource>()))
+            _weatherRepositoryMock.Setup(x => x.GetWeatherAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(() => throw new ValidatorException("Incorrectly entered data"));
 
             //Act
@@ -137,7 +137,8 @@ namespace Tests.Services
             var expectedMessage = $"City with the highest temperature {info.Temp}°C: {info.CityName}." +
                   $"\r\nSuccessful request count: {info.SuccessfullRequest}, failed: {info.FailedRequest}, canceled: {info.Canceled}.\r\n";
 
-            _weatherRepositoryMock.Setup(x => x.GetTemperaturesAsync(It.IsAny<IEnumerable<string>>())).ReturnsAsync(expectedCopy);
+            _weatherRepositoryMock.Setup(x => x.GetTemperaturesAsync(It.IsAny<IEnumerable<string>>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(expectedCopy);
 
             //Act
             var actualResult = await _weatherService.GetMaxTemperatureAsync(cityNames);
@@ -153,7 +154,7 @@ namespace Tests.Services
             var input = new List<string>();
             var expectedMessage = "Invalid data entered";
 
-            _weatherRepositoryMock.Setup(x => x.GetTemperaturesAsync(It.IsAny<List<string>>()))
+            _weatherRepositoryMock.Setup(x => x.GetTemperaturesAsync(It.IsAny<List<string>>(), It.IsAny<CancellationToken>()))
                 .Throws(new ValidatorException("Invalid data entered"));
 
             //Act

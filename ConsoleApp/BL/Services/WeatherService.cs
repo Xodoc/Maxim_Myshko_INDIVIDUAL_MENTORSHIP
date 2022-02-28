@@ -30,10 +30,10 @@ namespace BL.Services
         public async Task<string> GetWeatherAsync(string cityName)
         {
             _validator.ValidateCityName(cityName);
-            
+
             _cts = new CancellationTokenSource();
 
-            var weather = await _weatherRepository.GetWeatherAsync(cityName, _cts);
+            var weather = await _weatherRepository.GetWeatherAsync(cityName, _cts.Token);
 
             weather = SetWeatherDescription(weather);
 
@@ -63,7 +63,9 @@ namespace BL.Services
             _cts = new CancellationTokenSource();
             _cts.CancelAfter(_config.MaxWaitingTime);
 
-            var maxTemps = await _weatherRepository.GetTemperaturesAsync(cityNames, _cts);
+            var maxTemps = await _weatherRepository.GetTemperaturesAsync(cityNames, _cts.Token);
+
+            var maxTemp = CalculateTotalsForMessage(maxTemps);
 
             var responseMessage = new StringBuilder();
 
@@ -74,15 +76,13 @@ namespace BL.Services
                 foreach (var temp in maxTemps)
                 {
                     if (temp.FailedRequest > 0 && temp.Canceled == 0)
-                        responseMessage.Append($"City: {temp.CityName}. Error: Invalid city name. Timer: {temp.RunTime} ms.\n");                        
-                    else if(temp.Canceled == 0)
+                        responseMessage.Append($"City: {temp.CityName}. Error: Invalid city name. Timer: {temp.RunTime} ms.\n");
+                    else if (temp.Canceled == 0)
                         responseMessage.Append($"City: {temp.CityName}. Temperature: {temp.Temp}°C. Timer: {temp.RunTime} ms.\n");
-                    else if(temp.Canceled > 0)
+                    else if (temp.Canceled > 0)
                         responseMessage.Append($"Weather request for {temp.CityName} was canceled due to a timeout.\n");
                 }
             }
-
-            var maxTemp = CalculateTotalsForMessage(maxTemps);
 
             if (maxTemp.SuccessfullRequest > 0)
                 responseMessage.AppendLine(
@@ -101,11 +101,12 @@ Successful request count: {maxTemp.SuccessfullRequest}, failed: {maxTemp.FailedR
             var canceled = temps.Select(x => x.Canceled).Sum();
             var maxTemp = temps.FirstOrDefault(x => x.Temp == temps.Max(e => e.Temp));
 
-            maxTemp.FailedRequest = failedRequests;
-            maxTemp.SuccessfullRequest = successfullRequests;
-            maxTemp.Canceled = canceled;
+            var result = (TemperatureInfo)maxTemp.Clone();
+            result.FailedRequest = failedRequests;
+            result.SuccessfullRequest = successfullRequests;
+            result.Canceled = canceled;
 
-            return maxTemp;
+            return result;
         }
 
         private string SetDescription(double temp)
