@@ -9,13 +9,7 @@
   </ItemGroup>
   
   <ItemGroup>
-    <ProjectConfiguration Include="..\ConsoleApp\App.config" />
-  </ItemGroup>
-  
-  <ItemGroup>
-    <None Update="appsettings.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <ProjectConfiguration Include="..\ConsoleApp\appsettings.json" />
   </ItemGroup>
 
 </Project>

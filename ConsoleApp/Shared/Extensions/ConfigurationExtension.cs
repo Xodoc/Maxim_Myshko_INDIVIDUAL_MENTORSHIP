@@ -24,6 +24,7 @@ namespace Shared.Extensions
             configuration.MinDays = int.Parse(configurationRoot["MinDays"]);
             configuration.Hours = int.Parse(configurationRoot["Hours"]);
             configuration.IsDebug = bool.Parse(configurationRoot["IsDebug"]);
+            configuration.MaxWaitingTime = int.Parse(configurationRoot["MaxWaitingTime"]);
 
             return configuration;
         }

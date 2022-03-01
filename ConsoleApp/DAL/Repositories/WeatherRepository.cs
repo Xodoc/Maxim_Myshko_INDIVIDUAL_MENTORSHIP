@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace DAL.Repositories
@@ -25,7 +26,7 @@ namespace DAL.Repositories
             _config = config;
         }
 
-        public async Task<CurrentWeather> GetWeatherAsync(string cityName)
+        public async Task<CurrentWeather> GetWeatherAsync(string cityName, CancellationToken ct)
         {
             try
             {
@@ -35,6 +36,11 @@ namespace DAL.Repositories
                     return null;
 
                 var weather = await responseMessage.Content.ReadAsStringAsync();
+
+                if (ct.IsCancellationRequested == true)
+                {
+                    ct.ThrowIfCancellationRequested();
+                }
 
                 return JsonConvert.DeserializeObject<CurrentWeather>(weather);
             }
@@ -66,36 +72,37 @@ namespace DAL.Repositories
             return result;
         }
 
-        public async Task<List<TemperatureInfo>> GetTemperaturesAsync(IEnumerable<string> cityNames)
+        public async Task<List<TemperatureInfo>> GetTemperaturesAsync(IEnumerable<string> cityNames, CancellationToken ct)
         {
             var temperatures = new ConcurrentBag<TemperatureInfo>();
             var amountCities = cityNames.Count();
-
-            await cityNames.ParallelForEachAsync(async name =>
+            try
             {
-                var stopwatch = new Stopwatch();
-                var weather = new CurrentWeather();
-
-                if (_config.IsDebug)
+                await cityNames.ParallelForEachAsync(async name =>
                 {
+                    var stopwatch = new Stopwatch();
+                    var weather = new CurrentWeather();
+
                     stopwatch.Start();
-
-                    weather = await GetWeatherAsync(name);
-
+                    weather = await GetWeatherAsync(name, ct);
                     stopwatch.Stop();
-                }
-                else
-                {
-                    weather = await GetWeatherAsync(name);
-                }
 
-                var info = new TemperatureInfo();
+                    if (ct.IsCancellationRequested == true)
+                    {
+                        temperatures.Add(new TemperatureInfo { Canceled = 1 });
+                        return;
+                    }
 
-                info = SetTempInfo(info, weather, stopwatch, name);
+                    var info = SetTempInfo(weather, stopwatch, name);
 
-                temperatures.Add(info);
-            });
+                    temperatures.Add(info);
 
+                }, ct);
+            }
+            catch (OperationCanceledException)
+            {
+                Console.WriteLine("Some operations have been canceled");
+            }
             return temperatures.ToList();
         }
 
@@ -118,8 +125,10 @@ namespace DAL.Repositories
             }
         }
 
-        private TemperatureInfo SetTempInfo(TemperatureInfo info, CurrentWeather weather, Stopwatch stopwatch, string cityName)
+        private TemperatureInfo SetTempInfo(CurrentWeather weather, Stopwatch stopwatch, string cityName)
         {
+            var info = new TemperatureInfo();
+
             if (weather == null)
             {
                 info.FailedRequest++;

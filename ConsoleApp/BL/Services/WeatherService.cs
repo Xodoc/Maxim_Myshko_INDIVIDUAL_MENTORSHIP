@@ -8,6 +8,7 @@ using Shared.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace BL.Services
@@ -17,6 +18,7 @@ namespace BL.Services
         private readonly IWeatherRepository _weatherRepository;
         private readonly IValidator _validator;
         private readonly IConfiguration _config;
+        private CancellationTokenSource _cts;
 
         public WeatherService(IWeatherRepository weatherRepository, IValidator validator, IConfiguration config)
         {
@@ -29,7 +31,9 @@ namespace BL.Services
         {
             _validator.ValidateCityName(cityName);
 
-            var weather = await _weatherRepository.GetWeatherAsync(cityName);
+            _cts = new CancellationTokenSource();
+
+            var weather = await _weatherRepository.GetWeatherAsync(cityName, _cts.Token);
 
             weather = SetWeatherDescription(weather);
 
@@ -56,8 +60,12 @@ namespace BL.Services
         public async Task<string> GetMaxTemperatureAsync(IEnumerable<string> cityNames)
         {
             _validator.ValidateCityNames(cityNames);
+            _cts = new CancellationTokenSource();
+            _cts.CancelAfter(_config.MaxWaitingTime);
 
-            var maxTemps = await _weatherRepository.GetTemperaturesAsync(cityNames);
+            var maxTemps = await _weatherRepository.GetTemperaturesAsync(cityNames, _cts.Token);
+
+            var maxTemp = CalculateTotalsForMessage(maxTemps);
 
             var responseMessage = new StringBuilder();
 
@@ -67,18 +75,21 @@ namespace BL.Services
 
                 foreach (var temp in maxTemps)
                 {
-                    if (temp.FailedRequest > 0)
+                    if (temp.FailedRequest > 0 && temp.Canceled == 0)
                         responseMessage.Append($"City: {temp.CityName}. Error: Invalid city name. Timer: {temp.RunTime} ms.\n");
-                    else
+                    else if (temp.Canceled == 0)
                         responseMessage.Append($"City: {temp.CityName}. Temperature: {temp.Temp}°C. Timer: {temp.RunTime} ms.\n");
+                    else if (temp.Canceled > 0)
+                        responseMessage.Append($"Weather request for {temp.CityName} was canceled due to a timeout.\n");
                 }
             }
 
-            var maxTemp = CalculateTotalsForMessage(maxTemps);
-
-            responseMessage.AppendLine(
+            if (maxTemp.SuccessfullRequest > 0)
+                responseMessage.AppendLine(
 @$"City with the highest temperature {maxTemp.Temp}°C: {maxTemp.CityName}.
-Successful request count: {maxTemp.SuccessfullRequest}, failed: {maxTemp.FailedRequest}.");
+Successful request count: {maxTemp.SuccessfullRequest}, failed: {maxTemp.FailedRequest}, canceled: {maxTemp.Canceled}.");
+            else
+                responseMessage.AppendLine($"No successful requests. Failed requests count: {maxTemp.FailedRequest}, canceled: {maxTemp.Canceled}.");
 
             return responseMessage.ToString();
         }
@@ -87,12 +98,15 @@ Successful request count: {maxTemp.SuccessfullRequest}, failed: {maxTemp.FailedR
         {
             var successfullRequests = temps.Select(x => x.SuccessfullRequest).Sum();
             var failedRequests = temps.Select(x => x.FailedRequest).Sum();
+            var canceled = temps.Select(x => x.Canceled).Sum();
             var maxTemp = temps.FirstOrDefault(x => x.Temp == temps.Max(e => e.Temp));
 
-            maxTemp.FailedRequest = failedRequests;
-            maxTemp.SuccessfullRequest = successfullRequests;
+            var result = (TemperatureInfo)maxTemp.Clone();
+            result.FailedRequest = failedRequests;
+            result.SuccessfullRequest = successfullRequests;
+            result.Canceled = canceled;
 
-            return maxTemp;
+            return result;
         }
 
         private string SetDescription(double temp)

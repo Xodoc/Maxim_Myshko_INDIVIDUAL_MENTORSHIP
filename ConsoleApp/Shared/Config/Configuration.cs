@@ -23,5 +23,7 @@ namespace Shared.Config
         public int Hours { get; set; }
 
         public bool IsDebug { get; set; }
+
+        public int MaxWaitingTime { get; set; }
     }
 }
