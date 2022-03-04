@@ -1,9 +1,13 @@
-﻿namespace DAL.Entities.WeatherForecastEntities
+﻿using Newtonsoft.Json;
+
+namespace DAL.Entities.WeatherForecastEntities
 {
     public class Geolocation
     {
-        public double lat { get; set; }
+        [JsonProperty("lat")]
+        public double Lat { get; set; }
 
-        public double lon { get; set; }
+        [JsonProperty("Lon")]
+        public double Lon { get; set; }
     }
 }

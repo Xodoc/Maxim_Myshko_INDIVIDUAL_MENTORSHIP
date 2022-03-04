@@ -1,5 +1,6 @@
 ﻿using BL.Interfaces;
 using BL.Validators.CustomExceptions;
+using DAL.Entities.WeatherHistoryEntities;
 using Shared.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,18 +27,26 @@ namespace BL.Validators
         public void ValidateModel(string cityName, int days)
         {
             ValidateCityName(cityName);
-            
+
             if (days > _config.MaxDays || days <= _config.MinDays)
             {
                 throw new ValidatorException("\nInvalid data entered");
             }
         }
 
-        public void ValidateCityNames(IEnumerable<string> cityNames) 
+        public void ValidateCityNames(IEnumerable<string> cityNames)
         {
             if (cityNames.Count() == 0 || cityNames == null)
             {
                 throw new ValidatorException("\nInvalid data entered");
+            }
+        }
+
+        public void ValidateWeatherHistories(WeatherHistory history)
+        {
+            if (history == null)
+            {
+                throw new ValidatorException("Invalid data in appsettings.json");
             }
         }
     }

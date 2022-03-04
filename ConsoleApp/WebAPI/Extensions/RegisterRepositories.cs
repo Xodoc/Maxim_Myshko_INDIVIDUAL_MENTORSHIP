@@ -8,6 +8,7 @@ namespace WebAPI.Extensions
         public static IServiceCollection AddRepositories(this IServiceCollection services)
         {
             services.AddScoped<IWeatherRepository, WeatherRepository>();
+            services.AddScoped<IWeatherHistoryRepository, WeatherHistoryRepository>();
 
             return services;
         }

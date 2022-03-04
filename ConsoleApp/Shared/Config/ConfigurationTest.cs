@@ -1,5 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Shared.Extensions;
+using System;
+using System.Linq;
 
 namespace Shared.Config
 {
@@ -29,6 +31,12 @@ namespace Shared.Config
 
         public int MaxWaitingTime { get; }
 
+        public string URLHistory { get; }
+
+        public string[] CityNames { get; }
+
+        public DateTime DateFromLastFiveDays { get; }
+
         public ConfigurationTest()
         {
             var configuration = _configuration.PopulateConfigFromAppSettings();
@@ -44,6 +52,11 @@ namespace Shared.Config
             Hours = int.Parse(configuration["Hours"]);
             IsDebug = bool.Parse(configuration["IsDebug"]);
             MaxWaitingTime = int.Parse(configuration["MaxWaitingTime"]);
+            URLHistory = configuration["URLHistory"];
+            CityNames = configuration.GetSection("CityNames")
+                                                       .GetChildren()
+                                                       .Select(x => x.Value)
+                                                       .ToArray();
         }
     }
 }

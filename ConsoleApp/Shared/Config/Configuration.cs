@@ -25,5 +25,9 @@ namespace Shared.Config
         public bool IsDebug { get; set; }
 
         public int MaxWaitingTime { get; set; }
+
+        public string URLHistory { get; set; }
+
+        public string[] CityNames { get; set; }
     }
 }

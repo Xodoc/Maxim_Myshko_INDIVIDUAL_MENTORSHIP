@@ -57,7 +57,7 @@ namespace DAL.Repositories
             if (coord == null)
                 return null;
 
-            var url = $"{_config.Forecast}&lat={coord.lat}&lon={coord.lon}&units={_config.Units}&appid={_config.APIKey}";
+            var url = $"{_config.Forecast}lat={coord.Lat}&lon={coord.Lon}&units={_config.Units}&appid={_config.APIKey}";
 
             var responseMessage = await _client.GetAsync(url);
 

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using DAL.Entities.WeatherHistoryEntities;
+using System.Collections.Generic;
 
 namespace BL.Interfaces
 {
@@ -9,5 +10,7 @@ namespace BL.Interfaces
         void ValidateModel(string cityName, int days);
 
         void ValidateCityNames(IEnumerable<string> cityNames);
+
+        void ValidateWeatherHistories(WeatherHistory history);
     }
 }
