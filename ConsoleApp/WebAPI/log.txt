@@ -1098,3 +1098,451 @@ dbug: 04.03.2022 03:35:41.864 CoreEventId.SaveChangesCompleted[10005] (Microsoft
       SaveChanges completed for 'ApplicationDbContext' with 4 entities written to the database.
 dbug: 04.03.2022 03:35:41.867 CoreEventId.ContextDisposed[10407] (Microsoft.EntityFrameworkCore.Infrastructure) 
       'ApplicationDbContext' disposed.
+info: 04.03.2022 22:53:49.374 CoreEventId.ContextInitialized[10403] (Microsoft.EntityFrameworkCore.Infrastructure) 
+      Entity Framework Core 5.0.14 initialized 'ApplicationDbContext' using provider 'Microsoft.EntityFrameworkCore.SqlServer' with options: None
+dbug: 04.03.2022 22:53:50.524 CoreEventId.ValueGenerated[10808] (Microsoft.EntityFrameworkCore.ChangeTracking) 
+      'ApplicationDbContext' generated a temporary value for the property 'Id.WeatherHistory'. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see key values.
+dbug: 04.03.2022 22:53:50.599 CoreEventId.StartedTracking[10806] (Microsoft.EntityFrameworkCore.ChangeTracking) 
+      Context 'ApplicationDbContext' started tracking 'WeatherHistory' entity. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see key values.
+dbug: 04.03.2022 22:53:50.600 CoreEventId.ValueGenerated[10808] (Microsoft.EntityFrameworkCore.ChangeTracking) 
+      'ApplicationDbContext' generated a temporary value for the property 'Id.WeatherHistory'. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see key values.
+dbug: 04.03.2022 22:53:50.600 CoreEventId.StartedTracking[10806] (Microsoft.EntityFrameworkCore.ChangeTracking) 
+      Context 'ApplicationDbContext' started tracking 'WeatherHistory' entity. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see key values.
+dbug: 04.03.2022 22:53:50.600 CoreEventId.ValueGenerated[10808] (Microsoft.EntityFrameworkCore.ChangeTracking) 
+      'ApplicationDbContext' generated a temporary value for the property 'Id.WeatherHistory'. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see key values.
+dbug: 04.03.2022 22:53:50.600 CoreEventId.StartedTracking[10806] (Microsoft.EntityFrameworkCore.ChangeTracking) 
+      Context 'ApplicationDbContext' started tracking 'WeatherHistory' entity. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see key values.
+dbug: 04.03.2022 22:53:50.600 CoreEventId.ValueGenerated[10808] (Microsoft.EntityFrameworkCore.ChangeTracking) 
+      'ApplicationDbContext' generated a temporary value for the property 'Id.WeatherHistory'. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see key values.
+dbug: 04.03.2022 22:53:50.600 CoreEventId.StartedTracking[10806] (Microsoft.EntityFrameworkCore.ChangeTracking) 
+      Context 'ApplicationDbContext' started tracking 'WeatherHistory' entity. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see key values.
+dbug: 04.03.2022 22:53:50.605 CoreEventId.SaveChangesStarting[10004] (Microsoft.EntityFrameworkCore.Update) 
+      SaveChanges starting for 'ApplicationDbContext'.
+dbug: 04.03.2022 22:53:50.607 CoreEventId.DetectChangesStarting[10800] (Microsoft.EntityFrameworkCore.ChangeTracking) 
+      DetectChanges starting for 'ApplicationDbContext'.
+dbug: 04.03.2022 22:53:50.617 CoreEventId.DetectChangesCompleted[10801] (Microsoft.EntityFrameworkCore.ChangeTracking) 
+      DetectChanges completed for 'ApplicationDbContext'.
+dbug: 04.03.2022 22:53:50.707 RelationalEventId.ConnectionOpening[20000] (Microsoft.EntityFrameworkCore.Database.Connection) 
+      Opening connection to database 'mentorshipdb' on server '(localdb)\mssqllocaldb'.
+dbug: 04.03.2022 22:53:51.068 RelationalEventId.ConnectionOpened[20001] (Microsoft.EntityFrameworkCore.Database.Connection) 
+      Opened connection to database 'mentorshipdb' on server '(localdb)\mssqllocaldb'.
+dbug: 04.03.2022 22:53:51.071 RelationalEventId.TransactionStarting[20209] (Microsoft.EntityFrameworkCore.Database.Transaction) 
+      Beginning transaction with isolation level 'Unspecified'.
+dbug: 04.03.2022 22:53:51.082 RelationalEventId.TransactionStarted[20200] (Microsoft.EntityFrameworkCore.Database.Transaction) 
+      Began transaction with isolation level 'ReadCommitted'.
+dbug: 04.03.2022 22:53:51.121 RelationalEventId.BatchReadyForExecution[20700] (Microsoft.EntityFrameworkCore.Update) 
+      Executing 4 update commands as a batch.
+dbug: 04.03.2022 22:53:51.142 RelationalEventId.CommandCreating[20103] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Creating DbCommand for 'ExecuteReader'.
+dbug: 04.03.2022 22:53:51.145 RelationalEventId.CommandCreated[20104] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Created DbCommand for 'ExecuteReader' (2ms).
+dbug: 04.03.2022 22:53:51.172 RelationalEventId.CommandExecuting[20100] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executing DbCommand [Parameters=[@p0='?' (Size = 4000), @p1='?' (DbType = Double), @p2='?' (DbType = DateTime2), @p3='?' (Size = 4000), @p4='?' (DbType = Double), @p5='?' (DbType = DateTime2), @p6='?' (Size = 4000), @p7='?' (DbType = Double), @p8='?' (DbType = DateTime2), @p9='?' (Size = 4000), @p10='?' (DbType = Double), @p11='?' (DbType = DateTime2)], CommandType='Text', CommandTimeout='30']
+      SET NOCOUNT ON;
+      DECLARE @inserted0 TABLE ([Id] int, [_Position] [int]);
+      MERGE [WeatherHistories] USING (
+      VALUES (@p0, @p1, @p2, 0),
+      (@p3, @p4, @p5, 1),
+      (@p6, @p7, @p8, 2),
+      (@p9, @p10, @p11, 3)) AS i ([CityName], [Temp], [Time], _Position) ON 1=0
+      WHEN NOT MATCHED THEN
+      INSERT ([CityName], [Temp], [Time])
+      VALUES (i.[CityName], i.[Temp], i.[Time])
+      OUTPUT INSERTED.[Id], i._Position
+      INTO @inserted0;
+      
+      SELECT [t].[Id] FROM [WeatherHistories] t
+      INNER JOIN @inserted0 i ON ([t].[Id] = [i].[Id])
+      ORDER BY [i].[_Position];
+info: 04.03.2022 22:53:51.243 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (71ms) [Parameters=[@p0='?' (Size = 4000), @p1='?' (DbType = Double), @p2='?' (DbType = DateTime2), @p3='?' (Size = 4000), @p4='?' (DbType = Double), @p5='?' (DbType = DateTime2), @p6='?' (Size = 4000), @p7='?' (DbType = Double), @p8='?' (DbType = DateTime2), @p9='?' (Size = 4000), @p10='?' (DbType = Double), @p11='?' (DbType = DateTime2)], CommandType='Text', CommandTimeout='30']
+      SET NOCOUNT ON;
+      DECLARE @inserted0 TABLE ([Id] int, [_Position] [int]);
+      MERGE [WeatherHistories] USING (
+      VALUES (@p0, @p1, @p2, 0),
+      (@p3, @p4, @p5, 1),
+      (@p6, @p7, @p8, 2),
+      (@p9, @p10, @p11, 3)) AS i ([CityName], [Temp], [Time], _Position) ON 1=0
+      WHEN NOT MATCHED THEN
+      INSERT ([CityName], [Temp], [Time])
+      VALUES (i.[CityName], i.[Temp], i.[Time])
+      OUTPUT INSERTED.[Id], i._Position
+      INTO @inserted0;
+      
+      SELECT [t].[Id] FROM [WeatherHistories] t
+      INNER JOIN @inserted0 i ON ([t].[Id] = [i].[Id])
+      ORDER BY [i].[_Position];
+dbug: 04.03.2022 22:53:51.270 CoreEventId.ForeignKeyChangeDetected[10803] (Microsoft.EntityFrameworkCore.ChangeTracking) 
+      The foreign key property 'WeatherHistory.Id' was detected as changed. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see property values.
+dbug: 04.03.2022 22:53:51.275 CoreEventId.ForeignKeyChangeDetected[10803] (Microsoft.EntityFrameworkCore.ChangeTracking) 
+      The foreign key property 'WeatherHistory.Id' was detected as changed. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see property values.
+dbug: 04.03.2022 22:53:51.275 CoreEventId.ForeignKeyChangeDetected[10803] (Microsoft.EntityFrameworkCore.ChangeTracking) 
+      The foreign key property 'WeatherHistory.Id' was detected as changed. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see property values.
+dbug: 04.03.2022 22:53:51.275 CoreEventId.ForeignKeyChangeDetected[10803] (Microsoft.EntityFrameworkCore.ChangeTracking) 
+      The foreign key property 'WeatherHistory.Id' was detected as changed. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see property values.
+dbug: 04.03.2022 22:53:51.280 RelationalEventId.DataReaderDisposing[20300] (Microsoft.EntityFrameworkCore.Database.Command) 
+      A data reader was disposed.
+dbug: 04.03.2022 22:53:51.284 RelationalEventId.TransactionCommitting[20210] (Microsoft.EntityFrameworkCore.Database.Transaction) 
+      Committing transaction.
+dbug: 04.03.2022 22:53:51.288 RelationalEventId.TransactionCommitted[20202] (Microsoft.EntityFrameworkCore.Database.Transaction) 
+      Committed transaction.
+dbug: 04.03.2022 22:53:51.291 RelationalEventId.ConnectionClosing[20002] (Microsoft.EntityFrameworkCore.Database.Connection) 
+      Closing connection to database 'mentorshipdb' on server '(localdb)\mssqllocaldb'.
+dbug: 04.03.2022 22:53:51.296 RelationalEventId.ConnectionClosed[20003] (Microsoft.EntityFrameworkCore.Database.Connection) 
+      Closed connection to database 'mentorshipdb' on server '(localdb)\mssqllocaldb'.
+dbug: 04.03.2022 22:53:51.298 RelationalEventId.TransactionDisposed[20204] (Microsoft.EntityFrameworkCore.Database.Transaction) 
+      Disposing transaction.
+dbug: 04.03.2022 22:53:51.305 CoreEventId.StateChanged[10807] (Microsoft.EntityFrameworkCore.ChangeTracking) 
+      An entity of type 'WeatherHistory' tracked by 'ApplicationDbContext' changed state from 'Added' to 'Unchanged'. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see key values.
+dbug: 04.03.2022 22:53:51.306 CoreEventId.StateChanged[10807] (Microsoft.EntityFrameworkCore.ChangeTracking) 
+      An entity of type 'WeatherHistory' tracked by 'ApplicationDbContext' changed state from 'Added' to 'Unchanged'. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see key values.
+dbug: 04.03.2022 22:53:51.306 CoreEventId.StateChanged[10807] (Microsoft.EntityFrameworkCore.ChangeTracking) 
+      An entity of type 'WeatherHistory' tracked by 'ApplicationDbContext' changed state from 'Added' to 'Unchanged'. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see key values.
+dbug: 04.03.2022 22:53:51.306 CoreEventId.StateChanged[10807] (Microsoft.EntityFrameworkCore.ChangeTracking) 
+      An entity of type 'WeatherHistory' tracked by 'ApplicationDbContext' changed state from 'Added' to 'Unchanged'. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see key values.
+dbug: 04.03.2022 22:53:51.307 CoreEventId.SaveChangesCompleted[10005] (Microsoft.EntityFrameworkCore.Update) 
+      SaveChanges completed for 'ApplicationDbContext' with 4 entities written to the database.
+dbug: 04.03.2022 22:53:51.309 CoreEventId.ContextDisposed[10407] (Microsoft.EntityFrameworkCore.Infrastructure) 
+      'ApplicationDbContext' disposed.
+info: 04.03.2022 22:55:16.629 CoreEventId.ContextInitialized[10403] (Microsoft.EntityFrameworkCore.Infrastructure) 
+      Entity Framework Core 5.0.14 initialized 'ApplicationDbContext' using provider 'Microsoft.EntityFrameworkCore.SqlServer' with options: None
+dbug: 04.03.2022 22:55:16.773 CoreEventId.QueryCompilationStarting[10111] (Microsoft.EntityFrameworkCore.Query) 
+      Compiling query expression: 
+      'DbSet<WeatherHistory>()
+          .AsNoTracking()
+          .Where(x => x.CityName == __cityName_0 && x.Time.Date == __Parse_1)'
+dbug: 04.03.2022 22:55:16.985 CoreEventId.QueryExecutionPlanned[10107] (Microsoft.EntityFrameworkCore.Query) 
+      Generated query execution expression: 
+      'queryContext => new SingleQueryingEnumerable<WeatherHistory>(
+          (RelationalQueryContext)queryContext, 
+          RelationalCommandCache.SelectExpression(
+              Projection Mapping:
+                  EmptyProjectionMember -> Dictionary<IProperty, int> { [Property: WeatherHistory.Id (int) Required PK AfterSave:Throw ValueGenerated.OnAdd, 0], [Property: WeatherHistory.CityName (string), 1], [Property: WeatherHistory.Temp (double) Required, 2], [Property: WeatherHistory.Time (DateTime) Required, 3], }
+              SELECT w.Id, w.CityName, w.Temp, w.Time
+              FROM WeatherHistories AS w
+              WHERE (w.CityName == @__cityName_0) && (CONVERT(date, w.Time) == @__Parse_1)), 
+          Func<QueryContext, DbDataReader, ResultContext, SingleQueryResultCoordinator, WeatherHistory>, 
+          DAL.Database.ApplicationDbContext, 
+          False, 
+          False
+      )'
+dbug: 04.03.2022 22:55:17.032 RelationalEventId.CommandCreating[20103] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Creating DbCommand for 'ExecuteReader'.
+dbug: 04.03.2022 22:55:17.032 RelationalEventId.CommandCreated[20104] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Created DbCommand for 'ExecuteReader' (0ms).
+dbug: 04.03.2022 22:55:17.032 RelationalEventId.ConnectionOpening[20000] (Microsoft.EntityFrameworkCore.Database.Connection) 
+      Opening connection to database 'mentorshipdb' on server '(localdb)\mssqllocaldb'.
+dbug: 04.03.2022 22:55:17.033 RelationalEventId.ConnectionOpened[20001] (Microsoft.EntityFrameworkCore.Database.Connection) 
+      Opened connection to database 'mentorshipdb' on server '(localdb)\mssqllocaldb'.
+dbug: 04.03.2022 22:55:17.033 RelationalEventId.CommandExecuting[20100] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executing DbCommand [Parameters=[@__cityName_0='?' (Size = 4000), @__Parse_1='?' (DbType = DateTime2)], CommandType='Text', CommandTimeout='30']
+      SELECT [w].[Id], [w].[CityName], [w].[Temp], [w].[Time]
+      FROM [WeatherHistories] AS [w]
+      WHERE ([w].[CityName] = @__cityName_0) AND (CONVERT(date, [w].[Time]) = @__Parse_1)
+info: 04.03.2022 22:55:17.060 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (11ms) [Parameters=[@__cityName_0='?' (Size = 4000), @__Parse_1='?' (DbType = DateTime2)], CommandType='Text', CommandTimeout='30']
+      SELECT [w].[Id], [w].[CityName], [w].[Temp], [w].[Time]
+      FROM [WeatherHistories] AS [w]
+      WHERE ([w].[CityName] = @__cityName_0) AND (CONVERT(date, [w].[Time]) = @__Parse_1)
+dbug: 04.03.2022 22:55:17.075 RelationalEventId.DataReaderDisposing[20300] (Microsoft.EntityFrameworkCore.Database.Command) 
+      A data reader was disposed.
+dbug: 04.03.2022 22:55:17.075 RelationalEventId.ConnectionClosing[20002] (Microsoft.EntityFrameworkCore.Database.Connection) 
+      Closing connection to database 'mentorshipdb' on server '(localdb)\mssqllocaldb'.
+dbug: 04.03.2022 22:55:17.075 RelationalEventId.ConnectionClosed[20003] (Microsoft.EntityFrameworkCore.Database.Connection) 
+      Closed connection to database 'mentorshipdb' on server '(localdb)\mssqllocaldb'.
+dbug: 04.03.2022 22:55:17.108 CoreEventId.ContextDisposed[10407] (Microsoft.EntityFrameworkCore.Infrastructure) 
+      'ApplicationDbContext' disposed.
+info: 04.03.2022 22:58:47.059 CoreEventId.ContextInitialized[10403] (Microsoft.EntityFrameworkCore.Infrastructure) 
+      Entity Framework Core 5.0.14 initialized 'ApplicationDbContext' using provider 'Microsoft.EntityFrameworkCore.SqlServer' with options: None
+dbug: 04.03.2022 22:59:27.016 CoreEventId.QueryCompilationStarting[10111] (Microsoft.EntityFrameworkCore.Query) 
+      Compiling query expression: 
+      'DbSet<WeatherHistory>()
+          .AsNoTracking()
+          .Where(x => x.CityName == __cityName_0 && x.Time.Date == __Parse_1)'
+dbug: 04.03.2022 22:59:27.213 CoreEventId.QueryExecutionPlanned[10107] (Microsoft.EntityFrameworkCore.Query) 
+      Generated query execution expression: 
+      'queryContext => new SingleQueryingEnumerable<WeatherHistory>(
+          (RelationalQueryContext)queryContext, 
+          RelationalCommandCache.SelectExpression(
+              Projection Mapping:
+                  EmptyProjectionMember -> Dictionary<IProperty, int> { [Property: WeatherHistory.Id (int) Required PK AfterSave:Throw ValueGenerated.OnAdd, 0], [Property: WeatherHistory.CityName (string), 1], [Property: WeatherHistory.Temp (double) Required, 2], [Property: WeatherHistory.Time (DateTime) Required, 3], }
+              SELECT w.Id, w.CityName, w.Temp, w.Time
+              FROM WeatherHistories AS w
+              WHERE (w.CityName == @__cityName_0) && (CONVERT(date, w.Time) == @__Parse_1)), 
+          Func<QueryContext, DbDataReader, ResultContext, SingleQueryResultCoordinator, WeatherHistory>, 
+          DAL.Database.ApplicationDbContext, 
+          False, 
+          False
+      )'
+dbug: 04.03.2022 22:59:27.294 RelationalEventId.CommandCreating[20103] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Creating DbCommand for 'ExecuteReader'.
+dbug: 04.03.2022 22:59:27.298 RelationalEventId.CommandCreated[20104] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Created DbCommand for 'ExecuteReader' (36ms).
+dbug: 04.03.2022 22:59:27.310 RelationalEventId.ConnectionOpening[20000] (Microsoft.EntityFrameworkCore.Database.Connection) 
+      Opening connection to database 'mentorshipdb' on server '(localdb)\mssqllocaldb'.
+dbug: 04.03.2022 22:59:27.600 RelationalEventId.ConnectionOpened[20001] (Microsoft.EntityFrameworkCore.Database.Connection) 
+      Opened connection to database 'mentorshipdb' on server '(localdb)\mssqllocaldb'.
+dbug: 04.03.2022 22:59:27.608 RelationalEventId.CommandExecuting[20100] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executing DbCommand [Parameters=[@__cityName_0='?' (Size = 4000), @__Parse_1='?' (DbType = DateTime2)], CommandType='Text', CommandTimeout='30']
+      SELECT [w].[Id], [w].[CityName], [w].[Temp], [w].[Time]
+      FROM [WeatherHistories] AS [w]
+      WHERE ([w].[CityName] = @__cityName_0) AND (CONVERT(date, [w].[Time]) = @__Parse_1)
+info: 04.03.2022 22:59:27.664 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (50ms) [Parameters=[@__cityName_0='?' (Size = 4000), @__Parse_1='?' (DbType = DateTime2)], CommandType='Text', CommandTimeout='30']
+      SELECT [w].[Id], [w].[CityName], [w].[Temp], [w].[Time]
+      FROM [WeatherHistories] AS [w]
+      WHERE ([w].[CityName] = @__cityName_0) AND (CONVERT(date, [w].[Time]) = @__Parse_1)
+dbug: 04.03.2022 22:59:27.679 RelationalEventId.DataReaderDisposing[20300] (Microsoft.EntityFrameworkCore.Database.Command) 
+      A data reader was disposed.
+dbug: 04.03.2022 22:59:27.683 RelationalEventId.ConnectionClosing[20002] (Microsoft.EntityFrameworkCore.Database.Connection) 
+      Closing connection to database 'mentorshipdb' on server '(localdb)\mssqllocaldb'.
+dbug: 04.03.2022 22:59:27.689 RelationalEventId.ConnectionClosed[20003] (Microsoft.EntityFrameworkCore.Database.Connection) 
+      Closed connection to database 'mentorshipdb' on server '(localdb)\mssqllocaldb'.
+dbug: 04.03.2022 22:59:32.133 CoreEventId.ContextDisposed[10407] (Microsoft.EntityFrameworkCore.Infrastructure) 
+      'ApplicationDbContext' disposed.
+info: 04.03.2022 23:00:03.291 CoreEventId.ContextInitialized[10403] (Microsoft.EntityFrameworkCore.Infrastructure) 
+      Entity Framework Core 5.0.14 initialized 'ApplicationDbContext' using provider 'Microsoft.EntityFrameworkCore.SqlServer' with options: None
+dbug: 04.03.2022 23:00:04.172 CoreEventId.ValueGenerated[10808] (Microsoft.EntityFrameworkCore.ChangeTracking) 
+      'ApplicationDbContext' generated a temporary value for the property 'Id.WeatherHistory'. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see key values.
+dbug: 04.03.2022 23:00:04.256 CoreEventId.StartedTracking[10806] (Microsoft.EntityFrameworkCore.ChangeTracking) 
+      Context 'ApplicationDbContext' started tracking 'WeatherHistory' entity. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see key values.
+dbug: 04.03.2022 23:00:04.257 CoreEventId.ValueGenerated[10808] (Microsoft.EntityFrameworkCore.ChangeTracking) 
+      'ApplicationDbContext' generated a temporary value for the property 'Id.WeatherHistory'. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see key values.
+dbug: 04.03.2022 23:00:04.257 CoreEventId.StartedTracking[10806] (Microsoft.EntityFrameworkCore.ChangeTracking) 
+      Context 'ApplicationDbContext' started tracking 'WeatherHistory' entity. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see key values.
+dbug: 04.03.2022 23:00:04.257 CoreEventId.ValueGenerated[10808] (Microsoft.EntityFrameworkCore.ChangeTracking) 
+      'ApplicationDbContext' generated a temporary value for the property 'Id.WeatherHistory'. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see key values.
+dbug: 04.03.2022 23:00:04.258 CoreEventId.StartedTracking[10806] (Microsoft.EntityFrameworkCore.ChangeTracking) 
+      Context 'ApplicationDbContext' started tracking 'WeatherHistory' entity. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see key values.
+dbug: 04.03.2022 23:00:04.258 CoreEventId.ValueGenerated[10808] (Microsoft.EntityFrameworkCore.ChangeTracking) 
+      'ApplicationDbContext' generated a temporary value for the property 'Id.WeatherHistory'. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see key values.
+dbug: 04.03.2022 23:00:04.258 CoreEventId.StartedTracking[10806] (Microsoft.EntityFrameworkCore.ChangeTracking) 
+      Context 'ApplicationDbContext' started tracking 'WeatherHistory' entity. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see key values.
+dbug: 04.03.2022 23:00:04.261 CoreEventId.SaveChangesStarting[10004] (Microsoft.EntityFrameworkCore.Update) 
+      SaveChanges starting for 'ApplicationDbContext'.
+dbug: 04.03.2022 23:00:04.264 CoreEventId.DetectChangesStarting[10800] (Microsoft.EntityFrameworkCore.ChangeTracking) 
+      DetectChanges starting for 'ApplicationDbContext'.
+dbug: 04.03.2022 23:00:04.278 CoreEventId.DetectChangesCompleted[10801] (Microsoft.EntityFrameworkCore.ChangeTracking) 
+      DetectChanges completed for 'ApplicationDbContext'.
+dbug: 04.03.2022 23:00:04.302 RelationalEventId.ConnectionOpening[20000] (Microsoft.EntityFrameworkCore.Database.Connection) 
+      Opening connection to database 'mentorshipdb' on server '(localdb)\mssqllocaldb'.
+dbug: 04.03.2022 23:00:04.303 RelationalEventId.ConnectionOpened[20001] (Microsoft.EntityFrameworkCore.Database.Connection) 
+      Opened connection to database 'mentorshipdb' on server '(localdb)\mssqllocaldb'.
+dbug: 04.03.2022 23:00:04.305 RelationalEventId.TransactionStarting[20209] (Microsoft.EntityFrameworkCore.Database.Transaction) 
+      Beginning transaction with isolation level 'Unspecified'.
+dbug: 04.03.2022 23:00:04.314 RelationalEventId.TransactionStarted[20200] (Microsoft.EntityFrameworkCore.Database.Transaction) 
+      Began transaction with isolation level 'ReadCommitted'.
+dbug: 04.03.2022 23:00:04.360 RelationalEventId.BatchReadyForExecution[20700] (Microsoft.EntityFrameworkCore.Update) 
+      Executing 4 update commands as a batch.
+dbug: 04.03.2022 23:00:04.373 RelationalEventId.CommandCreating[20103] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Creating DbCommand for 'ExecuteReader'.
+dbug: 04.03.2022 23:00:04.373 RelationalEventId.CommandCreated[20104] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Created DbCommand for 'ExecuteReader' (0ms).
+dbug: 04.03.2022 23:00:04.374 RelationalEventId.CommandExecuting[20100] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executing DbCommand [Parameters=[@p0='?' (Size = 4000), @p1='?' (DbType = Double), @p2='?' (DbType = DateTime2), @p3='?' (Size = 4000), @p4='?' (DbType = Double), @p5='?' (DbType = DateTime2), @p6='?' (Size = 4000), @p7='?' (DbType = Double), @p8='?' (DbType = DateTime2), @p9='?' (Size = 4000), @p10='?' (DbType = Double), @p11='?' (DbType = DateTime2)], CommandType='Text', CommandTimeout='30']
+      SET NOCOUNT ON;
+      DECLARE @inserted0 TABLE ([Id] int, [_Position] [int]);
+      MERGE [WeatherHistories] USING (
+      VALUES (@p0, @p1, @p2, 0),
+      (@p3, @p4, @p5, 1),
+      (@p6, @p7, @p8, 2),
+      (@p9, @p10, @p11, 3)) AS i ([CityName], [Temp], [Time], _Position) ON 1=0
+      WHEN NOT MATCHED THEN
+      INSERT ([CityName], [Temp], [Time])
+      VALUES (i.[CityName], i.[Temp], i.[Time])
+      OUTPUT INSERTED.[Id], i._Position
+      INTO @inserted0;
+      
+      SELECT [t].[Id] FROM [WeatherHistories] t
+      INNER JOIN @inserted0 i ON ([t].[Id] = [i].[Id])
+      ORDER BY [i].[_Position];
+info: 04.03.2022 23:00:04.385 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (5ms) [Parameters=[@p0='?' (Size = 4000), @p1='?' (DbType = Double), @p2='?' (DbType = DateTime2), @p3='?' (Size = 4000), @p4='?' (DbType = Double), @p5='?' (DbType = DateTime2), @p6='?' (Size = 4000), @p7='?' (DbType = Double), @p8='?' (DbType = DateTime2), @p9='?' (Size = 4000), @p10='?' (DbType = Double), @p11='?' (DbType = DateTime2)], CommandType='Text', CommandTimeout='30']
+      SET NOCOUNT ON;
+      DECLARE @inserted0 TABLE ([Id] int, [_Position] [int]);
+      MERGE [WeatherHistories] USING (
+      VALUES (@p0, @p1, @p2, 0),
+      (@p3, @p4, @p5, 1),
+      (@p6, @p7, @p8, 2),
+      (@p9, @p10, @p11, 3)) AS i ([CityName], [Temp], [Time], _Position) ON 1=0
+      WHEN NOT MATCHED THEN
+      INSERT ([CityName], [Temp], [Time])
+      VALUES (i.[CityName], i.[Temp], i.[Time])
+      OUTPUT INSERTED.[Id], i._Position
+      INTO @inserted0;
+      
+      SELECT [t].[Id] FROM [WeatherHistories] t
+      INNER JOIN @inserted0 i ON ([t].[Id] = [i].[Id])
+      ORDER BY [i].[_Position];
+dbug: 04.03.2022 23:00:04.420 CoreEventId.ForeignKeyChangeDetected[10803] (Microsoft.EntityFrameworkCore.ChangeTracking) 
+      The foreign key property 'WeatherHistory.Id' was detected as changed. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see property values.
+dbug: 04.03.2022 23:00:04.425 CoreEventId.ForeignKeyChangeDetected[10803] (Microsoft.EntityFrameworkCore.ChangeTracking) 
+      The foreign key property 'WeatherHistory.Id' was detected as changed. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see property values.
+dbug: 04.03.2022 23:00:04.426 CoreEventId.ForeignKeyChangeDetected[10803] (Microsoft.EntityFrameworkCore.ChangeTracking) 
+      The foreign key property 'WeatherHistory.Id' was detected as changed. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see property values.
+dbug: 04.03.2022 23:00:04.426 CoreEventId.ForeignKeyChangeDetected[10803] (Microsoft.EntityFrameworkCore.ChangeTracking) 
+      The foreign key property 'WeatherHistory.Id' was detected as changed. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see property values.
+dbug: 04.03.2022 23:00:04.426 RelationalEventId.DataReaderDisposing[20300] (Microsoft.EntityFrameworkCore.Database.Command) 
+      A data reader was disposed.
+dbug: 04.03.2022 23:00:04.430 RelationalEventId.TransactionCommitting[20210] (Microsoft.EntityFrameworkCore.Database.Transaction) 
+      Committing transaction.
+dbug: 04.03.2022 23:00:04.433 RelationalEventId.TransactionCommitted[20202] (Microsoft.EntityFrameworkCore.Database.Transaction) 
+      Committed transaction.
+dbug: 04.03.2022 23:00:04.434 RelationalEventId.ConnectionClosing[20002] (Microsoft.EntityFrameworkCore.Database.Connection) 
+      Closing connection to database 'mentorshipdb' on server '(localdb)\mssqllocaldb'.
+dbug: 04.03.2022 23:00:04.434 RelationalEventId.ConnectionClosed[20003] (Microsoft.EntityFrameworkCore.Database.Connection) 
+      Closed connection to database 'mentorshipdb' on server '(localdb)\mssqllocaldb'.
+dbug: 04.03.2022 23:00:04.435 RelationalEventId.TransactionDisposed[20204] (Microsoft.EntityFrameworkCore.Database.Transaction) 
+      Disposing transaction.
+dbug: 04.03.2022 23:00:04.443 CoreEventId.StateChanged[10807] (Microsoft.EntityFrameworkCore.ChangeTracking) 
+      An entity of type 'WeatherHistory' tracked by 'ApplicationDbContext' changed state from 'Added' to 'Unchanged'. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see key values.
+dbug: 04.03.2022 23:00:04.443 CoreEventId.StateChanged[10807] (Microsoft.EntityFrameworkCore.ChangeTracking) 
+      An entity of type 'WeatherHistory' tracked by 'ApplicationDbContext' changed state from 'Added' to 'Unchanged'. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see key values.
+dbug: 04.03.2022 23:00:04.443 CoreEventId.StateChanged[10807] (Microsoft.EntityFrameworkCore.ChangeTracking) 
+      An entity of type 'WeatherHistory' tracked by 'ApplicationDbContext' changed state from 'Added' to 'Unchanged'. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see key values.
+dbug: 04.03.2022 23:00:04.443 CoreEventId.StateChanged[10807] (Microsoft.EntityFrameworkCore.ChangeTracking) 
+      An entity of type 'WeatherHistory' tracked by 'ApplicationDbContext' changed state from 'Added' to 'Unchanged'. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see key values.
+dbug: 04.03.2022 23:00:04.445 CoreEventId.SaveChangesCompleted[10005] (Microsoft.EntityFrameworkCore.Update) 
+      SaveChanges completed for 'ApplicationDbContext' with 4 entities written to the database.
+dbug: 04.03.2022 23:00:04.445 CoreEventId.ContextDisposed[10407] (Microsoft.EntityFrameworkCore.Infrastructure) 
+      'ApplicationDbContext' disposed.
+info: 04.03.2022 23:02:42.570 CoreEventId.ContextInitialized[10403] (Microsoft.EntityFrameworkCore.Infrastructure) 
+      Entity Framework Core 5.0.14 initialized 'ApplicationDbContext' using provider 'Microsoft.EntityFrameworkCore.SqlServer' with options: None
+dbug: 04.03.2022 23:02:50.235 CoreEventId.QueryCompilationStarting[10111] (Microsoft.EntityFrameworkCore.Query) 
+      Compiling query expression: 
+      'DbSet<WeatherHistory>()'
+dbug: 04.03.2022 23:02:50.375 CoreEventId.QueryExecutionPlanned[10107] (Microsoft.EntityFrameworkCore.Query) 
+      Generated query execution expression: 
+      'queryContext => new SingleQueryingEnumerable<WeatherHistory>(
+          (RelationalQueryContext)queryContext, 
+          RelationalCommandCache.SelectExpression(
+              Projection Mapping:
+                  EmptyProjectionMember -> Dictionary<IProperty, int> { [Property: WeatherHistory.Id (int) Required PK AfterSave:Throw ValueGenerated.OnAdd, 0], [Property: WeatherHistory.CityName (string), 1], [Property: WeatherHistory.Temp (double) Required, 2], [Property: WeatherHistory.Time (DateTime) Required, 3], }
+              SELECT w.Id, w.CityName, w.Temp, w.Time
+              FROM WeatherHistories AS w), 
+          Func<QueryContext, DbDataReader, ResultContext, SingleQueryResultCoordinator, WeatherHistory>, 
+          DAL.Database.ApplicationDbContext, 
+          False, 
+          False
+      )'
+dbug: 04.03.2022 23:02:50.470 RelationalEventId.CommandCreating[20103] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Creating DbCommand for 'ExecuteReader'.
+dbug: 04.03.2022 23:02:50.474 RelationalEventId.CommandCreated[20104] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Created DbCommand for 'ExecuteReader' (45ms).
+dbug: 04.03.2022 23:02:50.480 RelationalEventId.ConnectionOpening[20000] (Microsoft.EntityFrameworkCore.Database.Connection) 
+      Opening connection to database 'mentorshipdb' on server '(localdb)\mssqllocaldb'.
+dbug: 04.03.2022 23:02:50.796 RelationalEventId.ConnectionOpened[20001] (Microsoft.EntityFrameworkCore.Database.Connection) 
+      Opened connection to database 'mentorshipdb' on server '(localdb)\mssqllocaldb'.
+dbug: 04.03.2022 23:02:50.802 RelationalEventId.CommandExecuting[20100] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executing DbCommand [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [w].[Id], [w].[CityName], [w].[Temp], [w].[Time]
+      FROM [WeatherHistories] AS [w]
+info: 04.03.2022 23:02:50.853 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (45ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [w].[Id], [w].[CityName], [w].[Temp], [w].[Time]
+      FROM [WeatherHistories] AS [w]
+dbug: 04.03.2022 23:02:50.887 CoreEventId.StartedTracking[10806] (Microsoft.EntityFrameworkCore.ChangeTracking) 
+      Context 'ApplicationDbContext' started tracking 'WeatherHistory' entity. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see key values.
+dbug: 04.03.2022 23:02:50.920 CoreEventId.StartedTracking[10806] (Microsoft.EntityFrameworkCore.ChangeTracking) 
+      Context 'ApplicationDbContext' started tracking 'WeatherHistory' entity. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see key values.
+dbug: 04.03.2022 23:02:50.920 CoreEventId.StartedTracking[10806] (Microsoft.EntityFrameworkCore.ChangeTracking) 
+      Context 'ApplicationDbContext' started tracking 'WeatherHistory' entity. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see key values.
+dbug: 04.03.2022 23:02:50.920 CoreEventId.StartedTracking[10806] (Microsoft.EntityFrameworkCore.ChangeTracking) 
+      Context 'ApplicationDbContext' started tracking 'WeatherHistory' entity. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see key values.
+dbug: 04.03.2022 23:02:50.920 CoreEventId.StartedTracking[10806] (Microsoft.EntityFrameworkCore.ChangeTracking) 
+      Context 'ApplicationDbCoinfo: 04.03.2022 23:05:42.909 CoreEventId.ContextInitialized[10403] (Microsoft.EntityFrameworkCore.Infrastructure) 
+      Entity Framework Core 5.0.14 initialized 'ApplicationDbContext' using provider 'Microsoft.EntityFrameworkCore.SqlServer' with options: None
+dbug: 04.03.2022 23:05:43.039 CoreEventId.QueryCompilationStarting[10111] (Microsoft.EntityFrameworkCore.Query) 
+      Compiling query expression: 
+      'DbSet<WeatherHistory>()
+          .AsNoTracking()
+          .Where(x => x.CityName.ToLower() == __ToLower_0 && x.Time.Date == __Parse_1)'
+dbug: 04.03.2022 23:05:43.281 CoreEventId.QueryExecutionPlanned[10107] (Microsoft.EntityFrameworkCore.Query) 
+      Generated query execution expression: 
+      'queryContext => new SingleQueryingEnumerable<WeatherHistory>(
+          (RelationalQueryContext)queryContext, 
+          RelationalCommandCache.SelectExpression(
+              Projection Mapping:
+                  EmptyProjectionMember -> Dictionary<IProperty, int> { [Property: WeatherHistory.Id (int) Required PK AfterSave:Throw ValueGenerated.OnAdd, 0], [Property: WeatherHistory.CityName (string), 1], [Property: WeatherHistory.Temp (double) Required, 2], [Property: WeatherHistory.Time (DateTime) Required, 3], }
+              SELECT w.Id, w.CityName, w.Temp, w.Time
+              FROM WeatherHistories AS w
+              WHERE (LOWER(w.CityName) == @__ToLower_0) && (CONVERT(date, w.Time) == @__Parse_1)), 
+          Func<QueryContext, DbDataReader, ResultContext, SingleQueryResultCoordinator, WeatherHistory>, 
+          DAL.Database.ApplicationDbContext, 
+          False, 
+          False
+      )'
+dbug: 04.03.2022 23:05:43.397 RelationalEventId.CommandCreating[20103] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Creating DbCommand for 'ExecuteReader'.
+dbug: 04.03.2022 23:05:43.401 RelationalEventId.CommandCreated[20104] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Created DbCommand for 'ExecuteReader' (42ms).
+dbug: 04.03.2022 23:05:43.413 RelationalEventId.ConnectionOpening[20000] (Microsoft.EntityFrameworkCore.Database.Connection) 
+      Opening connection to database 'mentorshipdb' on server '(localdb)\mssqllocaldb'.
+dbug: 04.03.2022 23:05:43.692 RelationalEventId.ConnectionOpened[20001] (Microsoft.EntityFrameworkCore.Database.Connection) 
+      Opened connection to database 'mentorshipdb' on server '(localdb)\mssqllocaldb'.
+dbug: 04.03.2022 23:05:43.700 RelationalEventId.CommandExecuting[20100] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executing DbCommand [Parameters=[@__ToLower_0='?' (Size = 4000), @__Parse_1='?' (DbType = DateTime2)], CommandType='Text', CommandTimeout='30']
+      SELECT [w].[Id], [w].[CityName], [w].[Temp], [w].[Time]
+      FROM [WeatherHistories] AS [w]
+      WHERE (LOWER([w].[CityName]) = @__ToLower_0) AND (CONVERT(date, [w].[Time]) = @__Parse_1)
+info: 04.03.2022 23:05:43.778 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (71ms) [Parameters=[@__ToLower_0='?' (Size = 4000), @__Parse_1='?' (DbType = DateTime2)], CommandType='Text', CommandTimeout='30']
+      SELECT [w].[Id], [w].[CityName], [w].[Temp], [w].[Time]
+      FROM [WeatherHistories] AS [w]
+      WHERE (LOWER([w].[CityName]) = @__ToLower_0) AND (CONVERT(date, [w].[Time]) = @__Parse_1)
+dbug: 04.03.2022 23:05:43.800 RelationalEventId.DataReaderDisposing[20300] (Microsoft.EntityFrameworkCore.Database.Command) 
+      A data reader was disposed.
+dbug: 04.03.2022 23:05:43.803 RelationalEventId.ConnectionClosing[20002] (Microsoft.EntityFrameworkCore.Database.Connection) 
+      Closing connection to database 'mentorshipdb' on server '(localdb)\mssqllocaldb'.
+dbug: 04.03.2022 23:05:43.808 RelationalEventId.ConnectionClosed[20003] (Microsoft.EntityFrameworkCore.Database.Connection) 
+      Closed connection to database 'mentorshipdb' on server '(localdb)\mssqllocaldb'.
+dbug: 04.03.2022 23:05:43.845 CoreEventId.ContextDisposed[10407] (Microsoft.EntityFrameworkCore.Infrastructure) 
+      'ApplicationDbContext' disposed.
+info: 04.03.2022 23:07:07.385 CoreEventId.ContextInitialized[10403] (Microsoft.EntityFrameworkCore.Infrastructure) 
+      Entity Framework Core 5.0.14 initialized 'ApplicationDbContext' using provider 'Microsoft.EntityFrameworkCore.SqlServer' with options: None
+dbug: 04.03.2022 23:07:07.519 CoreEventId.QueryCompilationStarting[10111] (Microsoft.EntityFrameworkCore.Query) 
+      Compiling query expression: 
+      'DbSet<WeatherHistory>()
+          .AsNoTracking()
+          .Where(x => x.CityName.ToLower() == __ToLower_0 && x.Time.Date == __Parse_1)'
+dbug: 04.03.2022 23:07:07.746 CoreEventId.QueryExecutionPlanned[10107] (Microsoft.EntityFrameworkCore.Query) 
+      Generated query execution expression: 
+      'queryContext => new SingleQueryingEnumerable<WeatherHistory>(
+          (RelationalQueryContext)queryContext, 
+          RelationalCommandCache.SelectExpression(
+              Projection Mapping:
+                  EmptyProjectionMember -> Dictionary<IProperty, int> { [Property: WeatherHistory.Id (int) Required PK AfterSave:Throw ValueGenerated.OnAdd, 0], [Property: WeatherHistory.CityName (string), 1], [Property: WeatherHistory.Temp (double) Required, 2], [Property: WeatherHistory.Time (DateTime) Required, 3], }
+              SELECT w.Id, w.CityName, w.Temp, w.Time
+              FROM WeatherHistories AS w
+              WHERE (LOWER(w.CityName) == @__ToLower_0) && (CONVERT(date, w.Time) == @__Parse_1)), 
+          Func<QueryContext, DbDataReader, ResultContext, SingleQueryResultCoordinator, WeatherHistory>, 
+          DAL.Database.ApplicationDbContext, 
+          False, 
+          False
+      )'
+dbug: 04.03.2022 23:07:07.839 RelationalEventId.CommandCreating[20103] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Creating DbCommand for 'ExecuteReader'.
+dbug: 04.03.2022 23:07:07.844 RelationalEventId.CommandCreated[20104] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Created DbCommand for 'ExecuteReader' (47ms).
+dbug: 04.03.2022 23:07:07.856 RelationalEventId.ConnectionOpening[20000] (Microsoft.EntityFrameworkCore.Database.Connection) 
+      Opening connection to database 'mentorshipdb' on server '(localdb)\mssqllocaldb'.
+dbug: 04.03.2022 23:07:08.150 RelationalEventId.ConnectionOpened[20001] (Microsoft.EntityFrameworkCore.Database.Connection) 
+      Opened connection to database 'mentorshipdb' on server '(localdb)\mssqllocaldb'.
+dbug: 04.03.2022 23:07:08.159 RelationalEventId.CommandExecuting[20100] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executing DbCommand [Parameters=[@__ToLower_0='?' (Size = 4000), @__Parse_1='?' (DbType = DateTime2)], CommandType='Text', CommandTimeout='30']
+      SELECT [w].[Id], [w].[CityName], [w].[Temp], [w].[Time]
+      FROM [WeatherHistories] AS [w]
+      WHERE (LOWER([w].[CityName]) = @__ToLower_0) AND (CONVERT(date, [w].[Time]) = @__Parse_1)
+info: 04.03.2022 23:07:08.225 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (57ms) [Parameters=[@__ToLower_0='?' (Size = 4000), @__Parse_1='?' (DbType = DateTime2)], CommandType='Text', CommandTimeout='30']
+      SELECT [w].[Id], [w].[CityName], [w].[Temp], [w].[Time]
+      FROM [WeatherHistories] AS [w]
+      WHERE (LOWER([w].[CityName]) = @__ToLower_0) AND (CONVERT(date, [w].[Time]) = @__Parse_1)
+dbug: 04.03.2022 23:07:08.250 RelationalEventId.DataReaderDisposing[20300] (Microsoft.EntityFrameworkCore.Database.Command) 
+      A data reader was disposed.
+dbug: 04.03.2022 23:07:08.253 RelationalEventId.ConnectionClosing[20002] (Microsoft.EntityFrameworkCore.Database.Connection) 
+      Closing connection to database 'mentorshipdb' on server '(localdb)\mssqllocaldb'.
+dbug: 04.03.2022 23:07:08.260 RelationalEventId.ConnectionClosed[20003] (Microsoft.EntityFrameworkCore.Database.Connection) 
+      Closed connection to database 'mentorshipdb' on server '(localdb)\mssqllocaldb'.
+dbug: 04.03.2022 23:07:08.297 CoreEventId.ContextDisposed[10407] (Microsoft.EntityFrameworkCore.Infrastructure) 
+      'ApplicationDbContext' disposed.

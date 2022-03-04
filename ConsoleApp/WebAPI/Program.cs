@@ -1,4 +1,5 @@
 using BL.Interfaces;
+using BL.Mapping;
 using DAL.Database;
 using Hangfire;
 using Microsoft.EntityFrameworkCore;
@@ -12,7 +13,7 @@ var connection = builder.Configuration.GetConnectionString(ÑonnectionString);
 #region Service container
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connection));
 
-builder.Services.AddRepositories().AddServices();
+builder.Services.AddRepositories().AddServices().AddAutoMapper();
 builder.Services.AddHangfire(x => x.UseSqlServerStorage(connection));
 builder.Services.AddHangfireServer();
 

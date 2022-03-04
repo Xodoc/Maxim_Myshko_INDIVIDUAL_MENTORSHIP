@@ -1,5 +1,6 @@
 ﻿using BL.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using WebAPI.Models;
 
 namespace WebAPI.Controllers
 {
@@ -15,9 +16,9 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet("getWeatherHistory")]
-        public async Task<IActionResult> GetWeatherHistory() 
+        public async Task<IActionResult> GetWeatherHistory([FromQuery] WeatherHistoryRequest request)
         {
-            return Ok(await _weatherHistoryService.AddWeatherHistoryAsync());
+            return Ok(await _weatherHistoryService.GetWeatherHistoriesAsync(request.CityName, request.Date));
         }
     }
 }

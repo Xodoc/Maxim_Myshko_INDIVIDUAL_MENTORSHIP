@@ -5,23 +5,20 @@ using Microsoft.EntityFrameworkCore;
 using Shared.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace DAL.Repositories
 {
-    public class WeatherHistoryRepository : IWeatherHistoryRepository
+    public class WeatherHistoryRepository : GenericRepository<WeatherHistory>, IWeatherHistoryRepository
     {
-        protected readonly ApplicationDbContext _context;
-        private readonly DbSet<WeatherHistory> _dbSet;
         private readonly IConfiguration _config;
         private readonly IWeatherRepository _weatherRepository;
 
         public WeatherHistoryRepository(ApplicationDbContext context, IConfiguration config,
-            IWeatherRepository weatherRepository)
+            IWeatherRepository weatherRepository) : base(context)
         {
-            _context = context;
-            _dbSet = _context.Set<WeatherHistory>();
             _config = config;
             _weatherRepository = weatherRepository;
         }
@@ -29,7 +26,7 @@ namespace DAL.Repositories
         public async Task AddWeatherHistoryAsync(CancellationToken ct)
         {
             var weatherHistories = new List<WeatherHistory>();
-            
+
             foreach (var name in _config.CityNames)
             {
                 var weather = await _weatherRepository.GetWeatherAsync(name, ct);
@@ -42,12 +39,14 @@ namespace DAL.Repositories
                 weatherHistories.Add(weatherHistory);
             }
 
-            await SaveWeatherHistoryAsync(weatherHistories);
+            await BulkSaveAsync(weatherHistories);
         }
-        private async Task SaveWeatherHistoryAsync(List<WeatherHistory> histories)
+
+        public async Task<List<WeatherHistory>> GetWeatherHistoriesAsync(string cityName, string date)
         {
-            await _dbSet.AddRangeAsync(histories);
-            await _context.SaveChangesAsync();
+            return await _context.WeatherHistories.AsNoTracking()
+                .Where(x => x.CityName.ToLower() == cityName.ToLower() && x.Time.Date == DateTime.Parse(date))
+                .ToListAsync();
         }
     }
 }
