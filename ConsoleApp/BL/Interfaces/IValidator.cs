@@ -12,5 +12,7 @@ namespace BL.Interfaces
         void ValidateCityNames(IEnumerable<string> cityNames);
 
         void ValidateWeatherHistories(WeatherHistory history);
+
+        void ValidateConfigNames(IEnumerable<string> names);
     }
 }

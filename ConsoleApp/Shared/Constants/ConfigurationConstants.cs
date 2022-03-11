@@ -2,6 +2,6 @@
 {
     public static class ConfigurationConstants
     {
-        public const string СonnectionString = "DefaultConnection";
+        public const string ConnectionString = "DefaultConnection";
     }
 }

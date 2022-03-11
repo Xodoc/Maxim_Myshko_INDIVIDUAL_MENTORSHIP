@@ -4,9 +4,9 @@ namespace BL.DTOs
 {
     public class WeatherHistoryDTO
     {
-        public string CityName { get; set; }
+        public int CityId { get; set; }
 
-        public DateTime Time { get; set; }
+        public DateTime Timestamp { get; set; }
 
         public double Temp { get; set; }
     }

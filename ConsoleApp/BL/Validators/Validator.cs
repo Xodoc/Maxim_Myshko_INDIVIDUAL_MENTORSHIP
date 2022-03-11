@@ -49,5 +49,13 @@ namespace BL.Validators
                 throw new ValidatorException("Invalid data in appsettings.json");
             }
         }
+
+        public void ValidateConfigNames(IEnumerable<string> names) 
+        {
+            if (names.Contains(string.Empty)) 
+            {
+                throw new ValidatorException("Some names in config are empty");
+            }
+        }
     }
 }

@@ -17,6 +17,19 @@ namespace DAL.Repositories
             _dbSet = _context.Set<TEntity>();
         }
 
+        public virtual async Task<TEntity> GetByIdAsync(int id) 
+        {
+            return await _dbSet.FindAsync(id);
+        }
+
+        public virtual async Task<TEntity> CreateAsync(TEntity entity) 
+        {
+            await _dbSet.AddAsync(entity);
+            await _context.SaveChangesAsync();
+
+            return entity;
+        }
+
         public virtual async Task BulkSaveAsync(List<TEntity> entities)
         {
             await _dbSet.AddRangeAsync(entities);
