@@ -5,7 +5,6 @@ using DAL.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System.ComponentModel;
 using WindowsBackgroundService;
 using WindowsBackgroundService.Extensions;
 using static Shared.Constants.ConfigurationConstants;
@@ -31,7 +30,7 @@ class Program
          .AddRepositories()
          .AddServices()
          .AddAutoMapper()
-         .AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connection), ServiceLifetime.Transient)//Transient ain't solve the problem
+         .AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connection))
          .BuildServiceProvider();
 
         _weatherHistoryService = serviceProvider.GetService<IWeatherHistoryService>();
@@ -60,37 +59,16 @@ class Program
         RegisterAndGetServices();
 
         var cityNames = await _cityService.CheckAndCreateCitiesAsync();
-        
+
         var timeStamps = _config.GetSection("TimeInterval").GetChildren().Select(x => double.Parse(x.Value)).ToArray();
 
-        var worker = new BackgroundWorker
-        {
-            WorkerSupportsCancellation = true
-        };
-        // Variant 3
-        //worker.DoWork += async (obj, ea) =>
-        //{
-        // Variant 4
         await Parallel.ForEachAsync(cityNames, async (name, token) =>
         {
             var index = cityNames.IndexOf(name);
 
             await RunServiceAsync(name, timeStamps[index], token);
         });
-        //foreach (var name in cityNames)
-        //{
-        // Variant 1
-        //    CancellationToken token = new();
-        //    new Thread(async () => await RunServiceAsync(name, timeStamps[cityNames.IndexOf(name)], token)).Start();
-        
-        //  Variant 2
-        //    //Parallel.Invoke(async () =>
-        //    //await RunServiceAsync(name, timeStamps[cityNames.IndexOf(name)], token));
-        //}
-        //};
-        //worker.RunWorkerAsync();
 
         Exit();
-        //worker.CancelAsync();
     }
 }

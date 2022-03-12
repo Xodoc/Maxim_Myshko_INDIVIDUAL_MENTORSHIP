@@ -22,8 +22,8 @@ namespace WindowsBackgroundService
             while (!stoppingToken.IsCancellationRequested)
             {
                 await _weatherHistoryService.AddWeatherHistoryAsync(_city, stoppingToken);
-                //Console.WriteLine("Data was saved!");
-                await Task.Delay(TimeSpan.FromSeconds(_timeInterval), stoppingToken);
+                
+                await Task.Delay(TimeSpan.FromMinutes(_timeInterval), stoppingToken);
             }
         }
     }

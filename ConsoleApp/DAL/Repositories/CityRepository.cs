@@ -25,7 +25,7 @@ namespace DAL.Repositories
                 {
                     var newCity = new City { CityName = name };
 
-                    cities.Add(await CreateAsync(newCity));
+                    cities.Add(await base.CreateAsync(newCity));
                 }
                 else 
                 {
