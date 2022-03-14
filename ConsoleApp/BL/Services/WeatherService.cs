@@ -4,6 +4,7 @@ using BL.Validators.CustomExceptions;
 using DAL.Entities;
 using DAL.Entities.WeatherForecastEntities;
 using DAL.Interfaces;
+using Serilog;
 using Shared.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,6 +38,8 @@ namespace BL.Services
 
             weather = SetWeatherDescription(weather);
 
+            Log.Information("Method GetWeatherAsync is complited!");
+
             return $"\nIn {weather.Name} {weather.Main.Temp}°C now. {weather.Weather.First().Description}\n";
         }
 
@@ -53,6 +56,8 @@ namespace BL.Services
 
             weatherForecastDtos.ForEach(x => responseMessage +=
                 $"{x.CityName} weather forecast:\nDay {numberOfDay++}: {x.Temp}°C. {x.Description}\n");
+
+            Log.Information("Method GetWeatherForecastAsync is complited!");
 
             return responseMessage;
         }
@@ -90,6 +95,8 @@ namespace BL.Services
 Successful request count: {maxTemp.SuccessfullRequest}, failed: {maxTemp.FailedRequest}, canceled: {maxTemp.Canceled}.");
             else
                 responseMessage.AppendLine($"No successful requests. Failed requests count: {maxTemp.FailedRequest}, canceled: {maxTemp.Canceled}.");
+
+            Log.Information("Method GetMaxTemperatureAsync is complited!");
 
             return responseMessage.ToString();
         }

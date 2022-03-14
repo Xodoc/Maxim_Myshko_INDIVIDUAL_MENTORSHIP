@@ -1,6 +1,7 @@
 using BL.Mapping;
 using DAL.Database;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 using WebAPI.Extensions;
 using static Shared.Constants.ConfigurationConstants;
 
@@ -25,6 +26,7 @@ namespace WebAPI
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+            Log.Logger = new LoggerConfiguration().ReadFrom.Configuration(Configuration).CreateLogger();
         }
 
         public void ConfigureServices(IServiceCollection services)
@@ -33,6 +35,7 @@ namespace WebAPI
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connection));
 
             services.AddRepositories().AddServices().AddAutoMapper();
+            services.AddLogging(x => x.AddSerilog());
 
             services.AddControllers();
             services.AddEndpointsApiExplorer();

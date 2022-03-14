@@ -17,7 +17,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IntegrationTests", "Integra
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebAPI", "WebAPI\WebAPI.csproj", "{13816A53-23EE-415B-B2BB-11F29BDF0B77}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WindowsBackgroundService", "WindowsBackgroundService\WindowsBackgroundService.csproj", "{3CDC8560-E75B-40BF-B2CF-DE85F38B6160}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WindowsBackgroundService", "HangfireService\WindowsBackgroundService.csproj", "{3CDC8560-E75B-40BF-B2CF-DE85F38B6160}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

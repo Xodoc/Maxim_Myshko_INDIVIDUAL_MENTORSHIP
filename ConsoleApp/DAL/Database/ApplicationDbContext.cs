@@ -1,5 +1,6 @@
 ﻿using DAL.Entities.WeatherHistoryEntities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -7,10 +8,12 @@ namespace DAL.Database
 {
     public class ApplicationDbContext : DbContext
     {
-        private readonly StreamWriter _logStream = new StreamWriter("log.txt", true);
+        private readonly ILoggerFactory _loggerFactory;
 
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, ILoggerFactory loggerFactory)
+            : base(options)
         {
+            _loggerFactory = loggerFactory;
         }
 
         public DbSet<City> Cities { get; set; }
@@ -18,19 +21,7 @@ namespace DAL.Database
 
         protected override void OnConfiguring(DbContextOptionsBuilder builder)
         {
-            builder.LogTo(_logStream.WriteLine);
-        }
-
-        public override void Dispose()
-        {
-            base.Dispose();
-            _logStream.Dispose();
-        }
-
-        public override async ValueTask DisposeAsync()
-        {
-            await base.DisposeAsync();
-            await _logStream.DisposeAsync();
+            builder.UseLoggerFactory(_loggerFactory);
         }
     }
 }

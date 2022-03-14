@@ -1,6 +1,8 @@
 ﻿using BL.DTOs;
 using BL.Interfaces;
 using Microsoft.Extensions.Hosting;
+using Serilog;
+using System.Diagnostics;
 
 namespace WindowsBackgroundService
 {
@@ -19,11 +21,23 @@ namespace WindowsBackgroundService
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
+            var stopwatch = new Stopwatch();
+
             while (!stoppingToken.IsCancellationRequested)
             {
+                stopwatch.Restart();
                 await _weatherHistoryService.AddWeatherHistoryAsync(_city, stoppingToken);
-                
-                await Task.Delay(TimeSpan.FromMinutes(_timeInterval), stoppingToken);
+                stopwatch.Stop();
+
+                var delta = _timeInterval - stopwatch.Elapsed.Seconds;
+
+                Log.Information($"Request to the city of {_city.CityName} is complited!" +
+                                $" Query execution time error: {delta} seconds.");
+
+                if (delta > 0)
+                {
+                    await Task.Delay(TimeSpan.FromSeconds(delta), stoppingToken);
+                }
             }
         }
     }

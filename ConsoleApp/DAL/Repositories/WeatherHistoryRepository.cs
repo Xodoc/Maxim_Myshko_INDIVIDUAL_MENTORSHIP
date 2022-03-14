@@ -28,16 +28,15 @@ namespace DAL.Repositories
 
         public async override Task<WeatherHistory> CreateAsync(WeatherHistory history)
         {
-            using (var scope = _scopeFactory.CreateScope()) 
-            {
-                var db = scope.ServiceProvider.GetService<ApplicationDbContext>();
+            using var scope = _scopeFactory.CreateScope();
 
-                await db.WeatherHistories.AddAsync(history);
+            var db = scope.ServiceProvider.GetService<ApplicationDbContext>();
 
-                await db.SaveChangesAsync();
+            await db.WeatherHistories.AddAsync(history);
 
-                return history;
-            }
+            await db.SaveChangesAsync();
+
+            return history;
         }
     }
 }
