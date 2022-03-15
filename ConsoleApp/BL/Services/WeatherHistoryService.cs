@@ -1,10 +1,9 @@
-﻿using AutoMapper;
-using BL.DTOs;
+﻿using BL.DTOs;
 using BL.Interfaces;
 using DAL.Entities.WeatherHistoryEntities;
 using DAL.Interfaces;
+using Serilog;
 using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -14,34 +13,28 @@ namespace BL.Services
     {
         private readonly IWeatherHistoryRepository _weatherHistoryRepository;
         private readonly IWeatherRepository _weatherRepository;
-        private readonly IMapper _mapper;
 
-        public WeatherHistoryService(IWeatherHistoryRepository weatherHistoryRepository, IWeatherRepository weatherRepository,
-            IMapper mapper)
+        public WeatherHistoryService(IWeatherHistoryRepository weatherHistoryRepository, IWeatherRepository weatherRepository)
         {
             _weatherHistoryRepository = weatherHistoryRepository;
             _weatherRepository = weatherRepository;
-            _mapper = mapper;
         }
 
         public async Task AddWeatherHistoryAsync(CityDTO city, CancellationToken token)
         {
+            Log.Information("Method AddWeatherHistoryAsync has been run!");
+
             var weather = await _weatherRepository.GetWeatherAsync(city.CityName, token);
             var weatherHistory = new WeatherHistory
             {
                 Timestapm = DateTime.Now,
                 CityId = city.Id,
                 Temp = weather.Main.Temp
-            };           
+            };
 
             await _weatherHistoryRepository.CreateAsync(weatherHistory);
-        }
 
-        public async Task<List<WeatherHistoryDTO>> GetWeatherHistoriesAsync(string cityName, string date)
-        {
-            var histories = await _weatherHistoryRepository.GetWeatherHistoriesAsync(cityName, date);
-
-            return _mapper.Map<List<WeatherHistoryDTO>>(histories);
+            Log.Information("Method AddWeatherHistoryAsync is complited!");
         }
     }
 }

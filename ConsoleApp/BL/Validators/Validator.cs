@@ -50,11 +50,14 @@ namespace BL.Validators
             }
         }
 
-        public void ValidateConfigNames(IEnumerable<string> names) 
+        public void ValidateConfigNames(IEnumerable<string> names)
         {
-            if (names.Contains(string.Empty)) 
+            foreach (var name in names)
             {
-                throw new ValidatorException("Some names in config are empty");
+                if (string.IsNullOrWhiteSpace(name) || name == string.Empty)
+                {
+                    throw new ValidatorException("Some names in config are empty");
+                }
             }
         }
     }

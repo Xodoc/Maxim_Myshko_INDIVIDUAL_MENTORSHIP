@@ -9,7 +9,7 @@ namespace WindowsBackgroundService.Extensions
         public static IServiceCollection AddRepositories(this IServiceCollection services)
         {
             services.AddScoped<IWeatherRepository, WeatherRepository>();
-            services.AddScoped<IWeatherHistoryRepository, WeatherHistoryRepository>();
+            services.AddTransient<IWeatherHistoryRepository, WeatherHistoryRepository>();
             services.AddScoped<ICityRepository, CityRepository>();
 
             return services;

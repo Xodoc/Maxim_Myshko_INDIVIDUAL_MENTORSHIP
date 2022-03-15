@@ -13,9 +13,8 @@ using static Shared.Constants.ConfigurationConstants;
 class Program
 {
     private static ICityService _cityService;
-    private static IWeatherHistoryService _weatherHistoryService;
     private static IConfiguration _config;
-
+    private static ServiceProvider _serviceProvider; 
     private static string GetConnectionString()
     {
         _config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
@@ -26,22 +25,25 @@ class Program
     private static void RegisterAndGetServices()
     {
         var connection = GetConnectionString();
+
         Log.Logger = new LoggerConfiguration().ReadFrom.Configuration(_config).CreateLogger();
+
         var serviceProvider = new ServiceCollection()
          .AddRepositories()
          .AddServices()
          .AddAutoMapper()
          .AddLogging(x => x.AddSerilog())
-         .AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connection))
+         .AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connection), ServiceLifetime.Transient)
          .BuildServiceProvider();
 
-        _weatherHistoryService = serviceProvider.GetService<IWeatherHistoryService>();
+        _serviceProvider= serviceProvider;
+
         _cityService = serviceProvider.GetService<ICityService>();
     }
 
     private static async Task RunServiceAsync(CityDTO city, double timeInterval, CancellationToken token)
     {
-        var service = new WindowsService(_weatherHistoryService, city, timeInterval);
+        var service = new WindowsService(_serviceProvider.GetService<IWeatherHistoryService>(), city, timeInterval);
 
         await service.StartAsync(token);
     }

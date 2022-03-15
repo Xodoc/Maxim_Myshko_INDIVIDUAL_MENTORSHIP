@@ -4,6 +4,7 @@ using DAL.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace DAL.Repositories
 {
@@ -13,27 +14,11 @@ namespace DAL.Repositories
         {
         }
 
-        public async Task<List<City>> CheckAndCreateCities(IEnumerable<string> cityNames)
+        public async Task<List<City>> GetCitiesByCityNameAsync(IEnumerable<string> cityNames)
         {
-            var cities = new List<City>();
+            var nameList = cityNames.ToList();
 
-            foreach (var name in cityNames)
-            {
-                var city = await _context.Cities.AsNoTracking().FirstOrDefaultAsync(x => x.CityName == name);
-
-                if (city == null)
-                {
-                    var newCity = new City { CityName = name };
-
-                    cities.Add(await base.CreateAsync(newCity));
-                }
-                else 
-                {
-                    cities.Add(city);
-                }
-            }
-
-            return cities;
+            return await _context.Cities.Where(c => nameList.Contains(c.CityName)).ToListAsync();
         }
     }
 }

@@ -20,7 +20,7 @@ namespace WindowsBackgroundService.Extensions
             });
             services.AddScoped<IWeatherService, WeatherService>();
             services.AddScoped<IValidator, Validator>();
-            services.AddScoped<IWeatherHistoryService, WeatherHistoryService>();
+            services.AddTransient<IWeatherHistoryService, WeatherHistoryService>();
             services.AddScoped<ICityService, CityService>();
 
             return services;

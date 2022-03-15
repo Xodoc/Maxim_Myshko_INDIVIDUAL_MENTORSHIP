@@ -19,24 +19,24 @@ namespace WindowsBackgroundService
             _timeInterval = timeInterval;
         }
 
-        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+        protected override async Task ExecuteAsync(CancellationToken token)
         {
             var stopwatch = new Stopwatch();
 
-            while (!stoppingToken.IsCancellationRequested)
+            while (!token.IsCancellationRequested)
             {
                 stopwatch.Restart();
-                await _weatherHistoryService.AddWeatherHistoryAsync(_city, stoppingToken);
+                await _weatherHistoryService.AddWeatherHistoryAsync(_city, token);
                 stopwatch.Stop();
 
                 var delta = _timeInterval - stopwatch.Elapsed.Seconds;
 
                 Log.Information($"Request to the city of {_city.CityName} is complited!" +
-                                $" Query execution time error: {delta} seconds.");
+                                $" Query execution time: {stopwatch.Elapsed.Seconds} seconds.");
 
                 if (delta > 0)
                 {
-                    await Task.Delay(TimeSpan.FromSeconds(delta), stoppingToken);
+                    await Task.Delay(TimeSpan.FromSeconds(delta), token);
                 }
             }
         }

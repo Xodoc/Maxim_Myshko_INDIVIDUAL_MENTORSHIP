@@ -30,6 +30,8 @@ namespace BL.Services
 
         public async Task<string> GetWeatherAsync(string cityName)
         {
+            Log.Information("Method GetWeatherAsync has been run!");
+
             _validator.ValidateCityName(cityName);
 
             _cts = new CancellationTokenSource();
@@ -45,6 +47,8 @@ namespace BL.Services
 
         public async Task<string> GetWeatherForecastAsync(string cityName, int days)
         {
+            Log.Information("Method GetWeatherForecastAsync has been run!");
+
             _validator.ValidateModel(cityName, days);
 
             var weatherForecast = await _weatherRepository.GetWeatherForecastAsync(cityName, days);
@@ -64,6 +68,8 @@ namespace BL.Services
 
         public async Task<string> GetMaxTemperatureAsync(IEnumerable<string> cityNames)
         {
+            Log.Information("Method GetMaxTemperatureAsync has been run!");
+
             _validator.ValidateCityNames(cityNames);
             _cts = new CancellationTokenSource();
             _cts.CancelAfter(_config.MaxWaitingTime);

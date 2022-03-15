@@ -6,6 +6,6 @@ namespace DAL.Interfaces
 {
     public interface ICityRepository : IGenericRepository<City>
     {
-        Task<List<City>> CheckAndCreateCities(IEnumerable<string> cities);
+        Task<List<City>> GetCitiesByCityNameAsync(IEnumerable<string> cityNames);
     }
 }
