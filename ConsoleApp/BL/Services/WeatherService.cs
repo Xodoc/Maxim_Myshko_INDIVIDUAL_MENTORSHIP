@@ -4,6 +4,7 @@ using BL.Validators.CustomExceptions;
 using DAL.Entities;
 using DAL.Entities.WeatherForecastEntities;
 using DAL.Interfaces;
+using Serilog;
 using Shared.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,6 +30,8 @@ namespace BL.Services
 
         public async Task<string> GetWeatherAsync(string cityName)
         {
+            Log.Information("Method GetWeatherAsync has been run!");
+
             _validator.ValidateCityName(cityName);
 
             _cts = new CancellationTokenSource();
@@ -37,11 +40,15 @@ namespace BL.Services
 
             weather = SetWeatherDescription(weather);
 
+            Log.Information("Method GetWeatherAsync is complited!");
+
             return $"\nIn {weather.Name} {weather.Main.Temp}°C now. {weather.Weather.First().Description}\n";
         }
 
         public async Task<string> GetWeatherForecastAsync(string cityName, int days)
         {
+            Log.Information("Method GetWeatherForecastAsync has been run!");
+
             _validator.ValidateModel(cityName, days);
 
             var weatherForecast = await _weatherRepository.GetWeatherForecastAsync(cityName, days);
@@ -54,11 +61,15 @@ namespace BL.Services
             weatherForecastDtos.ForEach(x => responseMessage +=
                 $"{x.CityName} weather forecast:\nDay {numberOfDay++}: {x.Temp}°C. {x.Description}\n");
 
+            Log.Information("Method GetWeatherForecastAsync is complited!");
+
             return responseMessage;
         }
 
         public async Task<string> GetMaxTemperatureAsync(IEnumerable<string> cityNames)
         {
+            Log.Information("Method GetMaxTemperatureAsync has been run!");
+
             _validator.ValidateCityNames(cityNames);
             _cts = new CancellationTokenSource();
             _cts.CancelAfter(_config.MaxWaitingTime);
@@ -90,6 +101,8 @@ namespace BL.Services
 Successful request count: {maxTemp.SuccessfullRequest}, failed: {maxTemp.FailedRequest}, canceled: {maxTemp.Canceled}.");
             else
                 responseMessage.AppendLine($"No successful requests. Failed requests count: {maxTemp.FailedRequest}, canceled: {maxTemp.Canceled}.");
+
+            Log.Information("Method GetMaxTemperatureAsync is complited!");
 
             return responseMessage.ToString();
         }

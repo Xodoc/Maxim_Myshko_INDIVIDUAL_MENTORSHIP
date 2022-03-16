@@ -23,5 +23,9 @@
         bool IsDebug { get; }
 
         int MaxWaitingTime { get; }
+
+        string URLHistory { get; }
+
+        string[] CityNames { get; }
     }
 }

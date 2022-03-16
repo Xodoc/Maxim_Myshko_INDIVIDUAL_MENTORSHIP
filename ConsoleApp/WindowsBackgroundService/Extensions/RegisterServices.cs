@@ -1,10 +1,11 @@
 ﻿using BL.Interfaces;
 using BL.Services;
 using BL.Validators;
+using Microsoft.Extensions.DependencyInjection;
 using Shared.Config;
 using Shared.Extensions;
 
-namespace WebAPI.Extensions
+namespace WindowsBackgroundService.Extensions
 {
     public static class RegisterServices
     {
@@ -19,7 +20,8 @@ namespace WebAPI.Extensions
             });
             services.AddScoped<IWeatherService, WeatherService>();
             services.AddScoped<IValidator, Validator>();
-            services.AddScoped<IWeatherHistoryService, WeatherHistoryService>();
+            services.AddTransient<IWeatherHistoryService, WeatherHistoryService>();
+            services.AddScoped<ICityService, CityService>();
 
             return services;
         }
