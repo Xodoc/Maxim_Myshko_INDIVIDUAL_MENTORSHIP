@@ -54,7 +54,7 @@ namespace BL.Validators
         {
             foreach (var name in names)
             {
-                if (string.IsNullOrWhiteSpace(name) || name == string.Empty)
+                if (string.IsNullOrWhiteSpace(name))
                 {
                     throw new ValidatorException("Some names in config are empty");
                 }
