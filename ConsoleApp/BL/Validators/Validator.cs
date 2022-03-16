@@ -18,10 +18,7 @@ namespace BL.Validators
 
         public void ValidateCityName(string cityName)
         {
-            if (string.IsNullOrWhiteSpace(cityName))
-            {
-                throw new ValidatorException("\nInvalid data entered");
-            }
+            ValidateName(cityName, "\nInvalid data entered");
         }
 
         public void ValidateModel(string cityName, int days)
@@ -54,10 +51,15 @@ namespace BL.Validators
         {
             foreach (var name in names)
             {
-                if (string.IsNullOrWhiteSpace(name))
-                {
-                    throw new ValidatorException("Some names in config are empty");
-                }
+                ValidateName(name, "Some names in config are empty");
+            }
+        }
+
+        private void ValidateName(string name, string message)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                throw new ValidatorException(message);
             }
         }
     }
