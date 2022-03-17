@@ -32,7 +32,7 @@ namespace BL.Services
             var weather = await _weatherRepository.GetWeatherAsync(city.CityName, token);
             var weatherHistory = new WeatherHistory
             {
-                Timestapm = DateTime.Now,
+                Timestamp = DateTime.Now,
                 CityId = city.Id,
                 Temp = weather.Main.Temp
             };
@@ -42,9 +42,9 @@ namespace BL.Services
             Log.Information("Method AddWeatherHistoryAsync is complited!");
         }
 
-        public async Task<List<WeatherHistoryDTO>> GetWeatherHistoriesAsync(string cityName, string date)
+        public async Task<List<WeatherHistoryDTO>> GetWeatherHistoriesAsync(string cityName, DateTime from, DateTime to)
         {
-            var histories = await _weatherHistoryRepository.GetWeatherHistoriesAsync(cityName, date);
+            var histories = await _weatherHistoryRepository.GetWeatherHistoriesAsync(cityName, from, to);
 
             return _mapper.Map<List<WeatherHistoryDTO>>(histories);
         }

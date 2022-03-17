@@ -6,7 +6,10 @@ namespace WebAPI.Models
 {
     public class WeatherHistoryRequest : WeatherBaseRequest
     {
-        [Required(ErrorMessage = "Date is required")]
-        public string Date { get; set; }
+        [Required(ErrorMessage = "From is required")]
+        public string From { get; set; }
+        
+        [Required(ErrorMessage = "To is required")]       
+        public string To { get; set; }
     }
 }
