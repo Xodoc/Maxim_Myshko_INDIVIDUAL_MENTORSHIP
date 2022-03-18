@@ -16,19 +16,15 @@ namespace IntegrationTests
     {
         public static IServiceCollection AddDI(this IServiceCollection services)
         {
-            services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=mentorshipdb;Trusted_Connection=True;"));
+            var config = new ConfigurationTest();
+
+            services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(config.Connection));
 
             services.AddScoped<IWeatherRepository, WeatherRepository>();
             services.AddTransient<IWeatherHistoryRepository, WeatherHistoryRepository>();
             services.AddScoped<ICityRepository, CityRepository>();
 
-            services.AddSingleton<Shared.Interfaces.IConfiguration>(context =>
-            {
-                var config = new Configuration();
-                config.GetWebAPIConfig();
-
-                return config;
-            });
+            services.AddSingleton<Shared.Interfaces.IConfiguration>(context => config);
             services.AddScoped<IWeatherService, WeatherService>();
             services.AddScoped<IValidator, Validator>();
             services.AddTransient<IWeatherHistoryService, WeatherHistoryService>();

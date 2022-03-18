@@ -35,26 +35,17 @@ namespace BL.Services
 
             var newCities = new List<City>();
 
-            foreach (var city in oldCities)
+            foreach (var name in _config.CityNames)
             {
-                if (_config.CityNames.Contains(city.CityName) == false)
+                if (oldCities.Any(x => x.CityName == name))
                 {
-                    newCities.Add(await _cityRepository.CreateAsync(city));
+                    newCities.Add(await _cityRepository.CreateAsync(new City { CityName = name }));
                 }
                 else
-                {
-                    newCities.Add(city);
-                }
-            }
-
-            if (oldCities.Count == 0)
-            {
-                foreach (var name in _config.CityNames)
-                {
-                    newCities.Add(new City { CityName = name });
-                }
-
-                await _cityRepository.BulkSaveAsync(newCities);
+                {                   
+                    //var city = oldCities[Array.IndexOf(_config.CityNames, name)];
+                    newCities.Add(oldCities.Find(x => x.CityName == name));
+                }               
             }
 
             Log.Information("Method CheckAndCreateCitiesAsync is complited!");

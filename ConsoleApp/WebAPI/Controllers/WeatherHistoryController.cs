@@ -18,7 +18,7 @@ namespace WebAPI.Controllers
         [HttpGet("getWeatherHistory")]
         public async Task<IActionResult> GetWeatherHistory([FromQuery] WeatherHistoryRequest request)
         {
-            return Ok(await _weatherHistoryService.GetWeatherHistoriesAsync(request.CityName, DateTime.Parse(request.From), DateTime.Parse(request.To)));
+            return Ok(await _weatherHistoryService.GetWeatherHistoriesAsync(request.CityName, request.From, request.To));
         }
     }
 }

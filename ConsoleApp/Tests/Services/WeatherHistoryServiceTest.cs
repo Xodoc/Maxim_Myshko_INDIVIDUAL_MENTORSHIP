@@ -40,8 +40,8 @@ namespace Tests.Services
             //Arrange
             _fixture.Behaviors.Remove(new ThrowingRecursionBehavior());
             _fixture.Behaviors.Add(new OmitOnRecursionBehavior());
-            var expectedFromRepo = _fixture.Create<List<WeatherHistory>>();
 
+            var expectedFromRepo = _fixture.Create<List<WeatherHistory>>();
             var expected = _mapper.Map<List<WeatherHistoryDTO>>(expectedFromRepo);
 
             _weatherHistoryRepositoryMock.Setup(x =>
