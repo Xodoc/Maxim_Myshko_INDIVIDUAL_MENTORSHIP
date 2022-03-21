@@ -12,5 +12,12 @@
   "Forecast": "https://api.openweathermap.org/data/2.5/forecast?",
   "Hours": "12",
   "IsDebug": "false",
-  "MaxWaitingTime": 200
+  "MaxWaitingTime": 200,
+  "CityNames": [
+    "Minsk",
+    "London",
+    "Moscow",
+    "Warsaw",
+    "Paris"
+  ]
 }

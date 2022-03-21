@@ -8,7 +8,6 @@ using DAL.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Shared.Config;
-using Shared.Extensions;
 
 namespace IntegrationTests
 {

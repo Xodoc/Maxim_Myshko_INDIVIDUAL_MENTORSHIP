@@ -37,14 +37,15 @@ namespace BL.Services
 
             foreach (var name in _config.CityNames)
             {
-                if (oldCities.Any(x => x.CityName == name))
+                var city = oldCities.FirstOrDefault(x => x.CityName == name);
+
+                if (city == null)
                 {
                     newCities.Add(await _cityRepository.CreateAsync(new City { CityName = name }));
                 }
                 else
                 {                   
-                    //var city = oldCities[Array.IndexOf(_config.CityNames, name)];
-                    newCities.Add(oldCities.Find(x => x.CityName == name));
+                    newCities.Add(city);
                 }               
             }
 

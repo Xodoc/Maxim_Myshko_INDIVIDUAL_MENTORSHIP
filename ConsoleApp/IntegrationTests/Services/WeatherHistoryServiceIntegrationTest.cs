@@ -8,7 +8,6 @@ using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
-using System.Threading;
 using Xunit;
 
 namespace IntegrationTests.Services
@@ -29,7 +28,6 @@ namespace IntegrationTests.Services
             _context = serviceProvider.GetRequiredService<ApplicationDbContext>();
             _mapper = serviceProvider.GetService<IMapper>();
             _weatherHistoryService = serviceProvider.GetService<IWeatherHistoryService>();
-
             _transaction = _context.Database.BeginTransaction();
         }
 
@@ -41,22 +39,27 @@ namespace IntegrationTests.Services
             GC.SuppressFinalize(this);
         }
 
-        [Theory]
-        [InlineData("Minsk", "12.03.2022", "16.03.2022")]
-        public async void GetWeatherHistoryAsync_WhenSendingCorrectData_GettingWeatherHistory(string cityName, string from, string to)
+        [Fact]
+        public async void GetWeatherHistoryAsync_WhenSendingCorrectData_GettingWeatherHistory()
         {
             //Arrange
-            var fixture = new List<WeatherHistoryDTO>
+            var cityName = "Minsk";
+            var from = "12.03.2022";
+            var to = "16.03.2022";
+            var fixture = new List<WeatherHistory>
             {
-                new WeatherHistoryDTO { CityId = 1, Timestamp = DateTime.Parse(from), Temp = -2.14 },
-                new WeatherHistoryDTO { CityId = 1, Timestamp = DateTime.Parse("13.03.2022"), Temp = -2.14 },
-                new WeatherHistoryDTO { CityId = 1, Timestamp = DateTime.Parse("11.03.2022"), Temp = 23 },
-                new WeatherHistoryDTO { CityId = 1, Timestamp = DateTime.Parse(from), Temp = -15.1 }
+                new WeatherHistory { CityId = 9, Timestamp = DateTime.Parse(from), Temp = -2.14 },
+                new WeatherHistory { CityId = 9, Timestamp = DateTime.Parse("13.03.2022"), Temp = -2.14 },
+                new WeatherHistory { CityId = 9, Timestamp = DateTime.Parse("11.03.2022"), Temp = 23 },
+                new WeatherHistory { CityId = 9, Timestamp = DateTime.Parse(from), Temp = -15.1 }
             };
-            var data = _mapper.Map<List<WeatherHistory>>(fixture);
-            var expected = fixture.FindAll(x => x.Timestamp >= DateTime.Parse(from) && x.Timestamp <= DateTime.Parse(to));
-            await _context.WeatherHistories.AddRangeAsync(data);
+
+            var data = fixture.FindAll(x => x.Timestamp >= DateTime.Parse(from) && x.Timestamp <= DateTime.Parse(to));
+
+            await _context.WeatherHistories.AddRangeAsync(fixture);
             await _context.SaveChangesAsync();
+
+            var expected = _mapper.Map<List<WeatherHistoryDTO>>(data);
 
             //Act
             var actualResult = await _weatherHistoryService.GetWeatherHistoriesAsync(cityName, DateTime.Parse(from), DateTime.Parse(to));
@@ -65,13 +68,15 @@ namespace IntegrationTests.Services
             Assert.Equal(expected, actualResult, new WeatherHistoryDTOComparator());
         }
 
-        [Theory]
-        [InlineData("Minsk", "12.03.2022", "16.03.2022")]
-        public async void GetWeatherHistoryAsync_WhenSendingIncorrectData_GettingWeatherHistory(string cityName, string from, string to)
+        [Fact]
+        public async void GetWeatherHistoryAsync_WhenSendingIncorrectData_GettingWeatherHistory()
         {
             //Arrange
+            var cityName = "Minsk";
+            var from = "12.03.2022";
+            var to = "16.03.2022";
             var expectedList = new List<WeatherHistoryDTO>();
-            var someData = new WeatherHistory { CityId = 1, Timestamp = DateTime.Parse("11.03.2022"), Temp = -2.14 };
+            var someData = new WeatherHistory { CityId = 9, Timestamp = DateTime.Parse("11.03.2022"), Temp = -2.14 };
 
             //Act
             await _context.WeatherHistories.AddAsync(someData);
@@ -81,23 +86,6 @@ namespace IntegrationTests.Services
 
             //Asssert
             Assert.Equal(expectedList, actualResult, new WeatherHistoryDTOComparator());
-        }
-
-        [Theory]
-        [InlineData(1, "Minsk")]
-        [InlineData(2, "London")]
-        [InlineData(3, "Moscow")]
-        public async void AddWeatherHistoryAsync_IfCityNamesInConfigCorrect_WriteDataInDatabase(int id, string name)
-        {
-            //Arrange
-            var expected = new CityDTO { Id = id, CityName = name };
-            var cts = new CancellationTokenSource();
-
-            //Act
-            var actualResult = await Record.ExceptionAsync(async () => await _weatherHistoryService.AddWeatherHistoryAsync(expected, cts.Token));
-
-            //Assert
-            Assert.Null(actualResult);
         }
     }
 }
