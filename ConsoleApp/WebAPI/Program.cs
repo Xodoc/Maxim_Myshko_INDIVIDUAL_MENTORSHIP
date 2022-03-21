@@ -2,6 +2,7 @@ using BL.Mapping;
 using DAL.Database;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
+using System.Reflection;
 using WebAPI.Extensions;
 using static Shared.Constants.ConfigurationConstants;
 
@@ -39,7 +40,13 @@ namespace WebAPI
 
             services.AddControllers();
             services.AddEndpointsApiExplorer();
-            services.AddSwaggerGen();
+            services.AddSwaggerGen(opt => 
+            {
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+
+                opt.IncludeXmlComments(xmlPath);
+            });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

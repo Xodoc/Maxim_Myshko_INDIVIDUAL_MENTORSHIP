@@ -36,6 +36,7 @@ namespace WebAPI.Middleware
                 {
                     ValidationException => (int)HttpStatusCode.BadRequest,
                     UnauthorizedAccessException => (int)HttpStatusCode.Unauthorized,
+                    BL.Validators.CustomExceptions.ValidatorException =>(int)HttpStatusCode.BadRequest,
                     _ => (int)HttpStatusCode.InternalServerError
                 },
                 Message = $"Internal Server Error: {exception.Message}"

@@ -15,6 +15,13 @@ namespace WebAPI.Controllers
             _weatherService = weatherService;
         }
 
+        /// <summary>
+        /// Getting current weather by city name
+        /// </summary>
+        /// <param name="weather"></param>
+        /// <returns></returns>
+        /// <response code="200">Success</response>
+        /// <response code="400">If send data is incorrect</response>
         [HttpGet("getCurrentWeather")]
         public async Task<IActionResult> GetCurrentWeather([FromQuery] WeatherBaseRequest weather)
         {
