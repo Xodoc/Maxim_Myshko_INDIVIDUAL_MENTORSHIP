@@ -29,5 +29,7 @@ namespace Shared.Config
         public string URLHistory { get; set; }
 
         public string[] CityNames { get; set; }
+
+        public string Connection { get; set; }
     }
 }

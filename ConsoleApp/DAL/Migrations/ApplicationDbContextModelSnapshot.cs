@@ -47,7 +47,7 @@ namespace DAL.Migrations
                     b.Property<double>("Temp")
                         .HasColumnType("float");
 
-                    b.Property<DateTime>("Timestapm")
+                    b.Property<DateTime>("Timestamp")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");

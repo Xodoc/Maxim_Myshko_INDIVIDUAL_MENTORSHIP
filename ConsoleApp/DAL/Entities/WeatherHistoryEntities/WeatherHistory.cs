@@ -8,7 +8,7 @@ namespace DAL.Entities.WeatherHistoryEntities
 
         public int CityId { get; set; }
 
-        public DateTime Timestapm { get; set; }
+        public DateTime Timestamp { get; set; }
 
         public double Temp { get; set; }
 

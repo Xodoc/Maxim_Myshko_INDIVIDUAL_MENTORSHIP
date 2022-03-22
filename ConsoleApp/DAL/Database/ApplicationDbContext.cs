@@ -1,8 +1,6 @@
 ﻿using DAL.Entities.WeatherHistoryEntities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using System.IO;
-using System.Threading.Tasks;
 
 namespace DAL.Database
 {

@@ -1,5 +1,5 @@
-﻿using Newtonsoft.Json;
-using System.ComponentModel.DataAnnotations;
+﻿using BL.Validators.CustomExceptions;
+using Newtonsoft.Json;
 using System.Net;
 
 namespace WebAPI.Middleware
@@ -28,18 +28,20 @@ namespace WebAPI.Middleware
 
         private async Task HandleExceptionAsync(HttpContext context, Exception exception)
         {
-            context.Response.ContentType = JsonContentType;
+            var status = exception switch
+            {
+                UnauthorizedAccessException => (int)HttpStatusCode.Unauthorized,
+                ValidatorException => (int)HttpStatusCode.BadRequest,
+                _ => (int)HttpStatusCode.InternalServerError
+            };
 
             var responseError = new
             {
-                StatusCode = exception switch
-                {
-                    ValidationException => (int)HttpStatusCode.BadRequest,
-                    UnauthorizedAccessException => (int)HttpStatusCode.Unauthorized,
-                    _ => (int)HttpStatusCode.InternalServerError
-                },
                 Message = $"Internal Server Error: {exception.Message}"
             };
+
+            context.Response.ContentType = JsonContentType;
+            context.Response.StatusCode = status;
 
             await context.Response.WriteAsync(JsonConvert.SerializeObject(responseError));
         }

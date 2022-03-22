@@ -35,20 +35,22 @@ namespace BL.Services
 
             var newCities = new List<City>();
 
-            foreach (var city in oldCities) 
+            foreach (var name in _config.CityNames)
             {
-                if (_config.CityNames.Contains(city.CityName) == false)
+                var city = oldCities.FirstOrDefault(x => x.CityName == name);
+
+                if (city == null)
                 {
-                    newCities.Add(await _cityRepository.CreateAsync(city));
+                    newCities.Add(await _cityRepository.CreateAsync(new City { CityName = name }));
                 }
-                else 
-                {
+                else
+                {                   
                     newCities.Add(city);
-                }
+                }               
             }
 
             Log.Information("Method CheckAndCreateCitiesAsync is complited!");
-            
+
             return _mapper.Map<List<CityDTO>>(newCities);
         }
     }

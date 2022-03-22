@@ -24,8 +24,8 @@
 
         int MaxWaitingTime { get; }
 
-        string URLHistory { get; }
-
         string[] CityNames { get; }
+
+        string Connection { get; }
     }
 }
