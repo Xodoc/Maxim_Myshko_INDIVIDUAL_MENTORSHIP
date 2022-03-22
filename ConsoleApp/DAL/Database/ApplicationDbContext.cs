@@ -1,4 +1,5 @@
 ﻿using DAL.Entities.WeatherHistoryEntities;
+using DAL.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -17,11 +18,18 @@ namespace DAL.Database
         }
 
         public DbSet<City> Cities { get; set; }
+
         public DbSet<WeatherHistory> WeatherHistories { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder builder)
         {
             builder.UseLoggerFactory(_loggerFactory);
+        }
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+            builder.SeedData();
         }
     }
 }

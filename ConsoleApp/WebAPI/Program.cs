@@ -1,11 +1,14 @@
 using BL.Mapping;
 using DAL.Database;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using Serilog;
 using System.Reflection;
+using System.Text;
 using WebAPI.Extensions;
 using static Shared.Constants.ConfigurationConstants;
 
@@ -84,6 +87,26 @@ namespace WebAPI
 
                 opt.IncludeXmlComments(xmlPath);
             });
+
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+              .AddJwtBearer(options =>
+              {
+                  options.TokenValidationParameters = new TokenValidationParameters
+                  {
+                      ValidateIssuer = true,
+                      ValidIssuer = Configuration["Jwt:Issuer"],
+                      ValidateAudience = true,
+                      ValidAudience = Configuration["Jwt:Audience"],
+                      ValidateLifetime = true,
+                      IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"])),
+                      ValidateIssuerSigningKey = true,
+                  };
+              });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
