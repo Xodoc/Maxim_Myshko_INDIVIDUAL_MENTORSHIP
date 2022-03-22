@@ -22,6 +22,7 @@ namespace WebAPI.Controllers
         /// <returns></returns>
         /// <response code="200">Success</response>
         /// <response code="400">If send data is incorrect</response>
+        /// <response code="500">Internal server error</response>
         [HttpGet("getCurrentWeather")]
         public async Task<IActionResult> GetCurrentWeather([FromQuery] WeatherBaseRequest weather)
         {
