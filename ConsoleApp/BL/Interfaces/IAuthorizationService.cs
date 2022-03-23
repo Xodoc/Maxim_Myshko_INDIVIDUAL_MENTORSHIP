@@ -4,6 +4,6 @@ namespace BL.Interfaces
 {
     public interface IAuthorizationService
     {
-        public Task<string> AuthorizationAsync(string email, string password);
+        public Task<string> AuthenticationAsync(string email, string password);
     }
 }

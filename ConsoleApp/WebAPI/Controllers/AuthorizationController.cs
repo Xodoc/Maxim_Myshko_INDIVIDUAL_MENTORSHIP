@@ -24,10 +24,10 @@ namespace WebAPI.Controllers
         /// <response code="401">Unauthorized</response>
         /// <response code="500">Internal server error</response>
 
-        [HttpPost("Login")]
-        public async Task<IActionResult> Login([FromBody] AuthorizationRequest request) 
+        [HttpPost("Authorization")]
+        public async Task<IActionResult> Authorization([FromBody] AuthenticationRequest request) 
         {
-            var token = await _authorizationService.AuthorizationAsync(request.Email, request.Password);
+            var token = await _authorizationService.AuthenticationAsync(request.Email, request.Password);
 
             if (string.IsNullOrWhiteSpace(token)) 
             {

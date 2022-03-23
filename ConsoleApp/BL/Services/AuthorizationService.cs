@@ -22,7 +22,7 @@ namespace BL.Services
             _config = config;
         }
 
-        public async Task<string> AuthorizationAsync(string email, string password)
+        public async Task<string> AuthenticationAsync(string email, string password)
         {
             var user = await _userManager.FindByEmailAsync(email);
 
