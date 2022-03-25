@@ -1,7 +1,6 @@
 using BL.Mapping;
 using DAL.Database;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -41,23 +40,12 @@ namespace WebAPI
             var connection = Configuration.GetConnectionString(ConnectionString);
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connection));
 
-            services.AddRepositories().AddServices().AddAutoMapper();
-            services.AddLogging(x => x.AddSerilog());
+            services.AddHttpClient();
+
+            services.AddRepositories().AddServices().AddAutoMapper().AddLogging(x => x.AddSerilog());
 
             services.AddControllers()
                 .AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore);
-
-            services.AddIdentity<IdentityUser, IdentityRole>(opt =>
-            {
-                opt.Password.RequireNonAlphanumeric = false;
-                opt.Password.RequireLowercase = false;
-                opt.Password.RequireUppercase = false;
-                opt.Password.RequireDigit = false;
-                opt.User.RequireUniqueEmail = true;
-                opt.User.AllowedUserNameCharacters = UserNameCharacters;
-            })
-                .AddEntityFrameworkStores<ApplicationDbContext>()
-                .AddDefaultTokenProviders();
 
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen(opt =>

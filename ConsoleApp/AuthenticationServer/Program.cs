@@ -8,7 +8,6 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using Serilog;
-using System.Reflection;
 using System.Text;
 using static Shared.Constants.ConfigurationConstants;
 
@@ -39,6 +38,7 @@ namespace AuthenticationServer
         public void ConfigureServices(IServiceCollection services)
         {
             var connection = Configuration.GetConnectionString(ConnectionString);
+
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connection));
 
             services.AddScoped<IAuthorizationService, AuthorizationService>();
@@ -60,7 +60,7 @@ namespace AuthenticationServer
                 .AddDefaultTokenProviders();
 
             services.AddEndpointsApiExplorer();
-            services.AddSwaggerGen(opt =>
+            services.AddSwaggerGen(opt => 
             {
                 opt.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
@@ -72,7 +72,7 @@ namespace AuthenticationServer
                     Scheme = "bearer"
                 });
                 opt.AddSecurityRequirement(new OpenApiSecurityRequirement
-                    {
+                {
                     {
                         new OpenApiSecurityScheme
                         {
@@ -80,12 +80,7 @@ namespace AuthenticationServer
                         },
                         Array.Empty<string>()
                     }
-                    });
-
-                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-
-                opt.IncludeXmlComments(xmlPath);
+                });
             });
 
             services.AddAuthentication(options =>
@@ -111,8 +106,6 @@ namespace AuthenticationServer
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            app.UseExceptionHandler();
-
             if (env.IsDevelopment())
             {
                 app.UseSwagger();

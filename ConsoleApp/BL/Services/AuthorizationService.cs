@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -41,15 +42,16 @@ namespace BL.Services
                     authClaims.Add(new Claim(ClaimTypes.Role, role));
                 }
 
-                var authSigninKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
-
+                var rsaProvider = new RSACryptoServiceProvider(1024);
+                var rsaKey = new RsaSecurityKey(rsaProvider);
+                
                 var token = new JwtSecurityToken(
                 _config["Jwt:Issuer"],
                 _config["Jwt:Audience"],
                 notBefore: DateTime.UtcNow,
                 claims: authClaims,
                 expires: DateTime.UtcNow.Add(TimeSpan.FromDays(int.Parse(_config["Jwt:LifeTimeInDays"]))),
-                signingCredentials: new SigningCredentials(authSigninKey, SecurityAlgorithms.HmacSha256));
+                signingCredentials: new SigningCredentials(rsaKey, SecurityAlgorithms.RsaSha512Signature));
 
                 return new JwtSecurityTokenHandler().WriteToken(token);
             }
