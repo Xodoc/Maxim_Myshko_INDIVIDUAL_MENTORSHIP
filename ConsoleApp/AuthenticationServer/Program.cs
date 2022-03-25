@@ -44,8 +44,7 @@ namespace AuthenticationServer
             services.AddScoped<IAuthorizationService, AuthorizationService>();
             services.AddLogging(x => x.AddSerilog());
 
-            services.AddControllers()
-                .AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore);
+            services.AddControllers();
 
             services.AddIdentity<IdentityUser, IdentityRole>(opt =>
             {

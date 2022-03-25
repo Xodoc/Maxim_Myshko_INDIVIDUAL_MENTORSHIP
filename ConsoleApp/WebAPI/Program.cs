@@ -44,8 +44,7 @@ namespace WebAPI
 
             services.AddRepositories().AddServices().AddAutoMapper().AddLogging(x => x.AddSerilog());
 
-            services.AddControllers()
-                .AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore);
+            services.AddControllers();
 
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen(opt =>
