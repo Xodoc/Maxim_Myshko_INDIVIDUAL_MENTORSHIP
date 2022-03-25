@@ -25,7 +25,7 @@ namespace AuthenticationServer.Controllers
         /// <response code="500">Internal server error</response>
 
         [HttpPost("Authorization")]
-        public async Task<IActionResult> Authorization([FromQuery] AuthenticationRequest request)
+        public async Task<IActionResult> Authorization([FromBody] AuthenticationRequest request)
         {
             var token = await _authorizationService.AuthenticationAsync(request.Email, request.Password);
 
