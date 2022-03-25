@@ -2,7 +2,7 @@
 
 using System.ComponentModel.DataAnnotations;
 
-namespace WebAPI.Models
+namespace AuthenticationServer.Models
 {
     public class AuthenticationRequest
     {

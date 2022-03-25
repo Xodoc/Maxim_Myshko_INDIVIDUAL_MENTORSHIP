@@ -1,16 +1,16 @@
-﻿using BL.Interfaces;
+﻿using AuthenticationServer.Models;
+using BL.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using WebAPI.Models;
 
-namespace WebAPI.Controllers
+namespace AuthenticationServer.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AuthorizationController : ControllerBase
+    public class AuthenticationController : ControllerBase
     {
         private readonly IAuthorizationService _authorizationService;
 
-        public AuthorizationController(IAuthorizationService authorizationService)
+        public AuthenticationController(IAuthorizationService authorizationService)
         {
             _authorizationService = authorizationService;
         }
@@ -25,11 +25,11 @@ namespace WebAPI.Controllers
         /// <response code="500">Internal server error</response>
 
         [HttpPost("Authorization")]
-        public async Task<IActionResult> Authorization([FromBody] AuthenticationRequest request) 
+        public async Task<IActionResult> Authorization([FromQuery] AuthenticationRequest request)
         {
             var token = await _authorizationService.AuthenticationAsync(request.Email, request.Password);
 
-            if (string.IsNullOrWhiteSpace(token)) 
+            if (string.IsNullOrWhiteSpace(token))
             {
                 return Unauthorized("Invalid login or password.");
             }
