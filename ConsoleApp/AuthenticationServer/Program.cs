@@ -8,6 +8,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using Serilog;
+using System.Reflection;
 using static Shared.Constants.ConfigurationConstants;
 
 namespace AuthenticationServer
@@ -78,6 +79,11 @@ namespace AuthenticationServer
                         Array.Empty<string>()
                     }
                 });
+
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+
+                opt.IncludeXmlComments(xmlPath);
             });
 
             services.AddScoped<SigningAudienceCertificate>();
