@@ -11,7 +11,7 @@ namespace AuthenticationServer.Extensions
         {
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<ITokenService, TokenService>();
-            services.AddScoped<IAuthenticationService, AuthenticationService>();
+            services.AddScoped<IAuthorizationService, AuthenticationService>();
 
             return services;
         }

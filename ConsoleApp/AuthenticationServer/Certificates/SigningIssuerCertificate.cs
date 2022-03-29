@@ -14,7 +14,7 @@ namespace AuthenticationServer.Certificates
 
         public RsaSecurityKey GetIssuerSigningKey()
         {
-            string publicXmlKey = File.ReadAllText("./Keys/public_key.xml");
+            var publicXmlKey = File.ReadAllText("./Keys/public_key.xml");
             rsa.FromXmlString(publicXmlKey);
 
             return new RsaSecurityKey(rsa);

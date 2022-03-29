@@ -14,7 +14,7 @@ namespace AuthenticationServer.Certificates
 
         public SigningCredentials GetAudienceSigningKey()
         {
-            string privateXmlKey = File.ReadAllText("./Keys/private_key.xml");
+            var privateXmlKey = File.ReadAllText("./Keys/private_key.xml");
             rsa.FromXmlString(privateXmlKey);
 
             return new SigningCredentials(new RsaSecurityKey(rsa), SecurityAlgorithms.RsaSha256);

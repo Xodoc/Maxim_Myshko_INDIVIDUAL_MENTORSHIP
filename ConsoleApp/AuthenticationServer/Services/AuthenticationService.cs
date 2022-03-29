@@ -3,7 +3,7 @@ using BL.Interfaces;
 
 namespace AuthenticationServer.Services
 {
-    public class AuthenticationService : IAuthenticationService
+    public class AuthenticationService : IAuthorizationService
     {
         private readonly IUserService _userService;
         private readonly ITokenService _tokenService;
