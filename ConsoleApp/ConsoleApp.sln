@@ -17,7 +17,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IntegrationTests", "Integra
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebAPI", "WebAPI\WebAPI.csproj", "{13816A53-23EE-415B-B2BB-11F29BDF0B77}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WindowsBackgroundService", "WindowsBackgroundService\WindowsBackgroundService.csproj", "{3CDC8560-E75B-40BF-B2CF-DE85F38B6160}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WindowsBackgroundService", "WindowsBackgroundService\WindowsBackgroundService.csproj", "{3CDC8560-E75B-40BF-B2CF-DE85F38B6160}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuthenticationServer", "AuthenticationServer\AuthenticationServer.csproj", "{F12481FB-8072-4D85-8159-D6265CE9E79F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -57,6 +59,10 @@ Global
 		{3CDC8560-E75B-40BF-B2CF-DE85F38B6160}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3CDC8560-E75B-40BF-B2CF-DE85F38B6160}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3CDC8560-E75B-40BF-B2CF-DE85F38B6160}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F12481FB-8072-4D85-8159-D6265CE9E79F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F12481FB-8072-4D85-8159-D6265CE9E79F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F12481FB-8072-4D85-8159-D6265CE9E79F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F12481FB-8072-4D85-8159-D6265CE9E79F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
