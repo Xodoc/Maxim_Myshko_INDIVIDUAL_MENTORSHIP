@@ -1,5 +1,5 @@
-﻿using AuthenticationServer.Models;
-using BL.Interfaces;
+﻿using AuthenticationServer.Interfaces;
+using AuthenticationServer.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AuthenticationServer.Controllers
@@ -8,17 +8,17 @@ namespace AuthenticationServer.Controllers
     [ApiController]
     public class AuthenticationController : ControllerBase
     {
-        private readonly IAuthorizationService _authorizationService;
+        private readonly IAuthenticationService _authenticationService;
 
-        public AuthenticationController(IAuthorizationService authorizationService)
+        public AuthenticationController(IAuthenticationService authenticationService)
         {
-            _authorizationService = authorizationService;
+            _authenticationService = authenticationService;
         }
 
         [HttpPost("GetAccessToken")]
         public async Task<IActionResult> GetAccessToken([FromBody] AuthenticationRequest request)
         {
-            var token = await _authorizationService.AuthenticationAsync(request.Email, request.Password);
+            var token = await _authenticationService.Authenticate(request.Email, request.Password);
 
             return Ok(token);
         }

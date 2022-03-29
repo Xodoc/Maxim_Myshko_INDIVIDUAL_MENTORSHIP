@@ -1,5 +1,5 @@
-using BL.Interfaces;
-using BL.Services;
+using AuthenticationServer.Certificates;
+using AuthenticationServer.Extensions;
 using DAL.Database;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -8,7 +8,6 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using Serilog;
-using System.Text;
 using static Shared.Constants.ConfigurationConstants;
 
 namespace AuthenticationServer
@@ -41,10 +40,9 @@ namespace AuthenticationServer
 
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connection));
 
-            services.AddScoped<IAuthorizationService, AuthorizationService>();
             services.AddLogging(x => x.AddSerilog());
 
-            services.AddControllers();
+            services.AddControllers().AddNewtonsoftJson(opt => opt.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore);
 
             services.AddIdentity<IdentityUser, IdentityRole>(opt =>
             {
@@ -59,7 +57,7 @@ namespace AuthenticationServer
                 .AddDefaultTokenProviders();
 
             services.AddEndpointsApiExplorer();
-            services.AddSwaggerGen(opt => 
+            services.AddSwaggerGen(opt =>
             {
                 opt.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
@@ -81,6 +79,8 @@ namespace AuthenticationServer
                     }
                 });
             });
+            services.AddScoped<SigningAudienceCertificate>();
+            var issuerSigningKey = new SigningIssuerCertificate().GetIssuerSigningKey();
 
             services.AddAuthentication(options =>
             {
@@ -88,19 +88,22 @@ namespace AuthenticationServer
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
             })
-              .AddJwtBearer(options =>
-              {
-                  options.TokenValidationParameters = new TokenValidationParameters
-                  {
-                      ValidateIssuer = true,
-                      ValidIssuer = Configuration["Jwt:Issuer"],
-                      ValidateAudience = true,
-                      ValidAudience = Configuration["Jwt:Audience"],
-                      ValidateLifetime = true,
-                      IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"])),
-                      ValidateIssuerSigningKey = true,
-                  };
-              });
+                .AddJwtBearer(options =>
+                {
+                    options.SaveToken = true;
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidIssuer = Configuration["Jwt:Issuer"],
+                        ValidateAudience = true,
+                        ValidAudience = Configuration["Jwt:Audience"],
+                        ValidateLifetime = true,
+                        IssuerSigningKey = issuerSigningKey,
+                        ValidateIssuerSigningKey = true,
+                    };
+                });
+
+            services.AddServices();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
