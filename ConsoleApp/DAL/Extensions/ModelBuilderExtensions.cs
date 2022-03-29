@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Shared.Enums;
 using System;
 using System.Collections.Generic;
+using static Shared.Constants.RoleTypes;
 
 namespace DAL.Extensions
 {
@@ -29,15 +29,15 @@ namespace DAL.Extensions
                 new IdentityRole
                 {
                     Id = Guid.NewGuid().ToString(),
-                    Name = RoleTypes.Admin.ToString(),
-                    NormalizedName = RoleTypes.Admin.ToString().ToUpper(),
+                    Name = AdminRole,
+                    NormalizedName = AdminRole.ToUpper(),
                     ConcurrencyStamp = Guid.NewGuid().ToString(),
                 },
                 new IdentityRole
                 {
                     Id = Guid.NewGuid().ToString(),
-                    Name = RoleTypes.User.ToString(),
-                    NormalizedName = RoleTypes.User.ToString().ToUpper(),
+                    Name = UserRole,
+                    NormalizedName = UserRole.ToUpper(),
                     ConcurrencyStamp = Guid.NewGuid().ToString(),
                 }            
             };

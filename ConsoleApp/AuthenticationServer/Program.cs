@@ -1,13 +1,17 @@
-using BL.Mapping;
+using AuthenticationServer.Certificates;
+using AuthenticationServer.Extensions;
 using DAL.Database;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Newtonsoft.Json;
 using Serilog;
 using System.Reflection;
-using WebAPI.Extensions;
 using static Shared.Constants.ConfigurationConstants;
 
-namespace WebAPI
+namespace AuthenticationServer
 {
     public class Program
     {
@@ -34,13 +38,24 @@ namespace WebAPI
         public void ConfigureServices(IServiceCollection services)
         {
             var connection = Configuration.GetConnectionString(ConnectionString);
+
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connection));
 
-            services.AddHttpClient();
+            services.AddLogging(x => x.AddSerilog());
 
-            services.AddRepositories().AddServices().AddAutoMapper().AddLogging(x => x.AddSerilog());
+            services.AddControllers().AddNewtonsoftJson(opt => opt.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore);
 
-            services.AddControllers();
+            services.AddIdentity<IdentityUser, IdentityRole>(opt =>
+            {
+                opt.Password.RequireNonAlphanumeric = false;
+                opt.Password.RequireLowercase = false;
+                opt.Password.RequireUppercase = false;
+                opt.Password.RequireDigit = false;
+                opt.User.RequireUniqueEmail = true;
+                opt.User.AllowedUserNameCharacters = UserNameCharacters;
+            })
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultTokenProviders();
 
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen(opt =>
@@ -70,12 +85,37 @@ namespace WebAPI
 
                 opt.IncludeXmlComments(xmlPath);
             });
+
+            services.AddScoped<SigningAudienceCertificate>();
+
+            var issuerSigningKey = new SigningIssuerCertificate().GetIssuerSigningKey();
+
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+                .AddJwtBearer(options =>
+                {
+                    options.SaveToken = true;
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidIssuer = Configuration["Jwt:Issuer"],
+                        ValidateAudience = true,
+                        ValidAudience = Configuration["Jwt:Audience"],
+                        ValidateLifetime = true,
+                        IssuerSigningKey = issuerSigningKey,
+                        ValidateIssuerSigningKey = true,
+                    };
+                });
+
+            services.AddServices();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            app.UseGlobalExceptionMiddleware();
-
             if (env.IsDevelopment())
             {
                 app.UseSwagger();

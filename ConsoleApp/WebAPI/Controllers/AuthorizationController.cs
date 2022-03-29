@@ -1,6 +1,8 @@
-﻿using BL.Interfaces;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using System.Text;
+using System.Text.Json;
 using WebAPI.Models;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace WebAPI.Controllers
 {
@@ -8,11 +10,11 @@ namespace WebAPI.Controllers
     [ApiController]
     public class AuthorizationController : ControllerBase
     {
-        private readonly IAuthorizationService _authorizationService;
+        private readonly IHttpClientFactory _httpClientFactory;
 
-        public AuthorizationController(IAuthorizationService authorizationService)
+        public AuthorizationController(IHttpClientFactory httpClientFactory)
         {
-            _authorizationService = authorizationService;
+            _httpClientFactory = httpClientFactory;
         }
 
         /// <summary>
@@ -23,15 +25,20 @@ namespace WebAPI.Controllers
         /// <response code="200">Success</response>
         /// <response code="401">Unauthorized</response>
         /// <response code="500">Internal server error</response>
-
         [HttpPost("Login")]
-        public async Task<IActionResult> Login([FromBody] AuthorizationRequest request) 
+        public async Task<IActionResult> Login([FromBody] LoginRequest request)
         {
-            var token = await _authorizationService.AuthorizationAsync(request.Email, request.Password);
+            var content = new StringContent(JsonSerializer.Serialize(request), Encoding.UTF8, Application.Json);
+            
+            var authenticationClient = _httpClientFactory.CreateClient();
 
-            if (string.IsNullOrWhiteSpace(token)) 
+            var responseMessage = await authenticationClient.PostAsync("https://localhost:5001/api/Authentication/GetAccessToken", content);
+
+            var token = await responseMessage.Content.ReadAsStringAsync();
+
+            if (string.IsNullOrWhiteSpace(token))
             {
-                return Unauthorized("Invalid login or password.");
+                return Unauthorized();
             }
 
             return Ok(token);

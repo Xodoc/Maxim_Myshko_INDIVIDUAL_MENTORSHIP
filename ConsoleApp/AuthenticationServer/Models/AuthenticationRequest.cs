@@ -2,9 +2,9 @@
 
 using System.ComponentModel.DataAnnotations;
 
-namespace WebAPI.Models
+namespace AuthenticationServer.Models
 {
-    public class AuthorizationRequest
+    public class AuthenticationRequest
     {
         [Required(ErrorMessage = "Email is required")]
         [EmailAddress(ErrorMessage = "Invalid Email Address")]
