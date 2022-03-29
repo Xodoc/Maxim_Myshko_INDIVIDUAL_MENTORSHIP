@@ -79,7 +79,9 @@ namespace AuthenticationServer
                     }
                 });
             });
+
             services.AddScoped<SigningAudienceCertificate>();
+
             var issuerSigningKey = new SigningIssuerCertificate().GetIssuerSigningKey();
 
             services.AddAuthentication(options =>

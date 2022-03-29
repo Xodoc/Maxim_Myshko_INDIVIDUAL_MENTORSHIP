@@ -42,19 +42,6 @@ namespace BL.Services
 
             authClaims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
 
-            //var rsaProvider = new RSACryptoServiceProvider(1024);
-            //var rsaKey = new RsaSecurityKey(rsaProvider);
-
-            //var token = new JwtSecurityToken(
-            //_config["Jwt:Issuer"],
-            //_config["Jwt:Audience"],
-            //notBefore: DateTime.UtcNow,
-            //claims: authClaims,
-            //expires: DateTime.UtcNow.Add(TimeSpan.FromDays(int.Parse(_config["Jwt:LifeTimeInDays"]))),
-            //signingCredentials: new SigningCredentials(rsaKey, SecurityAlgorithms.RsaSha512Signature));
-
-            //return new JwtSecurityTokenHandler().WriteToken(token);
-
             return authClaims;
         }
     }
