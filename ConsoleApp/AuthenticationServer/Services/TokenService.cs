@@ -1,4 +1,4 @@
-﻿using AuthenticationServer.Certificates;
+﻿using Shared.Certificates;
 using AuthenticationServer.Interfaces;
 using BL.Interfaces;
 using Microsoft.AspNetCore.Identity;

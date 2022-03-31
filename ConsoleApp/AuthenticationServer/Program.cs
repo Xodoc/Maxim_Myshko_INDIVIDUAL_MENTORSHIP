@@ -1,10 +1,8 @@
-using AuthenticationServer.Certificates;
+using Shared.Certificates;
 using AuthenticationServer.Extensions;
 using DAL.Database;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using Serilog;
@@ -87,29 +85,6 @@ namespace AuthenticationServer
             });
 
             services.AddScoped<SigningAudienceCertificate>();
-
-            var issuerSigningKey = new SigningIssuerCertificate().GetIssuerSigningKey();
-
-            services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-                .AddJwtBearer(options =>
-                {
-                    options.SaveToken = true;
-                    options.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidateIssuer = true,
-                        ValidIssuer = Configuration["Jwt:Issuer"],
-                        ValidateAudience = true,
-                        ValidAudience = Configuration["Jwt:Audience"],
-                        ValidateLifetime = true,
-                        IssuerSigningKey = issuerSigningKey,
-                        ValidateIssuerSigningKey = true,
-                    };
-                });
 
             services.AddServices();
         }
