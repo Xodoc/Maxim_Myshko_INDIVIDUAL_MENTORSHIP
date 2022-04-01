@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
+using Shared.Certificates;
 using Shared.Config;
 using System.Linq;
 
@@ -51,6 +52,13 @@ namespace Shared.Extensions
             configuration.MaxWaitingTime = int.Parse(configurationRoot["MaxWaitingTime"]);
 
             return configuration;
+        }
+
+        public static AuthServerConfig GetAuthServerConfig(this AuthServerConfig config) 
+        {            
+            config.SigningCredentials = new SigningAudienceCertificate().GetAudienceSigningKey();
+            
+            return config;
         }
     }
 }

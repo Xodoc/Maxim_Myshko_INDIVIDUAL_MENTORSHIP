@@ -1,4 +1,3 @@
-using Shared.Certificates;
 using AuthenticationServer.Extensions;
 using DAL.Database;
 using Microsoft.AspNetCore.Identity;
@@ -83,8 +82,6 @@ namespace AuthenticationServer
 
                 opt.IncludeXmlComments(xmlPath);
             });
-
-            services.AddScoped<SigningAudienceCertificate>();
 
             services.AddServices();
         }

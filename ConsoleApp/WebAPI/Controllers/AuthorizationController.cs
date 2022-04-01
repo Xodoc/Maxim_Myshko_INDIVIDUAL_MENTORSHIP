@@ -41,6 +41,10 @@ namespace WebAPI.Controllers
             {
                 return Unauthorized(token);
             }
+            if (responseMessage.StatusCode == HttpStatusCode.InternalServerError)
+            {
+                return StatusCode(500);
+            }
 
             return Ok(token);
         }

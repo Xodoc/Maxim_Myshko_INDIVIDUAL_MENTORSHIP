@@ -7,24 +7,24 @@ namespace Shared.Certificates
 {
     public class SigningAudienceCertificate : IDisposable
     {
-        private readonly RSA rsa;
+        private readonly RSA _rsa;
 
         public SigningAudienceCertificate()
         {
-            rsa = RSA.Create();
+            _rsa = RSA.Create();
         }
 
         public SigningCredentials GetAudienceSigningKey()
         {
             var privateXmlKey = File.ReadAllText("../Shared/Keys/private_key.xml");
-            rsa.FromXmlString(privateXmlKey);
+            _rsa.FromXmlString(privateXmlKey);
 
-            return new SigningCredentials(new RsaSecurityKey(rsa), SecurityAlgorithms.RsaSha256);
+            return new SigningCredentials(new RsaSecurityKey(_rsa), SecurityAlgorithms.RsaSha256);
         }
 
         public void Dispose()
         {
-            rsa?.Dispose();
+            _rsa?.Dispose();
         }
     }
 }

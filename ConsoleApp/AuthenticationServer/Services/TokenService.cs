@@ -1,5 +1,4 @@
-﻿using Shared.Certificates;
-using AuthenticationServer.Interfaces;
+﻿using AuthenticationServer.Interfaces;
 using BL.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
@@ -12,13 +11,13 @@ namespace AuthenticationServer.Services
     {
         private readonly IConfiguration _config;
         private readonly IUserService _userService;
-        private readonly SigningAudienceCertificate _certificate;
+        private readonly Shared.Interfaces.IAuthServerConfig _authServerConfig;
 
-        public TokenService(IConfiguration config, IUserService userService, SigningAudienceCertificate certificate)
+        public TokenService(IConfiguration config, IUserService userService, Shared.Interfaces.IAuthServerConfig authServerConfig)
         {
             _config = config;
             _userService = userService;
-            _certificate = certificate;
+            _authServerConfig = authServerConfig;
         }
 
         public async Task<string> GetToken(IdentityUser user) 
@@ -27,7 +26,7 @@ namespace AuthenticationServer.Services
 
             var tokenHandler = new JwtSecurityTokenHandler();
             var securityToken = tokenHandler.CreateToken(tokenDescriptor);
-
+            
             return tokenHandler.WriteToken(securityToken);
         }
 
@@ -40,7 +39,7 @@ namespace AuthenticationServer.Services
                 Audience = _config["Jwt:Audience"],
                 NotBefore = DateTime.UtcNow,               
                 Expires = DateTime.UtcNow.AddDays(int.Parse(_config["Jwt:LifeTimeInDays"])),
-                SigningCredentials = _certificate.GetAudienceSigningKey()
+                SigningCredentials = _authServerConfig.SigningCredentials
             };
         }
     }
