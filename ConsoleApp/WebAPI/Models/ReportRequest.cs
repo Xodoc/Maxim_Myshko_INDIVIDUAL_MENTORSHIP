@@ -10,6 +10,6 @@ namespace WebAPI.Models
         public string[] CityNames { get; set; }
 
         [Required(ErrorMessage = "FromDate is required")]
-        public DateTime FromDete { get; set; }
+        public DateTime FromDate { get; set; }
     }
 }

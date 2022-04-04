@@ -14,16 +14,20 @@ namespace BL.Services
     public class ReportService : IReportService
     {
         private readonly IMapper _mapper;
+        private readonly ICityService _cityService;
         private readonly IWeatherHistoryRepository _weatherHistoryRepository;
 
-        public ReportService(IMapper mapper, IWeatherHistoryRepository weatherHistoryRepository)
+        public ReportService(IMapper mapper, IWeatherHistoryRepository weatherHistoryRepository, ICityService cityService)
         {
             _mapper = mapper;
             _weatherHistoryRepository = weatherHistoryRepository;
+            _cityService = cityService;
         }
 
-        public async Task<string> CreateReportAsync(IEnumerable<City> cities, TimeSpan period)
+        public async Task<string> CreateReportAsync(IEnumerable<string> cityNames, TimeSpan period)
         {
+            var cities = _mapper.Map<List<City>>(await _cityService.GetCitiesByCityNamesAsync(cityNames));
+
             var history = await _weatherHistoryRepository.GetWeatherHistoriesByCitiesAsync(cities, period);
 
             var tempDtos = _mapper.Map<List<TempDTO>>(history);
@@ -31,18 +35,6 @@ namespace BL.Services
             var averageTemps = GetAverageTemps(tempDtos);
 
             return CreateMessage(averageTemps, period);
-        }
-
-        public List<City> GetCities()
-        {
-            var cities = new List<City>
-            {
-                new City{Id = 1, CityName = "Minsk" },
-                new City{Id = 2, CityName = "London" },
-                new City{Id = 3, CityName = "Moscow" }
-            };
-
-            return cities;
         }
 
         private IEnumerable<TempDTO> GetAverageTemps(List<TempDTO> temps)

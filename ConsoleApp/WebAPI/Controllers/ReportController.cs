@@ -1,5 +1,4 @@
 ﻿using BL.Interfaces;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WebAPI.Models;
 
@@ -16,14 +15,12 @@ namespace WebAPI.Controllers
             _reportService = reportService;
         }
 
-        [HttpGet("getReportFromPeriodByCityNames")]
+        [HttpPost("getReportFromPeriodByCityNames")]
         public async Task<IActionResult> GetReport([FromBody] ReportRequest request) 
         {
-            var period = DateTime.Now.Subtract(request.FromDete);
-
-            var cities = _reportService.GetCities();// moq data
+            var period = DateTime.Now.Subtract(request.FromDate);
             
-            return Ok(await _reportService.CreateReportAsync(cities, period));
+            return Ok(await _reportService.CreateReportAsync(request.CityNames, period));
         }
     }
 }

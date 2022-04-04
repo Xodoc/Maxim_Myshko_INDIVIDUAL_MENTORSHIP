@@ -48,7 +48,7 @@ namespace Tests.Services
 
             expected.Add(newCity);
 
-            _cityRepositoryMock.Setup(x => x.GetCitiesByCityNameAsync(It.IsAny<IEnumerable<string>>()))
+            _cityRepositoryMock.Setup(x => x.GetCitiesByCityNamesAsync(It.IsAny<IEnumerable<string>>()))
                 .ReturnsAsync(expectedRepo);
 
             _cityRepositoryMock.Setup(x => x.CreateAsync(It.IsAny<City>())).ReturnsAsync(_mapper.Map<City>(newCity));

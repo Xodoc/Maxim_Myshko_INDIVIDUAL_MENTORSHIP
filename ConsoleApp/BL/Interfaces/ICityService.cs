@@ -6,6 +6,8 @@ namespace BL.Interfaces
 {
     public interface ICityService
     {
-        Task<List<CityDTO>> CheckAndCreateCitiesAsync(); 
+        Task<List<CityDTO>> CheckAndCreateCitiesAsync();
+        
+        Task<List<CityDTO>> GetCitiesByCityNamesAsync(IEnumerable<string> cityNames);
     }
 }

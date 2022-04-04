@@ -31,7 +31,7 @@ namespace BL.Services
 
             _validator.ValidateConfigNames(_config.CityNames);
 
-            var oldCities = await _cityRepository.GetCitiesByCityNameAsync(_config.CityNames);
+            var oldCities = await _cityRepository.GetCitiesByCityNamesAsync(_config.CityNames);
 
             var newCities = new List<City>();
 
@@ -52,6 +52,15 @@ namespace BL.Services
             Log.Information("Method CheckAndCreateCitiesAsync is complited!");
 
             return _mapper.Map<List<CityDTO>>(newCities);
+        }
+
+        public async Task<List<CityDTO>> GetCitiesByCityNamesAsync(IEnumerable<string> cityNames)
+        {
+            _validator.ValidateCityNames(cityNames);
+
+            var cities = await _cityRepository.GetCitiesByCityNamesAsync(cityNames);
+
+            return _mapper.Map<List<CityDTO>>(cities);
         }
     }
 }

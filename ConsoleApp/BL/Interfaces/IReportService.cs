@@ -7,8 +7,6 @@ namespace BL.Interfaces
 {
     public interface IReportService
     {
-        Task<string> CreateReportAsync(IEnumerable<City> cities, TimeSpan time);
-
-        List<City> GetCities();
+        Task<string> CreateReportAsync(IEnumerable<string> cities, TimeSpan time);
     }
 }

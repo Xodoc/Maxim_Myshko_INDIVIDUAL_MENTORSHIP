@@ -14,7 +14,7 @@ namespace DAL.Repositories
         {
         }
 
-        public async Task<List<City>> GetCitiesByCityNameAsync(IEnumerable<string> cityNames)
+        public async Task<List<City>> GetCitiesByCityNamesAsync(IEnumerable<string> cityNames)
         {
             var nameList = cityNames.ToList();
 
