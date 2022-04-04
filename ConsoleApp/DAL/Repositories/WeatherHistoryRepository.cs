@@ -15,10 +15,21 @@ namespace DAL.Repositories
         {
         }
 
+        public async Task<List<WeatherHistory>> GetWeatherHistoriesByCitiesAsync(IEnumerable<City> cities, TimeSpan time)
+        {
+            var to = DateTime.Now;
+            var from = to.Subtract(time);
+
+            return await _context.WeatherHistories.AsNoTracking()
+                .Include(x => x.City)
+                .Where(c => cities.Contains(c.City) && (c.Timestamp >= from && c.Timestamp <= to))
+                .ToListAsync();
+        }
+
         public async Task<List<WeatherHistory>> GetWeatherHistoriesAsync(string cityName, DateTime from, DateTime to)
         {
             return await _context.WeatherHistories.AsNoTracking()
-                .Where(x => x.City.CityName.ToLower() == cityName.ToLower() 
+                .Where(x => x.City.CityName.ToLower() == cityName.ToLower()
                 && x.Timestamp.Date >= from && x.Timestamp.Date <= to)
                 .ToListAsync();
         }

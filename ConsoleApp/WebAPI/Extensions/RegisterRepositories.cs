@@ -9,6 +9,7 @@ namespace WebAPI.Extensions
         {
             services.AddScoped<IWeatherRepository, WeatherRepository>();
             services.AddScoped<IWeatherHistoryRepository, WeatherHistoryRepository>();
+            services.AddScoped<ICityRepository, CityRepository>();
 
             return services;
         }

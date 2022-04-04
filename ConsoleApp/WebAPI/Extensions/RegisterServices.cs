@@ -20,6 +20,7 @@ namespace WebAPI.Extensions
             services.AddScoped<IWeatherService, WeatherService>();
             services.AddScoped<IValidator, Validator>();
             services.AddScoped<IWeatherHistoryService, WeatherHistoryService>();
+            services.AddScoped<IReportService, ReportService>();
 
             return services;
         }
