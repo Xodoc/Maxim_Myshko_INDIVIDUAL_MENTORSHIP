@@ -25,10 +25,8 @@ namespace WebAPI.Controllers
         /// <returns></returns>
         [HttpPost("getReportFromPeriodByCityNames")]
         public async Task<IActionResult> GetReport([FromBody] ReportRequest request) 
-        {
-            var period = DateTime.Now.Subtract(request.FromDate);
-            
-            return Ok(await _reportService.CreateReportAsync(request.CityNames, period));
+        {           
+            return Ok(await _reportService.CreateReportAsync(request.CityNames, request.FromDate));
         }
     }
 }

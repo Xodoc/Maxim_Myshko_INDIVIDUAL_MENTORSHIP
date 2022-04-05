@@ -24,8 +24,10 @@ namespace BL.Services
             _cityService = cityService;
         }
 
-        public async Task<string> CreateReportAsync(IEnumerable<string> cityNames, TimeSpan period)
+        public async Task<string> CreateReportAsync(IEnumerable<string> cityNames, DateTime fromDate)
         {
+            var period = DateTime.Now.Subtract(fromDate);
+
             var cities = _mapper.Map<List<City>>(await _cityService.GetCitiesByCityNamesAsync(cityNames));
 
             var histories = await _weatherHistoryRepository.GetWeatherHistoriesByCitiesAsync(cities, period);

@@ -43,7 +43,7 @@ namespace WebAPI.Controllers
             }
             if (responseMessage.StatusCode == HttpStatusCode.InternalServerError)
             {
-                return StatusCode(500);
+                return StatusCode(StatusCodes.Status500InternalServerError);
             }
 
             return Ok(token);
