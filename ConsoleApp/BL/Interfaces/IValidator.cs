@@ -14,5 +14,7 @@ namespace BL.Interfaces
         void ValidateWeatherHistories(WeatherHistory history);
 
         void ValidateConfigNames(IEnumerable<string> names);
+
+        void ValidateExistsCitiesFromResponseModel(IEnumerable<string> cityNames, IEnumerable<City> cities);
     }
 }

@@ -55,6 +55,17 @@ namespace BL.Validators
             }
         }
 
+        public void ValidateExistsCitiesFromResponseModel(IEnumerable<string> cityNames, IEnumerable<City> cities)
+        {
+            var amountUniqueCityNames = cityNames.Distinct().Count();
+            var amountUniqueCityNamesFromDb = cities.Select(x => x.CityName).Distinct().Count();
+
+            if (amountUniqueCityNames != amountUniqueCityNamesFromDb)
+            {
+                throw new ValidatorException("Some cities don't exists in database!");
+            }
+        }
+
         private void ValidateName(string name, string message)
         {
             if (string.IsNullOrWhiteSpace(name))

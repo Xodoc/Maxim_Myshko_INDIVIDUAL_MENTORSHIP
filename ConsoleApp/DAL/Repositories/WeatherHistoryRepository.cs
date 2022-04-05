@@ -19,6 +19,7 @@ namespace DAL.Repositories
         {
             var to = DateTime.Now;
             var from = to.Subtract(time);
+            cities = cities.Distinct();
 
             return await _context.WeatherHistories.AsNoTracking()
                 .Include(x => x.City)

@@ -28,13 +28,15 @@ namespace BL.Services
         {
             var cities = _mapper.Map<List<City>>(await _cityService.GetCitiesByCityNamesAsync(cityNames));
 
-            var history = await _weatherHistoryRepository.GetWeatherHistoriesByCitiesAsync(cities, period);
+            var histories = await _weatherHistoryRepository.GetWeatherHistoriesByCitiesAsync(cities, period);
 
-            var tempDtos = _mapper.Map<List<TempDTO>>(history);
+            var validationResult = ValidateExistsStatisticsFromResponseModel(cities, histories);
+
+            var tempDtos = _mapper.Map<List<TempDTO>>(histories);
 
             var averageTemps = GetAverageTemps(tempDtos);
 
-            return CreateMessage(averageTemps, period);
+            return CreateMessage(averageTemps, period, validationResult);
         }
 
         private IEnumerable<TempDTO> GetAverageTemps(List<TempDTO> temps)
@@ -60,7 +62,24 @@ namespace BL.Services
             return result;
         }
 
-        private string CreateMessage(IEnumerable<TempDTO> averageTemps, TimeSpan period)
+        public IEnumerable<string> ValidateExistsStatisticsFromResponseModel(IEnumerable<City> cities, IEnumerable<WeatherHistory> histories)
+        {
+            var uniqueCityNames = cities.Select(x => x.CityName).Distinct();
+            var uniqueCityNamesFromHistories = histories.Select(x => x.City.CityName).Distinct();
+
+            var result = uniqueCityNames.Except(uniqueCityNamesFromHistories);
+
+            if (result.Count() != 0)
+            {
+                return result;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        private string CreateMessage(IEnumerable<TempDTO> averageTemps, TimeSpan period, IEnumerable<string> validationResult)
         {
             var message = new StringBuilder();
 
@@ -75,13 +94,14 @@ namespace BL.Services
 
             foreach (var temp in averageTemps)
             {
-                if (temp == null)
+                message.AppendLine($"{temp.City.CityName} average temperature: {temp.AverageTemp} °C.");
+            }
+
+            if (validationResult.Count() > 0)
+            {
+                foreach (var cityName in validationResult) 
                 {
-                    message.AppendLine($"{temp.City.CityName}: no statistics.");
-                }
-                else
-                {
-                    message.AppendLine($"{temp.City.CityName} average temperature: {temp.AverageTemp} °C.");
+                    message.AppendLine($"{cityName}: no statistics.");
                 }
             }
 

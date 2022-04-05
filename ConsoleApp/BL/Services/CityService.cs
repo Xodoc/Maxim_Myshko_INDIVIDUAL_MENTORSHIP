@@ -60,6 +60,8 @@ namespace BL.Services
 
             var cities = await _cityRepository.GetCitiesByCityNamesAsync(cityNames);
 
+            _validator.ValidateExistsCitiesFromResponseModel(cityNames, cities);
+
             return _mapper.Map<List<CityDTO>>(cities);
         }
     }
