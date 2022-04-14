@@ -9,5 +9,7 @@ namespace DAL.Entities.WeatherHistoryEntities
         public string CityName { get; set; }
 
         public ICollection<WeatherHistory> WeatherHistories { get; set; }
+
+        public ICollection<Subscription> Subscriptions { get; set; }
     }
 }

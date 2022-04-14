@@ -4,14 +4,16 @@ using DAL.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace DAL.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220408192642_InitialDb")]
+    partial class InitialDb
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -60,7 +62,7 @@ namespace DAL.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Subscriptions");
+                    b.ToTable("Subscription");
                 });
 
             modelBuilder.Entity("DAL.Entities.WeatherHistoryEntities.City", b =>
@@ -126,22 +128,6 @@ namespace DAL.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = "3d321008-41b9-4cbd-bfe4-c39646ce5c7d",
-                            ConcurrencyStamp = "a612f821-ca73-47ae-afeb-a2824b54de7f",
-                            Name = "Admin",
-                            NormalizedName = "ADMIN"
-                        },
-                        new
-                        {
-                            Id = "b26d50be-a645-4a4e-bc13-7e0f986df31d",
-                            ConcurrencyStamp = "0250fce9-e71d-4b78-9854-2aa178f2bddc",
-                            Name = "User",
-                            NormalizedName = "USER"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -231,42 +217,6 @@ namespace DAL.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = "c4543cca-35f1-410c-a231-63f229da70fa",
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "37a0d390-6c4f-4187-ab7e-0e114453ef60",
-                            Email = "admin@gmail.com",
-                            EmailConfirmed = false,
-                            LockoutEnabled = true,
-                            NormalizedEmail = "ADMIN@GMAIL.COM",
-                            NormalizedUserName = "IVAN IVANOV",
-                            PasswordHash = "AQAAAAEAACcQAAAAEGwcSPW0dIzB0aRaPBIPh2K/qOzjK7I/JYKgTXZI3y47KDJ+8Q5aYydmuDUPCc+6XA==",
-                            PhoneNumber = "+123656787",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "E5BBMDK3I3PX6MZCUDSP2TGQMJNHIOU7",
-                            TwoFactorEnabled = false,
-                            UserName = "Ivan Ivanov"
-                        },
-                        new
-                        {
-                            Id = "2741fb88-83ff-43de-a203-9bb488d044d3",
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "e8284721-561f-4575-82e2-401080558a2f",
-                            Email = "user@gmail.com",
-                            EmailConfirmed = false,
-                            LockoutEnabled = true,
-                            NormalizedEmail = "USER@GMAIL.COM",
-                            NormalizedUserName = "PETER PETROV",
-                            PasswordHash = "AQAAAAEAACcQAAAAEJZmPRboeGX0lh3ETEAFuj2nQ4axEPAMkvZTFsFc2B/lh/yAXH3ISQpJE1+DKL64Qw==",
-                            PhoneNumber = "+125656787",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "M3ZDA3WQP6J2ZVGKBIZHOE7GKC4BR2ZF",
-                            TwoFactorEnabled = false,
-                            UserName = "Peter Petrov"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
@@ -328,18 +278,6 @@ namespace DAL.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles");
-
-                    b.HasData(
-                        new
-                        {
-                            UserId = "c4543cca-35f1-410c-a231-63f229da70fa",
-                            RoleId = "3d321008-41b9-4cbd-bfe4-c39646ce5c7d"
-                        },
-                        new
-                        {
-                            UserId = "2741fb88-83ff-43de-a203-9bb488d044d3",
-                            RoleId = "b26d50be-a645-4a4e-bc13-7e0f986df31d"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>

@@ -1,5 +1,6 @@
 using AuthenticationServer.Extensions;
 using DAL.Database;
+using DAL.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
@@ -42,7 +43,7 @@ namespace AuthenticationServer
 
             services.AddControllers().AddNewtonsoftJson(opt => opt.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore);
 
-            services.AddIdentity<IdentityUser, IdentityRole>(opt =>
+            services.AddIdentity<User, IdentityRole>(opt =>
             {
                 opt.Password.RequireNonAlphanumeric = false;
                 opt.Password.RequireLowercase = false;

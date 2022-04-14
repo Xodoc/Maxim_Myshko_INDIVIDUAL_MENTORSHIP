@@ -1,9 +1,8 @@
 ﻿using BL.Interfaces;
+using DAL.Entities;
 using MailKit.Net.Smtp;
-using Microsoft.Extensions.Configuration;
 using MimeKit;
 using Serilog;
-using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -12,26 +11,24 @@ namespace BL.Services
     public class EmailService : IEmailService
     {
         private readonly IReportService _reportService;
-        private readonly IConfiguration _config;
 
         private const string AdminEmail = "maks.myshko.99@mail.ru";
         private const string AdminPassword = "XhLjtxdWHNV59bHa1F70";
         private const string Subject = "Report";
 
-        public EmailService(IReportService reportService, IConfiguration config)
+        public EmailService(IReportService reportService)
         {
             _reportService = reportService;
-            _config = config;
         }
 
-        public async Task<bool> SendEmailAsync(string email)
+        public async Task<bool> SendEmailAsync(Subscription sub)
         {
-            var reportMessage = await GenerateReportAsync();
+            var reportMessage = await GenerateReportAsync(sub);
 
             var emailMessage = new MimeMessage();
 
             emailMessage.From.Add(new MailboxAddress("Admin", AdminEmail));
-            emailMessage.To.Add(new MailboxAddress("", email));
+            emailMessage.To.Add(new MailboxAddress("", sub.User.Email));
             emailMessage.Subject = Subject;
             emailMessage.Body = new TextPart(MimeKit.Text.TextFormat.Plain)
             {
@@ -47,19 +44,25 @@ namespace BL.Services
                 await client.DisconnectAsync(true);
             }
 
-            Log.Information($"Message has been sent to the mail {email}");
+            Log.Information($"Message has been sent to the mail {sub.User.Email}");
 
             return true;
         }
 
-        private async Task<string> GenerateReportAsync()
+        public async Task BulkSendEmailAsync(IGrouping<string, Subscription> subscriptions)
         {
-            var cities = _config.GetSection("CitiesForReport").GetChildren().Select(x => x.Value);
-            var fromDate = DateTime.Parse(_config["FromDate"]);
+            foreach (var sub in subscriptions)
+            {
+                if (sub.IsActive == true)
+                {
+                    await SendEmailAsync(sub);
+                }
+            }
+        }
 
-            var reportMessage = await _reportService.CreateReportAsync(cities, fromDate);
-
-            return reportMessage;
+        private async Task<string> GenerateReportAsync(Subscription sub)
+        {
+            return await _reportService.CreateReportAsync(sub.Id, sub.FromDate);
         }
     }
 }

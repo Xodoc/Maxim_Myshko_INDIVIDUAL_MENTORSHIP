@@ -16,17 +16,17 @@ namespace WebAPI.Controllers
         }
 
         /// <summary>
-        /// Get report from some period by city names and period
+        /// Get report from some period by subscription id and period
         /// </summary>
         /// <param name="request"></param>
         /// <response code="200">Success</response>
         /// <response code="400">If send data is incorrect</response>
         /// <response code="500">Internal server error</response>
         /// <returns></returns>
-        [HttpPost("getReportFromPeriodByCityNames")]
-        public async Task<IActionResult> GetReport([FromBody] ReportRequest request) 
-        {           
-            return Ok(await _reportService.CreateReportAsync(request.CityNames, request.FromDate));
+        [HttpPost("getReportFromPeriodBySubscriptionId")]
+        public async Task<IActionResult> GetReport([FromBody] ReportRequest request)
+        {
+            return Ok(await _reportService.CreateReportAsync(request.SubscriptionId, request.FromDate));
         }
     }
 }

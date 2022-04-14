@@ -1,5 +1,7 @@
 using BL.Mapping;
 using DAL.Database;
+using DAL.Entities;
+using Hangfire;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -41,7 +43,7 @@ namespace WebAPI
             var connection = Configuration.GetConnectionString(ConnectionString);
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connection));
 
-            services.AddIdentity<IdentityUser, IdentityRole>(opt =>
+            services.AddIdentity<User, IdentityRole>(opt =>
             {
                 opt.Password.RequireNonAlphanumeric = false;
                 opt.Password.RequireLowercase = false;
@@ -52,6 +54,9 @@ namespace WebAPI
             })
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
+
+            services.AddHangfire(x => x.UseSqlServerStorage(connection));
+            services.AddHangfireServer();
 
             services.AddHttpClient();
 
@@ -122,6 +127,16 @@ namespace WebAPI
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
+
+                var options = new DashboardOptions { AppPath = "https://localhost:7293/swagger" };
+
+                app.UseHangfireDashboard("/hangfire", options);
+
+                using (var scope = app.ApplicationServices.CreateScope())
+                {
+                    var service = scope.ServiceProvider.GetService<HangfireSettings.Settings>();
+                    service?.SetTasksAsync().ConfigureAwait(false).GetAwaiter().GetResult();
+                }
             }
 
             app.UseRouting();

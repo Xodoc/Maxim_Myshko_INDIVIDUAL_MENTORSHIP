@@ -8,6 +8,6 @@ namespace BL.Interfaces
     {
         Task<List<CityDTO>> CheckAndCreateCitiesAsync();
         
-        Task<List<CityDTO>> GetCitiesByCityNamesAsync(IEnumerable<string> cityNames);
+        Task<List<CityDTO>> GetCitiesBySubscriptionIdAsync(int subId);
     }
 }

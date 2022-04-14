@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DAL.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220322105757_SeedData")]
+    [Migration("20220408192724_SeedData")]
     partial class SeedData
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -20,6 +20,50 @@ namespace DAL.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("ProductVersion", "5.0.14")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+            modelBuilder.Entity("CitySubscription", b =>
+                {
+                    b.Property<int>("CitiesId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SubscriptionsId")
+                        .HasColumnType("int");
+
+                    b.HasKey("CitiesId", "SubscriptionsId");
+
+                    b.HasIndex("SubscriptionsId");
+
+                    b.ToTable("CitySubscription");
+                });
+
+            modelBuilder.Entity("DAL.Entities.Subscription", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Cron")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("FromDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("LastSendTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Subscription");
+                });
 
             modelBuilder.Entity("DAL.Entities.WeatherHistoryEntities.City", b =>
                 {
@@ -88,15 +132,15 @@ namespace DAL.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "5a1bce0f-c87b-4102-8cc7-0a74414cac35",
-                            ConcurrencyStamp = "fdbcaf21-b57c-429c-b9d4-730479ac1761",
+                            Id = "48de1a38-8f07-4f88-9448-807ec61d3f75",
+                            ConcurrencyStamp = "3239c7c5-a248-4ccb-8e17-62cd048f0a13",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "e45a5837-4d4c-438c-9a33-914f2a0b83aa",
-                            ConcurrencyStamp = "1adf9812-43cf-4fc2-a81a-0ade57e9df2c",
+                            Id = "5e255383-c123-4d42-84af-e4cebf796d23",
+                            ConcurrencyStamp = "d5f7a1cf-b30c-44ad-b8a2-bd7b1a54c812",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -193,15 +237,15 @@ namespace DAL.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "d3b59fe4-2497-405d-9fd1-ec644165a588",
+                            Id = "e9bdeed7-d7e1-462a-bbe3-65a7bad6660f",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "3f7dc446-69cd-45fa-9a00-59f82773e50e",
+                            ConcurrencyStamp = "c83e927f-f286-4133-9791-dd4521a5a858",
                             Email = "admin@gmail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = true,
                             NormalizedEmail = "ADMIN@GMAIL.COM",
                             NormalizedUserName = "IVAN IVANOV",
-                            PasswordHash = "AQAAAAEAACcQAAAAEKw2sT9P8cGWEeRvKX1ZUd+Hpq9kKecQebL1SMekXK/U3+VqeftO4eTArLIHgh1XGA==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEBo3RPe5K+oHez8pj3E5MHMXN+oKtA4I5fNYBw8GC7A6VFWEw+zvbDvxbGggpzZxig==",
                             PhoneNumber = "+123656787",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "E5BBMDK3I3PX6MZCUDSP2TGQMJNHIOU7",
@@ -210,15 +254,15 @@ namespace DAL.Migrations
                         },
                         new
                         {
-                            Id = "68cf4ac1-6fd6-4609-bb79-6366c01d52f6",
+                            Id = "fda6077e-e829-41f7-8ad3-342a9c16786c",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "7d459a96-53e5-4d56-8ed8-24acb4141a9f",
+                            ConcurrencyStamp = "ab61f68b-83fc-4499-bb52-c902baffbdc6",
                             Email = "user@gmail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = true,
                             NormalizedEmail = "USER@GMAIL.COM",
                             NormalizedUserName = "PETER PETROV",
-                            PasswordHash = "AQAAAAEAACcQAAAAEHeUARw7pVV6iW5QezX+0dsR7Oo9eh9DCatmmQAuhlEShQvFr2flTxXkqc1gdmeuRw==",
+                            PasswordHash = "AQAAAAEAACcQAAAAENMFlnSfkHXkFUU4xY1eBoNxzLv1CtQrwip8/U0xANo1qatWfVeVXLyikQD5niXDXw==",
                             PhoneNumber = "+125656787",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "M3ZDA3WQP6J2ZVGKBIZHOE7GKC4BR2ZF",
@@ -290,13 +334,13 @@ namespace DAL.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = "d3b59fe4-2497-405d-9fd1-ec644165a588",
-                            RoleId = "5a1bce0f-c87b-4102-8cc7-0a74414cac35"
+                            UserId = "e9bdeed7-d7e1-462a-bbe3-65a7bad6660f",
+                            RoleId = "48de1a38-8f07-4f88-9448-807ec61d3f75"
                         },
                         new
                         {
-                            UserId = "68cf4ac1-6fd6-4609-bb79-6366c01d52f6",
-                            RoleId = "e45a5837-4d4c-438c-9a33-914f2a0b83aa"
+                            UserId = "fda6077e-e829-41f7-8ad3-342a9c16786c",
+                            RoleId = "5e255383-c123-4d42-84af-e4cebf796d23"
                         });
                 });
 
@@ -317,6 +361,30 @@ namespace DAL.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens");
+                });
+
+            modelBuilder.Entity("CitySubscription", b =>
+                {
+                    b.HasOne("DAL.Entities.WeatherHistoryEntities.City", null)
+                        .WithMany()
+                        .HasForeignKey("CitiesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DAL.Entities.Subscription", null)
+                        .WithMany()
+                        .HasForeignKey("SubscriptionsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("DAL.Entities.Subscription", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("DAL.Entities.WeatherHistoryEntities.WeatherHistory", b =>

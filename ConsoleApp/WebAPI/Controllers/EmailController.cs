@@ -14,17 +14,17 @@ namespace WebAPI.Controllers
             _emailService = emailService;
         }
 
-        [HttpGet("sendMessage")]
-        public async Task<IActionResult> SendMessage([FromQuery] string email)
-        {
-            var result = await _emailService.SendEmailAsync(email);
+        //[HttpGet("sendMessage")]
+        //public async Task<IActionResult> SendMessage([FromQuery] string email)
+        //{
+        //    var result = await _emailService.SendEmailAsync(email);
 
-            if (result == false)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
+        //    if (result == false)
+        //    {
+        //        return StatusCode(StatusCodes.Status500InternalServerError);
+        //    }
 
-            return Ok("Message has been sent!");
-        }
+        //    return Ok("Message has been sent!");
+        //}
     }
 }

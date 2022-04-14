@@ -1,6 +1,6 @@
 ﻿using AuthenticationServer.Interfaces;
 using BL.Interfaces;
-using Microsoft.AspNetCore.Identity;
+using DAL.Entities;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -20,7 +20,7 @@ namespace AuthenticationServer.Services
             _authServerConfig = authServerConfig;
         }
 
-        public async Task<string> GetToken(IdentityUser user) 
+        public async Task<string> GetToken(User user) 
         {
             var tokenDescriptor = await GetTokenDescriptor(user);
 
@@ -30,7 +30,7 @@ namespace AuthenticationServer.Services
             return tokenHandler.WriteToken(securityToken);
         }
 
-        private async Task<SecurityTokenDescriptor> GetTokenDescriptor(IdentityUser user)
+        private async Task<SecurityTokenDescriptor> GetTokenDescriptor(User user)
         {
             return new SecurityTokenDescriptor
             {

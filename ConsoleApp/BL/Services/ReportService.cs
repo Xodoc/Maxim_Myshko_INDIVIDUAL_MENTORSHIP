@@ -24,11 +24,11 @@ namespace BL.Services
             _cityService = cityService;
         }
 
-        public async Task<string> CreateReportAsync(IEnumerable<string> cityNames, DateTime fromDate)
+        public async Task<string> CreateReportAsync(int subId, DateTime fromDate)
         {
             var period = DateTime.Now.Subtract(fromDate);
 
-            var cities = _mapper.Map<List<City>>(await _cityService.GetCitiesByCityNamesAsync(cityNames));
+            var cities = _mapper.Map<List<City>>(await _cityService.GetCitiesBySubscriptionIdAsync(subId));
 
             var histories = await _weatherHistoryRepository.GetWeatherHistoriesByCitiesAsync(cities, period);
 
@@ -39,29 +39,6 @@ namespace BL.Services
             var averageTemps = GetAverageTemps(tempDtos);
 
             return CreateMessage(averageTemps, period, validationResult);
-        }
-
-        private IEnumerable<TempDTO> GetAverageTemps(List<TempDTO> temps)
-        {
-            // Надо взять id города, потом в цикле посчитать average для каждого города с определенным id
-            var ids = temps.Select(x => x.City.Id).Distinct().OrderBy(x => x).ToList();
-
-            var result = new List<TempDTO>();
-
-            for (int i = 0; i < ids.Count; i++)
-            {
-                var specialTemp = temps.Where(x => x.City.Id == ids[i]);
-                var cities = temps.Select(x => x.City).Distinct();
-
-                var temp = new TempDTO
-                {
-                    AverageTemp = specialTemp.Average(x => x.Temp),
-                    City = cities.FirstOrDefault(x => x.Id == ids[i])
-                };
-                result.Add(temp);
-            }
-
-            return result;
         }
 
         public IEnumerable<string> ValidateExistsStatisticsFromResponseModel(IEnumerable<City> cities, IEnumerable<WeatherHistory> histories)
@@ -77,8 +54,31 @@ namespace BL.Services
             }
             else
             {
-                return null;
+                return new List<string>();
             }
+        }
+
+        private IEnumerable<TempDTO> GetAverageTemps(List<TempDTO> temps)
+        {
+            // Надо взять id города, потом в цикле посчитать average для каждого города с определенным id
+            var ids = temps.Select(x => x.City.Id).Distinct().OrderBy(x => x).ToList();
+            var amountIds = ids.Count;
+            var result = new List<TempDTO>();
+
+            for (int i = 0; i < amountIds; i++)
+            {
+                var specialTemp = temps.Where(x => x.City.Id == ids[i]);
+                var cities = temps.Select(x => x.City).Distinct();
+
+                var temp = new TempDTO
+                {
+                    AverageTemp = specialTemp.Average(x => x.Temp),
+                    City = cities.FirstOrDefault(x => x.Id == ids[i])
+                };
+                result.Add(temp);
+            }
+
+            return result;
         }
 
         private string CreateMessage(IEnumerable<TempDTO> averageTemps, TimeSpan period, IEnumerable<string> validationResult)
@@ -101,7 +101,7 @@ namespace BL.Services
 
             if (validationResult.Count() > 0)
             {
-                foreach (var cityName in validationResult) 
+                foreach (var cityName in validationResult)
                 {
                     message.AppendLine($"{cityName}: no statistics.");
                 }

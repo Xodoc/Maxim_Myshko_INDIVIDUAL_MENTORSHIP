@@ -1,4 +1,5 @@
 ﻿using BL.Interfaces;
+using DAL.Entities;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
@@ -11,14 +12,14 @@ namespace BL.Services
 {
     public class UserService : IUserService
     {
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<User> _userManager;
 
-        public UserService(UserManager<IdentityUser> userManager)
+        public UserService(UserManager<User> userManager)
         {
             _userManager = userManager;
         }
 
-        public async Task<IdentityUser> GetUserByUserCredentialsAsync(string email, string password)
+        public async Task<User> GetUserByUserCredentialsAsync(string email, string password)
         {
             var user = await _userManager.FindByEmailAsync(email);
 
@@ -30,7 +31,7 @@ namespace BL.Services
             return null;
         }
 
-        public async Task<List<Claim>> GetUserClaims(IdentityUser user)
+        public async Task<List<Claim>> GetUserClaims(User user)
         {
             var roles = await _userManager.GetRolesAsync(user);
 

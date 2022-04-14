@@ -3,6 +3,7 @@ using BL.Services;
 using BL.Validators;
 using Shared.Config;
 using Shared.Extensions;
+using WebAPI.HangfireSettings;
 
 namespace WebAPI.Extensions
 {
@@ -23,6 +24,8 @@ namespace WebAPI.Extensions
             services.AddScoped<IReportService, ReportService>();
             services.AddScoped<ICityService, CityService>();
             services.AddScoped<IEmailService, EmailService>();
+            services.AddScoped<ISubscriptionService, SubscriptionService>();
+            services.AddScoped<Settings>();
 
             return services;
         }

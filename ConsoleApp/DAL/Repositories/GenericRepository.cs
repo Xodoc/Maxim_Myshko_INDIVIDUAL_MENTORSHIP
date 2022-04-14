@@ -35,5 +35,10 @@ namespace DAL.Repositories
             await _dbSet.AddRangeAsync(entities);
             await _context.SaveChangesAsync();
         }
+
+        public virtual async Task<List<TEntity>> GetAllAsync()
+        {
+            return await _dbSet.AsNoTracking().ToListAsync();
+        }
     }
 }

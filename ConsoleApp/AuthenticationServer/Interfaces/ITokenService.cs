@@ -1,9 +1,9 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using DAL.Entities;
 
 namespace AuthenticationServer.Interfaces
 {
     public interface ITokenService
     {
-        Task<string> GetToken(IdentityUser user);
+        Task<string> GetToken(User user);
     }
 }

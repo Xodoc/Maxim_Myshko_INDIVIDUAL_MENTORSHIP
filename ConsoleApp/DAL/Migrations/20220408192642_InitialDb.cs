@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace DAL.Migrations
 {
-    public partial class SeedData : Migration
+    public partial class InitialDb : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -44,6 +44,19 @@ namespace DAL.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Cities",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CityName = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Cities", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -152,33 +165,73 @@ namespace DAL.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.InsertData(
-                table: "AspNetRoles",
-                columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[,]
+            migrationBuilder.CreateTable(
+                name: "Subscription",
+                columns: table => new
                 {
-                    { "5a1bce0f-c87b-4102-8cc7-0a74414cac35", "fdbcaf21-b57c-429c-b9d4-730479ac1761", "Admin", "ADMIN" },
-                    { "e45a5837-4d4c-438c-9a33-914f2a0b83aa", "1adf9812-43cf-4fc2-a81a-0ade57e9df2c", "User", "USER" }
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Cron = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    FromDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    LastSendTime = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Subscription", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Subscription_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
-            migrationBuilder.InsertData(
-                table: "AspNetUsers",
-                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[,]
+            migrationBuilder.CreateTable(
+                name: "WeatherHistories",
+                columns: table => new
                 {
-                    { "d3b59fe4-2497-405d-9fd1-ec644165a588", 0, "3f7dc446-69cd-45fa-9a00-59f82773e50e", "admin@gmail.com", false, true, null, "ADMIN@GMAIL.COM", "IVAN IVANOV", "AQAAAAEAACcQAAAAEKw2sT9P8cGWEeRvKX1ZUd+Hpq9kKecQebL1SMekXK/U3+VqeftO4eTArLIHgh1XGA==", "+123656787", false, "E5BBMDK3I3PX6MZCUDSP2TGQMJNHIOU7", false, "Ivan Ivanov" },
-                    { "68cf4ac1-6fd6-4609-bb79-6366c01d52f6", 0, "7d459a96-53e5-4d56-8ed8-24acb4141a9f", "user@gmail.com", false, true, null, "USER@GMAIL.COM", "PETER PETROV", "AQAAAAEAACcQAAAAEHeUARw7pVV6iW5QezX+0dsR7Oo9eh9DCatmmQAuhlEShQvFr2flTxXkqc1gdmeuRw==", "+125656787", false, "M3ZDA3WQP6J2ZVGKBIZHOE7GKC4BR2ZF", false, "Peter Petrov" }
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CityId = table.Column<int>(type: "int", nullable: false),
+                    Timestamp = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Temp = table.Column<double>(type: "float", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_WeatherHistories", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_WeatherHistories_Cities_CityId",
+                        column: x => x.CityId,
+                        principalTable: "Cities",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.InsertData(
-                table: "AspNetUserRoles",
-                columns: new[] { "RoleId", "UserId" },
-                values: new object[] { "5a1bce0f-c87b-4102-8cc7-0a74414cac35", "d3b59fe4-2497-405d-9fd1-ec644165a588" });
-
-            migrationBuilder.InsertData(
-                table: "AspNetUserRoles",
-                columns: new[] { "RoleId", "UserId" },
-                values: new object[] { "e45a5837-4d4c-438c-9a33-914f2a0b83aa", "68cf4ac1-6fd6-4609-bb79-6366c01d52f6" });
+            migrationBuilder.CreateTable(
+                name: "CitySubscription",
+                columns: table => new
+                {
+                    CitiesId = table.Column<int>(type: "int", nullable: false),
+                    SubscriptionsId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CitySubscription", x => new { x.CitiesId, x.SubscriptionsId });
+                    table.ForeignKey(
+                        name: "FK_CitySubscription_Cities_CitiesId",
+                        column: x => x.CitiesId,
+                        principalTable: "Cities",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CitySubscription_Subscription_SubscriptionsId",
+                        column: x => x.SubscriptionsId,
+                        principalTable: "Subscription",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -218,6 +271,21 @@ namespace DAL.Migrations
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CitySubscription_SubscriptionsId",
+                table: "CitySubscription",
+                column: "SubscriptionsId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Subscription_UserId",
+                table: "Subscription",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_WeatherHistories_CityId",
+                table: "WeatherHistories",
+                column: "CityId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -238,7 +306,19 @@ namespace DAL.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "CitySubscription");
+
+            migrationBuilder.DropTable(
+                name: "WeatherHistories");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "Subscription");
+
+            migrationBuilder.DropTable(
+                name: "Cities");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

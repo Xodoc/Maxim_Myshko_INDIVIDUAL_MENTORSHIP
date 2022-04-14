@@ -54,13 +54,9 @@ namespace BL.Services
             return _mapper.Map<List<CityDTO>>(newCities);
         }
 
-        public async Task<List<CityDTO>> GetCitiesByCityNamesAsync(IEnumerable<string> cityNames)
+        public async Task<List<CityDTO>> GetCitiesBySubscriptionIdAsync(int subId)
         {
-            _validator.ValidateCityNames(cityNames);
-
-            var cities = await _cityRepository.GetCitiesByCityNamesAsync(cityNames);
-
-            _validator.ValidateExistsCitiesFromResponseModel(cityNames, cities);
+            var cities = await _cityRepository.GetCitiesBySubscriptionIdAsync(subId);
 
             return _mapper.Map<List<CityDTO>>(cities);
         }

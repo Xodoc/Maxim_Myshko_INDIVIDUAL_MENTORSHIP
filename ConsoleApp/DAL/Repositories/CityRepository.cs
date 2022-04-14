@@ -18,7 +18,15 @@ namespace DAL.Repositories
         {
             var nameList = cityNames.ToList();
 
-            return await _context.Cities.Where(c => nameList.Contains(c.CityName)).ToListAsync();
+            return await _context.Cities.AsNoTracking().Where(c => nameList.Contains(c.CityName)).ToListAsync();
+        }
+
+        public async Task<List<City>> GetCitiesBySubscriptionIdAsync(int id)
+        {
+            return await _context.Cities.AsNoTracking()
+                                        .Include(x => x.Subscriptions.Where(i => i.Id == id))
+                                        .Where(x => x.Subscriptions.Count > 0)
+                                        .ToListAsync();
         }
     }
 }

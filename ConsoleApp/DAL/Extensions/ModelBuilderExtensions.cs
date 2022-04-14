@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using DAL.Entities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -63,9 +64,9 @@ namespace DAL.Extensions
 
             var passwordHasher = new PasswordHasher<IdentityUser>();
 
-            var users = new IdentityUser[]
+            var users = new User[]
             {
-                new IdentityUser
+                new User
                 {
                     Id = Guid.NewGuid().ToString(),
                     UserName = userName1,
@@ -83,7 +84,7 @@ namespace DAL.Extensions
                     LockoutEnabled = true,
                     AccessFailedCount = 0
                 },
-                new IdentityUser
+                new User
                 {
                     Id = Guid.NewGuid().ToString(),
                     UserName = userName2,
@@ -110,7 +111,7 @@ namespace DAL.Extensions
                 _userIds[i] = users[i].Id;
             }
 
-            builder.Entity<IdentityUser>().HasData(users);
+            builder.Entity<User>().HasData(users);
 
             return builder;
         }

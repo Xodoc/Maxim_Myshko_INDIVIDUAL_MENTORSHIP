@@ -6,6 +6,6 @@ namespace BL.Interfaces
 {
     public interface IReportService
     {
-        Task<string> CreateReportAsync(IEnumerable<string> cities, DateTime fromDate);
+        Task<string> CreateReportAsync(int subscriptionId, DateTime fromDate);
     }
 }
