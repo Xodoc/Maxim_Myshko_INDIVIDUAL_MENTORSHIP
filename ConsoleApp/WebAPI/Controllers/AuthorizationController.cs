@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System.Net;
 using System.Text;
 using System.Text.Json;
 using WebAPI.Models;
@@ -25,20 +26,24 @@ namespace WebAPI.Controllers
         /// <response code="200">Success</response>
         /// <response code="401">Unauthorized</response>
         /// <response code="500">Internal server error</response>
-        [HttpPost("Login")]
+        [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequest request)
         {
             var content = new StringContent(JsonSerializer.Serialize(request), Encoding.UTF8, Application.Json);
-            
+
             var authenticationClient = _httpClientFactory.CreateClient();
 
             var responseMessage = await authenticationClient.PostAsync("https://localhost:5001/api/Authentication/GetAccessToken", content);
 
             var token = await responseMessage.Content.ReadAsStringAsync();
 
-            if (string.IsNullOrWhiteSpace(token))
+            if (responseMessage.StatusCode == HttpStatusCode.Unauthorized)
             {
-                return Unauthorized();
+                return Unauthorized(token);
+            }
+            if (responseMessage.StatusCode == HttpStatusCode.InternalServerError)
+            {
+                return StatusCode(500);
             }
 
             return Ok(token);

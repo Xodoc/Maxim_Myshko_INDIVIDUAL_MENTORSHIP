@@ -1,4 +1,5 @@
 ﻿using BL.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebAPI.Models;
 
@@ -23,6 +24,7 @@ namespace WebAPI.Controllers
         /// <response code="200">Success</response>
         /// <response code="400">If send data is incorrect</response>
         /// <response code="500">Internal server error</response>
+        [AllowAnonymous]
         [HttpGet("getCurrentWeather")]
         public async Task<IActionResult> GetCurrentWeather([FromQuery] WeatherBaseRequest weather)
         {

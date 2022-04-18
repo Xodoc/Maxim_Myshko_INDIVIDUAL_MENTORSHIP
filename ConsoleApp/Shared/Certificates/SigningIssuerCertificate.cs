@@ -1,7 +1,9 @@
 ﻿using Microsoft.IdentityModel.Tokens;
+using System;
+using System.IO;
 using System.Security.Cryptography;
 
-namespace AuthenticationServer.Certificates
+namespace Shared.Certificates
 {
     public class SigningIssuerCertificate : IDisposable
     {
@@ -14,7 +16,7 @@ namespace AuthenticationServer.Certificates
 
         public RsaSecurityKey GetIssuerSigningKey()
         {
-            var publicXmlKey = File.ReadAllText("./Keys/public_key.xml");
+            var publicXmlKey = File.ReadAllText("../Shared/Keys/public_key.xml");
             rsa.FromXmlString(publicXmlKey);
 
             return new RsaSecurityKey(rsa);
